@@ -2,10 +2,14 @@ package org.firstinspires.ftc.teamcode.collectors
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
+import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
+
 class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
     private val _allModules: Array<IRobotModule> = arrayOf()
+
+    private val _updateHandler = UpdateHandler()
 
     fun init() {
         for (i in _allModules)
@@ -21,6 +25,8 @@ class BaseCollector(val robot: LinearOpMode) {
 
         for (i in _allModules)
             i.lateStart()
+
+        _updateHandler.start()
     }
 
     fun update() {
@@ -29,6 +35,8 @@ class BaseCollector(val robot: LinearOpMode) {
 
         for (i in _allModules)
             i.lateUpdate()
+
+        _updateHandler.update()
     }
 
     fun stop() {
@@ -37,5 +45,7 @@ class BaseCollector(val robot: LinearOpMode) {
 
         for (i in _allModules)
             i.lateStop()
+
+        _updateHandler.stop()
     }
 }
