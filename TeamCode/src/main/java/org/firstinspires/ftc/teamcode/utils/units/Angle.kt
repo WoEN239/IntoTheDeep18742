@@ -5,7 +5,7 @@ import java.lang.Math.signum
 import kotlin.math.PI
 import kotlin.math.abs
 
-class Angle(var angle: Double){
+data class Angle(var angle: Double){
     companion object {
         fun chop(ang: Double): Double{
             var chopedAng = ang
