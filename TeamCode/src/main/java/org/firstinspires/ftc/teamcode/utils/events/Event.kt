@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.utils.events
 
 class Event<T> {
-    private val _subscribers: MutableList<(parameter: T) -> Void> = mutableListOf()
+    private val _subscribers: MutableList<(T) -> Unit> = mutableListOf()
 
-    fun sub(subscriber: (parameter: T) -> Void) {
+    fun sub(subscriber: (T) -> Unit) {
         _subscribers.add(subscriber)
     }
 
-    operator fun plusAssign(subscriber: (parameter: T) -> Void) {
+    operator fun plusAssign(subscriber: (T) -> Unit) {
         sub(subscriber)
     }
 

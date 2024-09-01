@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.utils.events
 
 class AcceptEvent<T> {
-    private val _subscribers: MutableList<(parameter: T) -> Boolean> = mutableListOf()
+    private val _subscribers: MutableList<(T) -> Boolean> = mutableListOf()
 
-    fun sub(subscriber: (parameter: T) -> Boolean){
+    fun sub(subscriber: (T) -> Boolean){
         _subscribers.add(subscriber)
     }
 
-    operator fun plusAssign(subscriber: (parameter: T) -> Boolean){
+    operator fun plusAssign(subscriber: (T) -> Boolean){
         sub(subscriber)
     }
 
