@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utils.devices
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 
 class Battery (private val _voltageSensor: VoltageSensor){
     var charge = 1.0
@@ -11,7 +12,7 @@ class Battery (private val _voltageSensor: VoltageSensor){
     fun update(){
         voltage = _voltageSensor.voltage
 
-        charge = voltage / 13.0
+        charge = voltage / Configs.ChargeConfig.NOMINAL_VOLTAGE
     }
 }
 
