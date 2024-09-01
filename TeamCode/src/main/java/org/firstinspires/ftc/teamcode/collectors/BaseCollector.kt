@@ -30,6 +30,8 @@ class BaseCollector(val robot: LinearOpMode) {
     }
 
     fun update() {
+        devices.battery.update()
+
         for (i in _allModules)
             i.update()
 
