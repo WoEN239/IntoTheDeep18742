@@ -9,11 +9,11 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 open class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(Gyro)
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/Gyro)
 
     private val _updateHandler = UpdateHandler()
 
-    protected fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
+    fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
     fun init() {
         for (i in _allModules)
