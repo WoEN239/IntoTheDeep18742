@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.collectors
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: Array<IRobotModule> = arrayOf()
+    private val _allModules: Array<IRobotModule> = arrayOf(Gyro)
 
     private val _updateHandler = UpdateHandler()
 
@@ -30,6 +32,8 @@ class BaseCollector(val robot: LinearOpMode) {
     }
 
     fun update() {
+        StaticTelemetry.addData("runtime", System.currentTimeMillis())
+
         devices.battery.update()
 
         for (i in _allModules)
