@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.collectors
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 open class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/Gyro)
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/Gyro, DriveTrain)
 
     private val _updateHandler = UpdateHandler()
 

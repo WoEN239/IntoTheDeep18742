@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.VoltageSensor
@@ -18,5 +19,11 @@ class Battery (private val _voltageSensor: VoltageSensor){
 
 class Devices(hardMap: HardwareMap)  {
     val imu = hardMap.get("imu") as IMU
+
     val battery = Battery(hardMap.get("Control Hub") as VoltageSensor)
+
+    val leftForwardDrive = hardMap.get("leftForwardDrive") as DcMotorEx
+    val rightForwardDrive = hardMap.get("rightForwardDrive") as DcMotorEx
+    val leftBackDrive = hardMap.get("leftBackDrive") as DcMotorEx
+    val rightBackDrive = hardMap.get("rightBackDrive") as DcMotorEx
 }
