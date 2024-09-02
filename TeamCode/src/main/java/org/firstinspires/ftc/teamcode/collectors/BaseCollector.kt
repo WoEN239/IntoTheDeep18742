@@ -6,12 +6,14 @@ import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
-class BaseCollector(val robot: LinearOpMode) {
+open class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: Array<IRobotModule> = arrayOf(Gyro)
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(Gyro)
 
     private val _updateHandler = UpdateHandler()
+
+    protected fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
     fun init() {
         for (i in _allModules)
