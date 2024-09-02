@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.units
 
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -11,10 +12,16 @@ data class Vec2(var x: Double, var y: Double) {
 
     fun sqrtLength() = sqrt(length())
 
-    fun setRot(rot: Double) : Vec2 {
+    fun setRot(rot: Double): Vec2 {
         val l = sqrtLength()
 
         return Vec2(cos(rot) * l, sin(rot) * l)
+    }
+
+    fun turn(rot: Double): Vec2 {
+        val currentRot = atan2(y, x)
+
+        return setRot(currentRot + rot)
     }
 
     operator fun plus(vec: Vec2) = Vec2(x + vec.x, y + vec.y)
