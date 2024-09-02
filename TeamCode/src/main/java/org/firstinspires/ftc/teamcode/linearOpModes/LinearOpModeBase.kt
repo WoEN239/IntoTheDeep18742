@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.linearOpModes
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
-class LinearOpModeBase: LinearOpMode() {
+open class LinearOpModeBase: LinearOpMode() {
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
