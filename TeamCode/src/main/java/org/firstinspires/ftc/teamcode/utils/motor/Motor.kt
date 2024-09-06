@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 class Motor(val motor: DcMotorEx): IHandler {
-    private val _maxVelocityTicks = 2400
+    val maxVelocityTicks = 2400
 
     init {
         UpdateHandler.addHandler(this)
@@ -19,11 +19,11 @@ class Motor(val motor: DcMotorEx): IHandler {
     var targetTicksVelocity = 0.0
 
     var targetPower
-        get() = targetTicksVelocity / _maxVelocityTicks
+        get() = targetTicksVelocity / maxVelocityTicks
         set(value) {
-            targetTicksVelocity = value * _maxVelocityTicks
+            targetTicksVelocity = value * maxVelocityTicks
         }
-
+ 
     override fun update() {
         val u = _velocityPid.update(encoder.velocity - targetTicksVelocity, targetTicksVelocity)
 
