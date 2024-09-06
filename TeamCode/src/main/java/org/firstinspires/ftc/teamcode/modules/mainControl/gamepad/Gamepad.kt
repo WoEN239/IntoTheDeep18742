@@ -14,7 +14,7 @@ object Gamepad : IRobotModule {
     }
 
     override fun lateUpdate() {
-        DriveTrain.driveDirection(
+        DriveTrain.driveSimpleDirection(
             Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
             (-_gamepad.right_stick_x).toDouble()
         )
