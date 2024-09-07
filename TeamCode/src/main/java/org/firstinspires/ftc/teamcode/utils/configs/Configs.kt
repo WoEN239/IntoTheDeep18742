@@ -19,7 +19,6 @@ object Configs {
         @JvmField var WHEEL_DIAMETER = 1
         @JvmField var WHEEL_ENCODER_CONSTANT = 20
         @JvmField var WHEEL_CENTER_RADIUS = 1
-        @JvmField var ROTATE_LAG = 1
         @JvmField var Y_LAG = 1
     }
 }

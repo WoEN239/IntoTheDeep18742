@@ -38,7 +38,7 @@ object DriveTrain : IRobotModule {
             direction.x / Configs.DriveTrainConfig.WHEEL_DIAMETER * Configs.DriveTrainConfig.WHEEL_ENCODER_CONSTANT,
             direction.y / Configs.DriveTrainConfig.WHEEL_DIAMETER * Configs.DriveTrainConfig.WHEEL_ENCODER_CONSTANT * Configs.DriveTrainConfig.Y_LAG
         ),
-        rotate * Configs.DriveTrainConfig.WHEEL_CENTER_RADIUS / Configs.DriveTrainConfig.WHEEL_DIAMETER * Configs.DriveTrainConfig.WHEEL_ENCODER_CONSTANT / 4
+        rotate * Configs.DriveTrainConfig.WHEEL_CENTER_RADIUS / Configs.DriveTrainConfig.WHEEL_DIAMETER * Configs.DriveTrainConfig.WHEEL_ENCODER_CONSTANT
     )
 
     override fun stop(){
