@@ -16,9 +16,18 @@ object Configs {
 
     @Config
     internal object DriveTrainConfig{
-        @JvmField var WHEEL_DIAMETER = 1
-        @JvmField var WHEEL_ENCODER_CONSTANT = 20
-        @JvmField var WHEEL_CENTER_RADIUS = 1
-        @JvmField var Y_LAG = 1
+        @JvmField var WHEEL_DIAMETER = 1.0
+        @JvmField var WHEEL_ENCODER_CONSTANT = 20.0
+        @JvmField var WHEEL_CENTER_RADIUS = 1.0
+        @JvmField var Y_LAG = 1.0
+    }
+
+    @Config
+    internal object RoadRunnerConfig{
+        @JvmField var BUILDER_THREAD_COUNT = 5
+        @JvmField var MAX_ROTATE_VELOCITY = 1.0
+        @JvmField var MAX_ACCEL = 1.0
+
+        @JvmField var MAX_TRANSLATION_VELOCITY = 1.0
     }
 }
