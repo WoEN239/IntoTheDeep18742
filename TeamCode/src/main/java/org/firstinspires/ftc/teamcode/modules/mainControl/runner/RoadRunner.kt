@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.MinVelConstraint
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.ProfileAccelConstraint
 import com.acmerobotics.roadrunner.ProfileParams
+import com.acmerobotics.roadrunner.TimeTrajectory
 import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TrajectoryBuilder
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams
@@ -12,7 +13,9 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -22,11 +25,76 @@ object RoadRunner : IRobotModule {
 
     }
 
-    fun newTrajectory() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
+    override fun update() {
+        if(pause)
+            return
+
+        val headingVelocity =
+            _currentTrajectory[0][_trajectoryTime.seconds()].velocity().angVel
+        val transVelocity =
+            _currentTrajectory[0][_trajectoryTime.seconds()].velocity().linearVel
+
+        DriveTrain.driveCmDirection(
+            Vec2(transVelocity.x.value(), transVelocity.y.value()),
+            headingVelocity.value()
+        )
+
+        if(_trajectoryTime.seconds() > _currentTrajectory[0].duration){
+            _currentTrajectory.removeAt(0)
+
+            _trajectoryTime.reset()
+
+            if(_currentTrajectory.isEmpty())
+                pause = true
+        }
+    }
+
+    private var _currentTrajectory = arrayListOf<TimeTrajectory>()
+
+    val newTrajectory
+            get() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
 
     fun runTrajectory(trajectory: ThreadedTrajectoryBuilder){
-        trajectory.build()
+        if(_currentTrajectory.isEmpty())
+            _trajectoryTime.reset()
+
+        for (i in trajectory.build())
+            _currentTrajectory.add(TimeTrajectory(i))
+
+        pause = false
     }
+
+    private val _trajectoryTime = ElapsedTimeExtra()
+
+    val endTrajectory: Boolean
+        get() = _currentTrajectory.isEmpty()
+
+    var pause: Boolean = false
+        set(value) {
+            if(endTrajectory)
+                return
+
+            field = value
+
+            if(!value) {
+                val headingVelocity =
+                    _currentTrajectory[0][_trajectoryTime.seconds()].velocity().angVel
+                val transVelocity =
+                    _currentTrajectory[0][_trajectoryTime.seconds()].velocity().linearVel
+
+                DriveTrain.driveCmDirection(
+                    Vec2(transVelocity.x.value(), transVelocity.y.value()),
+                    headingVelocity.value()
+                )
+
+                _trajectoryTime.start()
+
+                return
+            }
+
+            _trajectoryTime.pause()
+            DriveTrain.stop()
+        }
 
     class ThreadedTrajectoryBuilder(
         builderThreadCount: Int,
