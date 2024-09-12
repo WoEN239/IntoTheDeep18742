@@ -6,13 +6,13 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 data class PIDConfig(
-    var p: Double,
-    var i: Double = 0.0,
-    var limitI: Double = 0.0,
-    var d: Double = 0.0,
-    var f: Double = 0.0,
-    var g: Double = 0.0,
-    var limitU: Double = 1.0
+    @JvmField var p: Double,
+    @JvmField var i: Double = 0.0,
+    @JvmField var limitI: Double = 0.0,
+    @JvmField var d: Double = 0.0,
+    @JvmField var f: Double = 0.0,
+    @JvmField var g: Double = 0.0,
+    @JvmField var limitU: Double = 1.0
 )
 
 class PIDRegulator(var config: PIDConfig) : IHandler {
