@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.VoltageSensor
@@ -26,4 +27,7 @@ class Devices(hardMap: HardwareMap)  {
     val rightForwardDrive = hardMap.get("rightForwardDrive") as DcMotorEx
     val leftBackDrive = hardMap.get("leftBackDrive") as DcMotorEx
     val rightBackDrive = hardMap.get("rightBackDrive") as DcMotorEx
+    val LiftMotor = hardMap.get("LiftMotor") as DcMotorEx
+    val endingDown = hardMap.get("endingDown") as DigitalChannel
+    val endingUP = hardMap.get("endingUP") as DigitalChannel
 }
