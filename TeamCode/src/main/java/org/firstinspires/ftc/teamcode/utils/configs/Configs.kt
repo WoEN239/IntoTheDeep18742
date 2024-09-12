@@ -30,4 +30,12 @@ object Configs {
 
         @JvmField var MAX_TRANSLATION_VELOCITY = 1.0
     }
+    @Config
+    internal object LiftConfig{
+        @JvmField var LIFT_PID = PIDConfig(1.0)
+        @JvmField var DOWN_SPEED = 0.30
+        @JvmField var UP_SPEED = 0.30
+        @JvmField var DOWN_SPEEDLOW = 0.0
+        @JvmField var UP_SPEEDLOW = 0.10
+    }
 }
