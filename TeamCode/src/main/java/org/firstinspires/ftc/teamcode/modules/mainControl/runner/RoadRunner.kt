@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.TrajectoryBuilder
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams
 import com.acmerobotics.roadrunner.TranslationalVelConstraint
 import com.acmerobotics.roadrunner.Vector2d
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
@@ -21,8 +22,10 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 object RoadRunner : IRobotModule {
-    override fun init(collector: BaseCollector) {
+    private lateinit var _robot: LinearOpMode
 
+    override fun init(collector: BaseCollector) {
+        _robot = collector.robot
     }
 
     override fun update() {
@@ -117,7 +120,12 @@ object RoadRunner : IRobotModule {
             val result = arrayListOf<Trajectory>()
 
             for (i in threadResult) {
-                while (!i.isDone);
+                while (!i.isDone)
+                    if(!_robot.opModeIsActive()) {
+                        _executorService.shutdown()
+
+                        return emptyList()
+                    }
 
                 result.add(i.get())
             }
