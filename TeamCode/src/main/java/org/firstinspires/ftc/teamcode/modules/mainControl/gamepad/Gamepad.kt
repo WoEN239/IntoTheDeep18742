@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object Gamepad : IRobotModule {
@@ -18,5 +20,11 @@ object Gamepad : IRobotModule {
             Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
             (-_gamepad.right_stick_x).toDouble()
         )
+        if(_gamepad.cross)
+            Lift.targetPosition = Lift.LiftPosition.MIDDLE
+        if(_gamepad.triangle)
+            Lift.targetPosition = Lift.LiftPosition.UP
+        if(_gamepad.circle)
+            Lift.targetPosition = Lift.LiftPosition.DOWN
     }
 }
