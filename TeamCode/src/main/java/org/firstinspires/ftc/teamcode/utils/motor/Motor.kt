@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 class Motor(val motor: DcMotorEx): IHandler {
-    val maxVelocityTicks = 2400
+    val maxVelocityTicks = 2400.0
 
     init {
         UpdateHandler.addHandler(this)
