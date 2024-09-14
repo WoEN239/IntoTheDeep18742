@@ -11,7 +11,7 @@ object Configs {
 
     @Config
     internal object MotorConfig{
-        @JvmField var VELOCITY_PID = PIDConfig(0.1)
+        @JvmField var VELOCITY_PID = PIDConfig(0.0001, 0.006, 0.9, 0.00000001, 0.000375)
     }
 
     @Config
