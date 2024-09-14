@@ -79,10 +79,9 @@ class Timer : IHandler {
     }
 
     fun stopAndRun() {
-        if(_isActive)
-            _action.invoke()
-
         stop()
+
+        _action.invoke()
     }
 
     override fun stop() {
