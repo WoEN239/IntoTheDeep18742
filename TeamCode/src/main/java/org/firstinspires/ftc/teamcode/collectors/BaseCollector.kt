@@ -17,6 +17,8 @@ open class BaseCollector(val robot: LinearOpMode) {
     fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
     fun init() {
+        _updateHandler.init(devices.battery)
+
         for (i in _allModules)
             i.init(this)
 
