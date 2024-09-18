@@ -41,4 +41,19 @@ object Configs {
         @JvmField var DOWN_SPEEDLOW = 0.0
         @JvmField var UP_SPEEDLOW = 0.10
     }
+
+    @Config
+    internal object CameraConfig{
+        @JvmField var BLUE_H_MIN = 101.0
+        @JvmField var BLUE_S_MIN = 165.0
+        @JvmField var BLUE_V_MIN = 0.0
+
+        @JvmField var BLUE_H_MAX = 110.0
+        @JvmField var BLUE_S_MAX = 255.0
+        @JvmField var BLUE_V_MAX = 255.0
+
+        @JvmField var K_SIZE_BLUE = 20.0
+
+        @JvmField var COMPRESSION_COEF = 0.5
+    }
 }

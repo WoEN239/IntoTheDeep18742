@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 
 class Battery (private val _voltageSensor: VoltageSensor){
@@ -21,13 +22,15 @@ class Battery (private val _voltageSensor: VoltageSensor){
 class Devices(hardMap: HardwareMap)  {
     val imu = hardMap.get("imu") as IMU
 
-    val battery = Battery(hardMap.get("Control Hub") as VoltageSensor)
+    val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
+
+    val camera = hardMap.get("Webcam 1") as WebcamName
 
     val leftForwardDrive = hardMap.get("leftForwardDrive") as DcMotorEx
     val rightForwardDrive = hardMap.get("rightForwardDrive") as DcMotorEx
     val leftBackDrive = hardMap.get("leftBackDrive") as DcMotorEx
     val rightBackDrive = hardMap.get("rightBackDrive") as DcMotorEx
-    val LiftMotor = hardMap.get("LiftMotor") as DcMotorEx
+    //val liftMotor = hardMap.get("liftMotor") as DcMotorEx
     val endingDown = hardMap.get("endingDown") as DigitalChannel
-    val endingUP = hardMap.get("endingUP") as DigitalChannel
+    val endingUP = hardMap.get("endingUp") as DigitalChannel
 }

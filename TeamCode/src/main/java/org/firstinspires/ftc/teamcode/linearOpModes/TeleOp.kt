@@ -9,7 +9,7 @@ class TeleOp: LinearOpModeBase() {
     override fun getCollector(): BaseCollector{
         val collector = BaseCollector(this)
 
-        collector.addAdditionalModules(arrayOf(/*ся модули*/Gamepad))
+        collector.addAdditionalModules(arrayOf(/*ся модули*/))
 
         return collector
     }
