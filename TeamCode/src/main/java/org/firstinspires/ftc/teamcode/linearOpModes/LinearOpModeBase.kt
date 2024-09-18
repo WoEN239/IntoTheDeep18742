@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.linearOpModes
 
+import android.os.Environment
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
@@ -33,6 +34,10 @@ open class LinearOpModeBase: LinearOpMode() {
 
             for (i in e.stackTrace)
                 StaticTelemetry.addLine(i.javaClass.`package`!!.name)
+
+            StaticTelemetry.update()
+
+            throw e
         }
     }
 }
