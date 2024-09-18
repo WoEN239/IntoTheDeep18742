@@ -56,4 +56,11 @@ object Configs {
 
         @JvmField var COMPRESSION_COEF = 0.5
     }
+    @Config
+    internal object IntakeConfig {
+        @JvmField var SERVO_PROMOTED = 20.0
+        @JvmField var SERVO_UNPROMOTED = 30.0
+        @JvmField var SERVO_CLAMP = 10.0
+        @JvmField var SERVO_UNCLAMP = 20.0
+    }
 }
