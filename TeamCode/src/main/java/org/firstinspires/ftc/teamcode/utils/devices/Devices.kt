@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
+import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -33,4 +34,8 @@ class Devices(hardMap: HardwareMap)  {
     //val liftMotor = hardMap.get("liftMotor") as DcMotorEx
     val endingDown = hardMap.get("endingDown") as DigitalChannel
     val endingUP = hardMap.get("endingUp") as DigitalChannel
+    val servoClamp = hardMap.get("servoClamp") as Servo
+    val servoFlip = hardMap.get("servoFlip") as Servo
+    val horizontalServoRight = hardMap.get("horizontalServoRight") as Servo
+    val horizontalServoLeft = hardMap.get("horizontalServoLeft") as Servo
 }
