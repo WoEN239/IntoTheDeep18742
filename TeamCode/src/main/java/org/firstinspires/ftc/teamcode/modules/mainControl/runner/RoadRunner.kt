@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
+import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -29,40 +30,42 @@ object RoadRunner : IRobotModule {
     }
 
     override fun update() {
-        if(pause)
+        if (pause)
             return
 
+        val currentTrajectory = _currentTrajectory[0]
+
         val headingVelocity =
-            _currentTrajectory[0][_trajectoryTime.seconds()].velocity().angVel
+            if (currentTrajectory is TimeTrajectory) currentTrajectory[_trajectoryTime.seconds()].velocity().angVel.value()
+            else if (currentTrajectory is Action) currentTrajectory.turnVelocity(_trajectoryTime.seconds()) else 0.0
+
         val transVelocity =
-            _currentTrajectory[0][_trajectoryTime.seconds()].velocity().linearVel
+            if (currentTrajectory is TimeTrajectory) Vec2(currentTrajectory[_trajectoryTime.seconds()].velocity().linearVel.value())
+            else if (currentTrajectory is Action) currentTrajectory.transVelocity(_trajectoryTime.seconds()) else Vec2.ZERO
 
-        DriveTrain.driveCmDirection(
-            Vec2(transVelocity.x.value(), transVelocity.y.value()),
-            headingVelocity.value()
-        )
+        DriveTrain.driveCmDirection(transVelocity, headingVelocity)
 
-        if(_trajectoryTime.seconds() > _currentTrajectory[0].duration){
+        if (if (currentTrajectory is TimeTrajectory) _trajectoryTime.seconds() > currentTrajectory.duration else if (currentTrajectory is Action) currentTrajectory.isEnd() else false) {
             _currentTrajectory.removeAt(0)
 
             _trajectoryTime.reset()
 
-            if(_currentTrajectory.isEmpty())
+            if (_currentTrajectory.isEmpty())
                 pause = true
         }
     }
 
-    private var _currentTrajectory = arrayListOf<TimeTrajectory>()
+    private var _currentTrajectory = arrayListOf<Any>()
 
     val newTrajectory
-            get() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
+        get() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
 
-    fun runTrajectory(trajectory: ThreadedTrajectoryBuilder){
-        if(_currentTrajectory.isEmpty())
+    fun runTrajectory(trajectory: ThreadedTrajectoryBuilder) {
+        if (_currentTrajectory.isEmpty())
             _trajectoryTime.reset()
 
         for (i in trajectory.build())
-            _currentTrajectory.add(TimeTrajectory(i))
+            _currentTrajectory.add(if (i is Trajectory) TimeTrajectory(i) else i)
 
         pause = false
     }
@@ -74,21 +77,27 @@ object RoadRunner : IRobotModule {
 
     var pause: Boolean = false
         set(value) {
-            if(endTrajectory)
+            if (endTrajectory)
                 return
 
             field = value
 
-            if(!value) {
-                val headingVelocity =
-                    _currentTrajectory[0][_trajectoryTime.seconds()].velocity().angVel
-                val transVelocity =
-                    _currentTrajectory[0][_trajectoryTime.seconds()].velocity().linearVel
+            if (!value) {
+                val currentTrajectory = _currentTrajectory[0]
 
-                DriveTrain.driveCmDirection(
-                    Vec2(transVelocity.x.value(), transVelocity.y.value()),
-                    headingVelocity.value()
-                )
+                val headingVelocity =
+                    if (currentTrajectory is TimeTrajectory) currentTrajectory[_trajectoryTime.seconds()].velocity().angVel.value()
+                    else if (currentTrajectory is Action) currentTrajectory.turnVelocity(
+                        _trajectoryTime.seconds()
+                    ) else 0.0
+
+                val transVelocity =
+                    if (currentTrajectory is TimeTrajectory) Vec2(currentTrajectory[_trajectoryTime.seconds()].velocity().linearVel.value())
+                    else if (currentTrajectory is Action) currentTrajectory.transVelocity(
+                        _trajectoryTime.seconds()
+                    ) else Vec2.ZERO
+
+                DriveTrain.driveCmDirection(transVelocity, headingVelocity)
 
                 _trajectoryTime.start()
 
@@ -107,21 +116,20 @@ object RoadRunner : IRobotModule {
     ) {
         private val _executorService = Executors.newWorkStealingPool(builderThreadCount)
 
-        private val _trajectoryBuilders = mutableListOf<TrajectoryBuilder>()
-
-        fun build(): List<Trajectory> {
-            val tasks = arrayListOf<Callable<Trajectory>>()
+        private val _trajectoryBuilders = mutableListOf<Any>();
+        fun build(): List<Any> {
+            val tasks = arrayListOf<Callable<Any>>()
 
             for (i in _trajectoryBuilders)
-                tasks.add { i.build()[0] }
+                tasks.add { if (i is TrajectoryBuilder) i.build()[0] else i }
 
             val threadResult = _executorService.invokeAll(tasks)
 
-            val result = arrayListOf<Trajectory>()
+            val result = arrayListOf<Any>()
 
             for (i in threadResult) {
                 while (!i.isDone)
-                    if(!_robot.opModeIsActive()) {
+                    if (!_robot.opModeIsActive()) {
                         _executorService.shutdown()
 
                         return emptyList()
@@ -218,5 +226,11 @@ object RoadRunner : IRobotModule {
 
         fun strafeTo(pos: Vec2) =
             strafeTo(_oldPose, pos)
+
+        fun turnTo(rot: Angle): ThreadedTrajectoryBuilder {
+            _trajectoryBuilders.add(TurnTo(rot))
+
+            return this
+        }
     }
 }
