@@ -29,6 +29,9 @@ object Configs {
         @JvmField var MAX_ACCEL = 1.0
 
         @JvmField var MAX_TRANSLATION_VELOCITY = 1.0
+
+        @JvmField var ROTATED_PID = PIDConfig(0.0)
+        @JvmField var ROTATE_SENS = 0.1
     }
     @Config
     internal object LiftConfig{

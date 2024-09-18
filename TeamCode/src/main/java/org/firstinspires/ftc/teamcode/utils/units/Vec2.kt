@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.utils.units
 
+import com.acmerobotics.roadrunner.Vector2d
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class Vec2(var x: Double, var y: Double) {
-    val ZERO = Vec2(0.0, 0.0)
+    companion object {
+        val ZERO = Vec2(0.0, 0.0)
+    }
+
+    constructor(rrVec: Vector2d) : this(rrVec.x, rrVec.y);
 
     fun length() = x * x + y * y
 
