@@ -17,9 +17,9 @@ object Gamepad : IRobotModule {
         _gamepad = collector.robot.gamepad1
     }
 
+    private var _promotedOld = false
+    private var _clampOld = false
     override fun lateUpdate() {
-        var promT = false
-        var clampT = false
         DriveTrain.driveSimpleDirection(
             Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
             (-_gamepad.right_stick_x).toDouble()
@@ -31,17 +31,22 @@ object Gamepad : IRobotModule {
             Lift.targetPosition = Lift.LiftPosition.UP
         if(_gamepad.circle)
             Lift.targetPosition = Lift.LiftPosition.DOWN
-        if(_gamepad.dpad_up)
-            promT = !promT
-            if(promT == true)
-            Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
+
+        if(_gamepad.dpad_up && !_promotedOld) {
+            if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED)
+                Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
             else
                 Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
-        if(_gamepad.dpad_down)
-            clampT = !clampT
-            if(clampT == true)
+        }
+
+        _promotedOld = _gamepad.dpad_up
+
+        if(_gamepad.dpad_down && !_clampOld)
+            if(Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP)
             Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
              else
                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+
+        _clampOld = _gamepad.dpad_up
     }
 }
