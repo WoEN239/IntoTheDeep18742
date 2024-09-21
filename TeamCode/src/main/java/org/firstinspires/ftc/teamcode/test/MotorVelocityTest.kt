@@ -4,9 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.motor.Motor
+import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timer
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
@@ -22,11 +24,8 @@ class MotorVelocityTest: LinearOpMode() {
 
             val battery = Battery(hardwareMap.get(VoltageSensor::class.java, "Control Hub"))
 
-            val motor = hardwareMap.get("motor") as DcMotorEx
-            motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+            val softServo = SoftServo(hardwareMap.get("servo") as Servo)
 
-            val motorPidf = Motor(motor)
             val timer = Timer()
 
             handler.init(battery)
@@ -36,32 +35,28 @@ class MotorVelocityTest: LinearOpMode() {
 
             handler.start()
 
+            var currentPos = 0.0
+
             var a = {}
 
-            motorPidf.targetPower = 0.5
-
             a = {
-                motorPidf.targetPower = 0.9
-                timer.start(1.9) {
-                    motorPidf.targetPower = 0.2
+                currentPos = 0.0
 
-                    timer.start(1.9) {
-                        motorPidf.targetPower = 0.5
+                timer.start({!softServo.isEnd}, {
+                    currentPos = 1.0
 
-                        timer.start(1.9, a)
-                    }
-                }
+                    timer.start({!softServo.isEnd}, a)
+                })
             }
 
-            timer.start(
-                1.9,
-                a
-            )
+            timer.start({!softServo.isEnd}, a)
 
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
                 handler.update()
+
+                softServo.targetPosition = currentPos
             }
 
             handler.stop()
@@ -71,6 +66,8 @@ class MotorVelocityTest: LinearOpMode() {
 
             for (i in e.stackTrace)
                 StaticTelemetry.addLine(i.javaClass.`package`!!.name)
+
+            StaticTelemetry.update()
 
             throw e
         }

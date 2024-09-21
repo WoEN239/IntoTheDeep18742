@@ -33,6 +33,7 @@ object Configs {
         @JvmField var ROTATED_PID = PIDConfig(0.0)
         @JvmField var ROTATE_SENS = 0.1
     }
+
     @Config
     internal object LiftConfig{
         @JvmField var LIFT_PID = PIDConfig(1.0)
@@ -59,6 +60,7 @@ object Configs {
 
         @JvmField var MIN_STICK_AREA = 5000.0
     }
+
     @Config
     internal object IntakeConfig {
         @JvmField var SERVO_PROMOTED = 20.0
@@ -67,5 +69,11 @@ object Configs {
         @JvmField var SERVO_UNCLAMP = 20.0
         @JvmField var SERVO_UNFLIP = 10.0
         @JvmField var SERVO_FLIP = 20.0
+    }
+
+    @Config
+    internal object SoftServo{
+        @JvmField var DEFAULT_E = 8.0
+        @JvmField var DEFAULT_W_MAX = 25.0
     }
 }
