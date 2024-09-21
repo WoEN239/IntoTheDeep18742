@@ -2,12 +2,9 @@ package org.firstinspires.ftc.teamcode.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
-import org.firstinspires.ftc.teamcode.utils.motor.Motor
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timer
@@ -15,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 
 @TeleOp
-class MotorVelocityTest: LinearOpMode() {
+class Test: LinearOpMode() {
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
