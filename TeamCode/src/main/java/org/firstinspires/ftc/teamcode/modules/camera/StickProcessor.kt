@@ -13,18 +13,31 @@ import org.opencv.android.Utils
 import org.opencv.core.Core.inRange
 import org.opencv.core.Core.normalize
 import org.opencv.core.Mat
+import org.opencv.core.MatOfPoint
+import org.opencv.core.MatOfPoint2f
+import org.opencv.core.Point
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgcodecs.Imgcodecs.imread
+import org.opencv.imgproc.Imgproc.CHAIN_APPROX_SIMPLE
 import org.opencv.imgproc.Imgproc.COLOR_BGR2RGB
 import org.opencv.imgproc.Imgproc.COLOR_RGB2HSV
 import org.opencv.imgproc.Imgproc.MORPH_ERODE
+import org.opencv.imgproc.Imgproc.RETR_TREE
+import org.opencv.imgproc.Imgproc.arrowedLine
 import org.opencv.imgproc.Imgproc.blur
 import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.dilate
 import org.opencv.imgproc.Imgproc.erode
+import org.opencv.imgproc.Imgproc.findContours
 import org.opencv.imgproc.Imgproc.getStructuringElement
+import org.opencv.imgproc.Imgproc.line
+import org.opencv.imgproc.Imgproc.minAreaRect
+import org.opencv.imgproc.Imgproc.putText
+import org.opencv.imgproc.Imgproc.rectangle
 import org.opencv.imgproc.Imgproc.resize
+import java.lang.System.out
 import java.util.concurrent.atomic.AtomicReference
 
 
@@ -32,20 +45,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     private var lastFrame: AtomicReference<Bitmap> =
         AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
 
-    private var _blueStickMat = AtomicReference<Mat>()
-
     override fun init(width: Int, height: Int, calibration: CameraCalibration?) {
-        _blueStickMat.set(imread(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/blue_stick.jpg"))
-        cvtColor(_blueStickMat.get(), _blueStickMat.get(), COLOR_BGR2RGB)
 
-        resize(
-            _blueStickMat.get(),
-            _blueStickMat.get(),
-            Size(
-                _blueStickMat.get().width() * Configs.CameraConfig.COMPRESSION_COEF,
-                _blueStickMat.get().height() * Configs.CameraConfig.COMPRESSION_COEF
-            )
-        )
     }
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
@@ -53,6 +54,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         normalize(cloneFrame, cloneFrame, 100.0)
 
+        val drawFrame = frame.clone()
         val hsvFrame = frame.clone()
 
         blur(hsvFrame, hsvFrame, Size(10.0, 10.0))
@@ -75,14 +77,49 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             blueBinaryFrame
         )
 
-        k(blueBinaryFrame, Configs.CameraConfig.K_SIZE_BLUE)
+        erodeDilate(blueBinaryFrame, Configs.CameraConfig.ERODE_DILATE_BLUE)
+
+        erode(blueBinaryFrame, blueBinaryFrame, getStructuringElement(MORPH_ERODE, Size(Configs.CameraConfig.PRECOMPRESSION_BLUE, Configs.CameraConfig.PRECOMPRESSION_BLUE)))
+
+        dilateErode(blueBinaryFrame, Configs.CameraConfig.DILATE_ERODE_BLUE)
+
+        dilate(blueBinaryFrame, blueBinaryFrame, getStructuringElement(MORPH_ERODE, Size(Configs.CameraConfig.PRECOMPRESSION_BLUE, Configs.CameraConfig.PRECOMPRESSION_BLUE)))
+
+        val contours = arrayListOf<MatOfPoint>()
+
+        findContours(blueBinaryFrame, contours, Mat(), RETR_TREE, CHAIN_APPROX_SIMPLE)
+
+        for(i in contours){
+            val points = MatOfPoint2f()
+
+            points.fromArray(*i.toArray())
+
+            val rect = minAreaRect(points)
+
+
+
+            if(rect.size.height * rect.size.width > Configs.CameraConfig.MIN_STICK_AREA) {
+                //rectangle(drawFrame, rect.boundingRect(), Scalar(0.0, 0.0, 255.0), 5)
+
+                val points = Array<Point?>(4){null}
+
+                rect.points(points)
+
+                line(drawFrame, points[0], points[1], Scalar(0.0, 0.0, 255.0), 5)
+                line(drawFrame, points[1], points[2], Scalar(0.0, 0.0, 255.0), 5)
+                line(drawFrame, points[2], points[3], Scalar(0.0, 0.0, 255.0), 5)
+                line(drawFrame, points[3], points[0], Scalar(0.0, 0.0, 255.0), 5)
+
+                putText(drawFrame, rect.angle.toInt().toString(), rect.center, 5, 2.0, Scalar(0.0, 255.0, 0.0))
+            }
+        }
 
         val b = Bitmap.createBitmap(
-            blueBinaryFrame.width(),
-            blueBinaryFrame.height(),
+            drawFrame.width(),
+            drawFrame.height(),
             Bitmap.Config.RGB_565
         )
-        Utils.matToBitmap(blueBinaryFrame, b)
+        Utils.matToBitmap(drawFrame, b)
         lastFrame.set(b)
 
         return frame
@@ -99,9 +136,14 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
     }
 
-    fun k(mat: Mat, kSize: Double) {
+    fun erodeDilate(mat: Mat, kSize: Double) {
         erode(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
         dilate(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
+    }
+
+    fun dilateErode(mat: Mat, kSize: Double) {
+        dilate(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
+        erode(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
     }
 
     override fun getFrameBitmap(continuation: Continuation<out Consumer<Bitmap>>?) {
