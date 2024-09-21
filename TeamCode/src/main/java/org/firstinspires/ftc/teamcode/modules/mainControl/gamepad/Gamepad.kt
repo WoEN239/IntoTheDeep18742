@@ -19,6 +19,7 @@ object Gamepad : IRobotModule {
 
     private var _promotedOld = false
     private var _clampOld = false
+    private var _servoflip = false
     override fun lateUpdate() {
         DriveTrain.driveSimpleDirection(
             Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
@@ -48,5 +49,13 @@ object Gamepad : IRobotModule {
                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
         _clampOld = _gamepad.dpad_up
+
+        if(_gamepad.dpad_left && !_servoflip)
+          if(Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP)
+              Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
+           else
+               Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+
+        _servoflip = _gamepad.dpad_left
     }
 }
