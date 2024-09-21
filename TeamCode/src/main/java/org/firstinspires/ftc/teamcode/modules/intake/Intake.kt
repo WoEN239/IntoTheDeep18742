@@ -17,6 +17,7 @@ object Intake: IRobotModule {
         servoFlip = collector.devices.servoFlip
     }
     var clamp = ClampPosition.SERVO_UNCLAMP
+    var flip = GalaxyFlipPosition.SERVO_FLIP
     var position = AdvancedPosition.SERVO_UNPROMOTED
         set(value)
         {
@@ -34,6 +35,12 @@ object Intake: IRobotModule {
                 horizontalServoLeft.position = Configs.IntakeConfig.SERVO_UNPROMOTED
                 horizontalServoRight.position = Configs.IntakeConfig.SERVO_UNPROMOTED
             }
+            if(flip == GalaxyFlipPosition.SERVO_FLIP){
+                servoFlip.position = Configs.IntakeConfig.SERVO_FLIP
+            }
+            else if(flip == GalaxyFlipPosition.SERVO_UNFLIP){
+            servoFlip.position = Configs.IntakeConfig.SERVO_UNFLIP
+            }
             field = value
         }
     enum class AdvancedPosition(double: Double)
@@ -45,5 +52,10 @@ object Intake: IRobotModule {
     {
         SERVO_CLAMP(10.0),
         SERVO_UNCLAMP(20.0)
+    }
+    enum class GalaxyFlipPosition(double: Double)
+    {
+        SERVO_UNFLIP(10.0),
+        SERVO_FLIP(30.0)
     }
 }

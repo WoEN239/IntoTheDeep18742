@@ -62,5 +62,7 @@ object Configs {
         @JvmField var SERVO_UNPROMOTED = 30.0
         @JvmField var SERVO_CLAMP = 10.0
         @JvmField var SERVO_UNCLAMP = 20.0
+        @JvmField var SERVO_UNFLIP = 10.0
+        @JvmField var SERVO_FLIP = 20.0
     }
 }
