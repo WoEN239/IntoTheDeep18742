@@ -52,9 +52,12 @@ object Configs {
         @JvmField var BLUE_S_MAX = 255.0
         @JvmField var BLUE_V_MAX = 255.0
 
-        @JvmField var K_SIZE_BLUE = 20.0
+        @JvmField var ERODE_DILATE_BLUE = 20.0
+        @JvmField var DILATE_ERODE_BLUE = 35.0
 
-        @JvmField var COMPRESSION_COEF = 0.5
+        @JvmField var PRECOMPRESSION_BLUE = 37.0
+
+        @JvmField var MIN_STICK_AREA = 5000.0
     }
     @Config
     internal object IntakeConfig {
