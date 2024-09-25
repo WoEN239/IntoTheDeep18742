@@ -17,6 +17,9 @@ class EncoderController(val encoder: DcMotorEx) : IHandler {
 
     init{
         UpdateHandler.addHandler(this)
+
+        encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     private val _deltaTime = ElapsedTime()
@@ -34,9 +37,6 @@ class EncoderController(val encoder: DcMotorEx) : IHandler {
     }
 
     override fun start() {
-        encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-
         _deltaTime.reset()
         _oldPosition = position
     }
