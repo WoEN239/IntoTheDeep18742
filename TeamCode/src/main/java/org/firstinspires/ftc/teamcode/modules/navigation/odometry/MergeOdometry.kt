@@ -10,8 +10,10 @@ object MergeOdometry: IRobotModule {
     }
 
     var position = Vec2.ZERO
+    var velocity = Vec2.ZERO
 
     override fun lateUpdate() {
         position = OdometersOdometry.position
+        velocity = OdometersOdometry.velocity
     }
 }
