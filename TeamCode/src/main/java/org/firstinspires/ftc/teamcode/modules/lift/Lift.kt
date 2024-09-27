@@ -32,7 +32,7 @@ object Lift: IRobotModule {
     private lateinit var endingUp: DigitalChannel
     private val pidRegulator = PIDRegulator(Configs.LiftConfig.LIFT_PID)
     override fun init(collector: BaseCollector) {
-        //motor = collector.devices.liftMotor
+        motor = collector.devices.liftMotor
         endingUp = collector.devices.endingUP
         endingDown = collector.devices.endingDown
 

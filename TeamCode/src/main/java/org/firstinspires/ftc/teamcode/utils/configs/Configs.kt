@@ -128,4 +128,16 @@ object Configs {
         @JvmField
         var DEFAULT_W_MAX = 25.0
     }
+
+    @Config
+    internal object OdometryConfig{
+        @JvmField
+        var SIDE_ODOMETER_RADIUS = 1.0
+
+        @JvmField
+        var FORWARD_ODOMETER_LEFT_RADIUS = 1.0
+
+        @JvmField
+        var FORWARD_ODOMETER_RIGHT_RADIUS = 1.0
+    }
 }
