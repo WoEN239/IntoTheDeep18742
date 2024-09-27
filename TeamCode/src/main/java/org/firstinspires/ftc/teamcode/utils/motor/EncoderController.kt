@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.utils.motor
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
@@ -18,8 +17,10 @@ class EncoderController(val encoder: DcMotorEx) : IHandler {
     init{
         UpdateHandler.addHandler(this)
 
-        encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        if(encoder !is EncoderOnly) {
+            encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
     }
 
     private val _deltaTime = ElapsedTime()
