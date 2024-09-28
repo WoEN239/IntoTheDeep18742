@@ -6,13 +6,16 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
-class EncoderController(val encoder: DcMotorEx) : IHandler {
+class EncoderController(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : IHandler {
     private var _oldPosition = 0
 
     var velocity: Double = 0.0
 
     val position
         get() = encoder.currentPosition
+
+    val turnPosition
+        get() = calculateTurn(position)
 
     init{
         UpdateHandler.addHandler(this)

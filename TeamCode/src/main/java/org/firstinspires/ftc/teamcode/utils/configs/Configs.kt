@@ -139,5 +139,11 @@ object Configs {
 
         @JvmField
         var FORWARD_ODOMETER_RIGHT_RADIUS = 1.0
+
+        @JvmField
+        var ODOMETER_DIAMETER = 1.0
+
+        @JvmField
+        var ODOMETER_TICKS = 1
     }
 }
