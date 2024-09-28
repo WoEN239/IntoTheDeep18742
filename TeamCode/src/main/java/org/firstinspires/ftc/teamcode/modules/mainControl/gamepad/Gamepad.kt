@@ -21,7 +21,7 @@ object Gamepad : IRobotModule {
     private var _clampOld = false
     private var _servoflip = false
     override fun lateUpdate() {
-        DriveTrain.driveSimpleDirection(
+        DriveTrain.drivePowerDirection(
             Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
             (-_gamepad.right_stick_x).toDouble()
         )

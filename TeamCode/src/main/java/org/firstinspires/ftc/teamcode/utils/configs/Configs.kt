@@ -19,12 +19,6 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var WHEEL_DIAMETER = 1.0
-
-        @JvmField
-        var WHEEL_ENCODER_CONSTANT = 20.0
-
-        @JvmField
         var WHEEL_CENTER_RADIUS = 1.0
 
         @JvmField
@@ -38,6 +32,15 @@ object Configs {
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
+
+        @JvmField
+        var MAX_SPEED_FORWARD = 1.0
+
+        @JvmField
+        var MAX_SPEED_SIDE = 1.0
+
+        @JvmField
+        var MAX_SPEED_TURN = 1.0
     }
 
     @Config
