@@ -30,7 +30,7 @@ object OdometersOdometry : IRobotModule {
         Angle((_forwardOdometerLeft.turnPosition / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.turnPosition / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0)
 
     fun calculateRotateVelocity() =
-        Angle((_forwardOdometerLeft.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0)
+        (_forwardOdometerLeft.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0
 
     private var _oldForwardOdometerLeft = 0.0
     private var _oldForwardOdometerRight = 0.0

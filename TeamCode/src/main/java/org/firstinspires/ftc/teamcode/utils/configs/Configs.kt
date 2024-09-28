@@ -155,4 +155,16 @@ object Configs {
         @JvmField
         var ODOMETER_TICKS = 1
     }
+
+    @Config
+    internal object GyroscopeConfig{
+        @JvmField
+        var MERGE_COEF = 0.1
+
+        @JvmField
+        var USE_ODOMETRY = false
+
+        @JvmField
+        var GYRO_ITERATIONS = 5
+    }
 }
