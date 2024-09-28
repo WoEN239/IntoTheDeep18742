@@ -42,7 +42,17 @@ object DriveTrain : IRobotModule {
         _targetRotateVelocity = rotate
     }
 
-    fun driveCmDirection(direction: Vec2, rotate: Double) = driveTicksDirection(direction, rotate)
+    fun driveCmDirection(direction: Vec2, rotate: Double) = driveTicksDirection(
+        Vec2(
+            direction.x / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS,
+            direction.y / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS * Configs.DriveTrainConfig.Y_LAG
+        ),
+        rotate * Configs.DriveTrainConfig.WHEEL_CENTER_RADIUS / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS
+    )
+
+
+    fun drivePowerDirection(direction: Vec2, rotate: Double) = driveTicksDirection(
+        direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)
 
     override fun stop(){
         driveSimpleDirection(Vec2(0.0, 0.0), 0.0)
