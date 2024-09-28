@@ -29,6 +29,15 @@ object Configs {
 
         @JvmField
         var Y_LAG = 1.0
+
+        @JvmField
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.0)
+
+        @JvmField
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.0)
+
+        @JvmField
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
     }
 
     @Config

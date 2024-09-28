@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
+import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
 
 class Battery (private val _voltageSensor: VoltageSensor){
     var charge = 1.0
@@ -28,10 +29,10 @@ class Devices(hardMap: HardwareMap)  {
 
     val camera = hardMap.get("Webcam 1") as WebcamName
 
-    val leftForwardDrive = hardMap.get("leftForwardDrive") as DcMotorEx
-    val rightForwardDrive = hardMap.get("rightForwardDrive") as DcMotorEx
-    val leftBackDrive = hardMap.get("leftBackDrive") as DcMotorEx
-    val rightBackDrive = hardMap.get("rightBackDrive") as DcMotorEx
+    val leftForwardDrive = MotorOnly(hardMap.get("leftForwardDrive") as DcMotorEx)
+    val rightForwardDrive = MotorOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
+    val leftBackDrive = MotorOnly(hardMap.get("leftBackDrive") as DcMotorEx)
+    val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
     val liftMotor = hardMap.get("liftMotor") as DcMotorEx
 

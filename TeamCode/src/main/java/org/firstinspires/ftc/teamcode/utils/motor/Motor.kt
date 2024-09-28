@@ -22,7 +22,7 @@ class Motor(val motor: DcMotorEx): IHandler {
     }
 
     private val _velocityPid = PIDRegulator(Configs.MotorConfig.VELOCITY_PID)
-    val encoder = EncoderController(motor)
+    val encoder = EncoderController(motor) { it.toDouble() }
 
     var targetTicksVelocity = 0.0
 
