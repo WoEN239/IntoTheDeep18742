@@ -5,6 +5,12 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
+/**
+ * Класс для настроек пида, класс можно использовать в дашборде
+ *
+ * @author tikhonsmovzh
+ * @see PIDRegulator
+ */
 data class PIDConfig(
     @JvmField var p: Double,
     @JvmField var i: Double = 0.0,
@@ -15,6 +21,13 @@ data class PIDConfig(
     @JvmField var limitU: Double = 1.0
 )
 
+/**
+ * Класс пид регулятора с f и g дополнениями
+ *
+ * @author tikhonsmovzh
+ * @see UpdateHandler
+ * @see PIDConfig
+ */
 class PIDRegulator(var config: PIDConfig) : IHandler {
     private val _deltaTime = ElapsedTime()
     private var _integral = 0.0

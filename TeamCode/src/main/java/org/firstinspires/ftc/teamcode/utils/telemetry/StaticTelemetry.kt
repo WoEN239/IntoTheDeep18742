@@ -5,9 +5,15 @@ import com.acmerobotics.dashboard.canvas.Canvas
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.teamcode.utils.color.Color
+import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
+/**
+ * Синглтон для телеметрии
+ * обьединяет телеметрию с дашборда и телефона
+ *
+ * @author tikhonsmovzh
+ */
 object StaticTelemetry {
     private lateinit var _phoneTelemetry: Telemetry
     private var _telemetryPacket = TelemetryPacket()

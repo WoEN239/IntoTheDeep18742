@@ -4,6 +4,11 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
+/**
+ * Класс экспоненциального фильтра. Нужен для оюъединения значений
+ *
+ * @author tikhonsmovzh
+ */
 class ExponentialFilter(var coef: Double) : IHandler {
     private val _deltaTime = ElapsedTime()
 

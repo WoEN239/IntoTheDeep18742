@@ -1,7 +1,16 @@
-package org.firstinspires.ftc.teamcode.utils.color
+package org.firstinspires.ftc.teamcode.utils.units
 
 import java.util.Locale
 
+/**
+ * Класс цвета, имеет все популярные цвета
+ * есть конверт в строку
+ *
+ * @see Vec2
+ * @see Angle
+ *
+ * @author tikhonsmovzh
+ */
 data class Color(var r: Int, var g: Int, var b: Int) {
     companion object {
         val RED: Color = Color(255, 0, 0)

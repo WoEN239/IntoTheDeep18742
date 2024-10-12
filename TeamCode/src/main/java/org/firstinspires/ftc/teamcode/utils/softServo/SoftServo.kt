@@ -12,7 +12,12 @@ import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sqrt
 
-//copy from manipulators
+/**
+ * Класс для кправления сервоприводом с учетом ускорения и максимальной скоростью
+ *
+ * @see UpdateHandler
+ * @author tikhonsmovzh
+ */
 class SoftServo(
     val servo: Servo,
     private val _startPosition: Double = 0.0,

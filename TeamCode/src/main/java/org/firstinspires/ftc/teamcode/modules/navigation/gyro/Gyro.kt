@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 
-
 object Gyro : IRobotModule {
     private lateinit var imu: IMU
 

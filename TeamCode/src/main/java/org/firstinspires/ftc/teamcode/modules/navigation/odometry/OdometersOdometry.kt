@@ -4,23 +4,23 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.motor.EncoderController
+import org.firstinspires.ftc.teamcode.utils.motor.EncoderFix
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import kotlin.math.PI
 
 object OdometersOdometry : IRobotModule {
-    private lateinit var _forwardOdometerLeft: EncoderController
-    private lateinit var _forwardOdometerRight: EncoderController
-    private lateinit var _sideOdometer: EncoderController
+    private lateinit var _forwardOdometerLeft: EncoderFix
+    private lateinit var _forwardOdometerRight: EncoderFix
+    private lateinit var _sideOdometer: EncoderFix
 
     override fun init(collector: BaseCollector) {
         val calc: (Int) -> Double =
             { (it / Configs.OdometryConfig.ODOMETER_TICKS).toDouble() * PI * (Configs.OdometryConfig.ODOMETER_DIAMETER / 2) }
 
-        _forwardOdometerLeft = EncoderController(collector.devices.forwardOdometerLeft, calc)
-        _forwardOdometerRight = EncoderController(collector.devices.forwardOdometerRight, calc)
-        _sideOdometer = EncoderController(collector.devices.sideOdometer, calc)
+        _forwardOdometerLeft = EncoderFix(collector.devices.forwardOdometerLeft, calc)
+        _forwardOdometerRight = EncoderFix(collector.devices.forwardOdometerRight, calc)
+        _sideOdometer = EncoderFix(collector.devices.sideOdometer, calc)
     }
 
     var position = Vec2.ZERO

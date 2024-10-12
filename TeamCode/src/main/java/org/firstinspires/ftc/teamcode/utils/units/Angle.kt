@@ -5,6 +5,14 @@ import java.lang.Math.signum
 import kotlin.math.PI
 import kotlin.math.abs
 
+/**
+ * Класс для угла, все углы в радианах, каждыя оперция проходящая через класс обрезает угол
+ * Переопределены функции сложения, вычитания, умножения, деления
+ *
+ * @see Vec2
+ * @see Color
+ * @author tikhonsmovzh
+ */
 data class Angle(var angle: Double){
     companion object {
         fun chop(ang: Double): Double{

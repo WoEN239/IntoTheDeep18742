@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 /**
  * Класс позволяющий исправить проблему скорости в реве.
+ * И автовыщитывание оборотов
  *
  * @see EncoderOnly
  * @see Motor

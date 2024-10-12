@@ -13,10 +13,14 @@ import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import java.util.Arrays;
 
+/**
+ * Класс для теста хардваира
+ *
+ * @author oaleksander
+ */
 
 @Config
 @TeleOp
-//@Disabled
 public class DeviceTest extends LinearOpMode {
 
     public static String deviceName = "";

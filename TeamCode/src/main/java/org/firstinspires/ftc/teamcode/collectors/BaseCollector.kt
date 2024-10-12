@@ -8,6 +8,11 @@ import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
+/**
+ * Базовый кдасс для всех колекоторов
+ *
+ * @author tikhonsmovzh
+ */
 open class BaseCollector(val robot: LinearOpMode) {
     val devices = Devices(robot.hardwareMap)
 
