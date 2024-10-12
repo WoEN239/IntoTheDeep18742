@@ -6,6 +6,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+/**
+ * Класс для 2х мерного вектора
+ * Переопределы функции сложения, вычитания, умножения, деления
+ *
+ * @author tikhonsmovzh
+ * @see Angle
+ * @see Color
+ */
 data class Vec2(var x: Double, var y: Double) {
     companion object {
         val ZERO = Vec2(0.0, 0.0)

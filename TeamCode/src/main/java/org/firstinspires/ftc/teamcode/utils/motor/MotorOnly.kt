@@ -10,6 +10,13 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 
+/**
+ * Класс спеуиально для портов у которых поключен только мотор, а энкодер отдельно и не относится к мотору
+ *
+ * @see EncoderFix
+ * @see Motor
+ * @see EncoderOnly
+ */
 class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
     init {
         _motor.direction = Direction.FORWARD

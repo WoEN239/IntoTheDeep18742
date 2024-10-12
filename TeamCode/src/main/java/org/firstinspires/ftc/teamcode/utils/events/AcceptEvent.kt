@@ -1,5 +1,14 @@
 package org.firstinspires.ftc.teamcode.utils.events
 
+/**
+ * Класс подтверждающего эвента.
+ * нужен для свзи модулей.
+ *
+ * invoke вазращяет true когда все подписанные функции вернут true
+ *
+ * @author tikhonsmovzh
+ * @see Event
+ */
 class AcceptEvent<T> {
     private val _subscribers: MutableList<(T) -> Boolean> = mutableListOf()
 

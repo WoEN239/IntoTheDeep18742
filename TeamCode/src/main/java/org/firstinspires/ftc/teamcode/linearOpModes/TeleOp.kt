@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.linearOpModes
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
-import org.firstinspires.ftc.teamcode.modules.mainControl.gamepad.Gamepad
+
+/**
+ * @see LinearOpModeBase
+ */
 
 @TeleOp
 class TeleOp: LinearOpModeBase() {
