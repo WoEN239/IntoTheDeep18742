@@ -9,6 +9,11 @@ interface IHandler {
     fun stop() {}
 }
 
+/**
+ * Класс для инструментов которые требуют постоянного обновления
+ *
+ * @author tikhonsmovzh
+ */
 class UpdateHandler {
     companion object {
         private val _handlers: MutableList<IHandler> = mutableListOf()

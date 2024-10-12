@@ -1,5 +1,13 @@
 package org.firstinspires.ftc.teamcode.utils.events
 
+/**
+ * Класс эвента.
+ *
+ * после вызова invoke у вызовятся все подписанные функции.
+ *
+ * @see AcceptEvent
+ * @author tikhonsmovzh
+ */
 class Event<T> {
     private val _subscribers: MutableList<(T) -> Unit> = mutableListOf()
 

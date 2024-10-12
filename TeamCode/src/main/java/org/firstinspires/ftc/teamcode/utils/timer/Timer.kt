@@ -3,6 +3,21 @@ package org.firstinspires.ftc.teamcode.utils.timer
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
+/**
+ * Таймеры нужны для выполнения действия через определенны промежуток времяни
+ *
+ * Есть 3 режима работы которые запускаются тремя перегрузками функции start()
+ *
+ * start(time: Double, action: () -> Unit):
+ * вызывает функцию action через time секунд
+ * start(suppler: () -> Boolean, action: () -> Unit):
+ * вызывает функцию action когда suppler вернет false
+ * start(suppler: () -> Boolean, action: () -> Unit, timeout: Double, timeoutAction: () -> Unit):
+ * вызывает функцию action когда suppler вернет false, но если action не будет исполнен спустя timeout секунд, то вызовится timeoutAction
+ *
+ * @author tikhonsmovzh
+ * @see UpdateHandler
+ */
 class Timer : IHandler {
     private val _timer = ElapsedTimeExtra()
 
