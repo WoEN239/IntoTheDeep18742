@@ -6,7 +6,16 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
-class EncoderController(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : IHandler {
+/**
+ * Класс позволяющий исправить проблему скорости в реве.
+ *
+ * @see EncoderOnly
+ * @see Motor
+ * @see MotorOnly
+ *
+ * @author tikhonsmovzh
+ */
+class EncoderFix(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : IHandler {
     private var _oldPosition = 0
 
     var velocity: Double = 0.0
