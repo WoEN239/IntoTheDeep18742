@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.lift.Lift
+import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
@@ -20,10 +21,11 @@ object Gamepad : IRobotModule {
     private var _promotedOld = false
     private var _clampOld = false
     private var _servoflip = false
+
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
-            Vec2((-_gamepad.left_stick_y).toDouble(), (-_gamepad.left_stick_x).toDouble()),
-            (-_gamepad.right_stick_x).toDouble()
+            Vec2((_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble()).turn(Gyro.rotation.angle),
+            (_gamepad.right_stick_x).toDouble()
         )
 
         if(_gamepad.cross)
