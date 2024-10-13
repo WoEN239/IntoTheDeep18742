@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.linearOpModes
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl
+import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
@@ -9,16 +12,30 @@ import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
  *
  * @author tikhonsmovzh
  */
-open class LinearOpModeBase: LinearOpMode() {
+open class LinearOpModeBase : LinearOpMode() {
+    data class OpModeSettings(
+        val isAutoStart: Boolean,
+        val isPreInit: Boolean,
+        val preInitOpModeName: String = "",
+        val initTime: Double = 1.5
+    )
+
+    protected open fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = false)
+
     protected open fun getCollector() = BaseCollector(this)
 
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
         try {
+            val settings = getOpModeSettings()
+
             val collector = getCollector()
 
             collector.init()
+
+            if(settings.isAutoStart)
+                OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode()
 
             waitForStart()
             resetRuntime()
@@ -32,12 +49,14 @@ open class LinearOpModeBase: LinearOpMode() {
             }
 
             collector.stop()
-        }
-        catch (e: Exception){
+
+            if(settings.isPreInit)
+                OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).initOpMode(settings.preInitOpModeName)
+        } catch (e: Exception) {
             StaticTelemetry.addLine(e.message!!)
 
             for (i in e.stackTrace)
-                StaticTelemetry.addLine(i.fileName )
+                StaticTelemetry.addLine(i.fileName)
 
             StaticTelemetry.update()
 
