@@ -27,7 +27,7 @@ object OdometersOdometry : IRobotModule {
     var velocity = Vec2.ZERO
 
     fun calculateRotate() =
-        Angle((_forwardOdometerLeft.turnPosition / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.turnPosition / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0)
+        Angle((_forwardOdometerLeft.calcPos / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.calcPos / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0)
 
     fun calculateRotateVelocity() =
         (_forwardOdometerLeft.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS + _forwardOdometerRight.velocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS) / 2.0
@@ -38,9 +38,9 @@ object OdometersOdometry : IRobotModule {
     private var _oldRotate = Angle(0.0)
 
     override fun update() {
-        val deltaForwardOdometerLeft = _forwardOdometerLeft.turnPosition - _oldForwardOdometerLeft
-        val deltaForwardOdometerRight = _forwardOdometerRight.turnPosition - _oldForwardOdometerRight
-        val deltaSideOdometer = _sideOdometer.turnPosition - _oldSideOdometer
+        val deltaForwardOdometerLeft = _forwardOdometerLeft.calcPos - _oldForwardOdometerLeft
+        val deltaForwardOdometerRight = _forwardOdometerRight.calcPos - _oldForwardOdometerRight
+        val deltaSideOdometer = _sideOdometer.calcPos - _oldSideOdometer
         val deltaRotate = Gyro.rotation - _oldRotate
 
         position += Vec2(
@@ -53,9 +53,9 @@ object OdometersOdometry : IRobotModule {
             _sideOdometer.velocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * Gyro.velocity
         )
 
-        _oldForwardOdometerLeft = _forwardOdometerLeft.turnPosition
-        _oldForwardOdometerRight = _forwardOdometerRight.turnPosition
-        _oldSideOdometer = _sideOdometer.turnPosition
+        _oldForwardOdometerLeft = _forwardOdometerLeft.calcPos
+        _oldForwardOdometerRight = _forwardOdometerRight.calcPos
+        _oldSideOdometer = _sideOdometer.calcPos
 
         _oldRotate = Gyro.rotation
     }
