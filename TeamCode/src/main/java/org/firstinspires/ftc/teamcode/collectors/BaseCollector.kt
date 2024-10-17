@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
+import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
@@ -14,6 +15,8 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  * @author tikhonsmovzh
  */
 open class BaseCollector(val robot: LinearOpMode) {
+    data class InitContext(val battery: Battery)
+
     val devices = Devices(robot.hardwareMap)
 
     private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/Camera)
@@ -29,7 +32,7 @@ open class BaseCollector(val robot: LinearOpMode) {
         for (i in _allModules)
             i.lateInit(this)
 
-        _updateHandler.init(devices.battery)
+        _updateHandler.init(InitContext(devices.battery))
 
     }
 
