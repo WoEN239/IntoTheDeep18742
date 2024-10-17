@@ -25,6 +25,8 @@ data class Vec2(var x: Double, var y: Double) {
 
     fun sqrtLength() = sqrt(length())
 
+    fun rot() = atan2(y, x)
+
     fun setRot(rot: Double): Vec2 {
         val l = sqrtLength()
 
@@ -32,7 +34,7 @@ data class Vec2(var x: Double, var y: Double) {
     }
 
     fun turn(rot: Double): Vec2 {
-        val currentRot = atan2(y, x)
+        val currentRot = rot()
 
         return setRot(currentRot + rot)
     }
