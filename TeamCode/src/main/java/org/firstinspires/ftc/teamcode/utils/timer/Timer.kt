@@ -29,15 +29,14 @@ class Timer : IHandler {
         UpdateHandler.addHandler(this)
     }
 
-    private enum class TimerState {
+    private enum class TimerType {
         DEFAULT_TIMER,
         SUPPLIER_TIMER,
-        SUPPLIER_TIMEOUT
+        SUPPLIER_TIMEOUT,
+        INACTIVE
     }
 
-    private var _state = TimerState.DEFAULT_TIMER
-
-    private var _isActive = false
+    private var _type = TimerType.INACTIVE
 
     private var _time = 0.0
 
@@ -50,8 +49,7 @@ class Timer : IHandler {
         _time = time
         _action = action
 
-        _state = TimerState.DEFAULT_TIMER
-        _isActive = true
+        _type = TimerType.DEFAULT_TIMER
         _timer.reset()
     }
 
@@ -59,36 +57,47 @@ class Timer : IHandler {
         _action = action
         _supplier = suppler
 
-        _state = TimerState.SUPPLIER_TIMER
-        _isActive = true
+        _type = TimerType.SUPPLIER_TIMER
         _timer.reset()
     }
 
-    fun start(suppler: () -> Boolean, action: () -> Unit, timeout: Double, timeoutAction: () -> Unit) {
+    fun start(
+        suppler: () -> Boolean,
+        action: () -> Unit,
+        timeout: Double,
+        timeoutAction: () -> Unit
+    ) {
         _action = action
         _supplier = suppler
 
         _time = timeout
         _timeoutAction = timeoutAction
 
-        _state = TimerState.SUPPLIER_TIMEOUT
-        _isActive = true
+        _type = TimerType.SUPPLIER_TIMEOUT
         _timer.reset()
     }
 
     override fun update() {
-        if (!_isActive)
-            return
+        when (_type) {
+            TimerType.DEFAULT_TIMER -> {
+                if (_timer.seconds() > _time)
+                    stopAndRun()
+            }
 
-        if (_state == TimerState.DEFAULT_TIMER) {
-            if (_timer.seconds() > _time)
-                stopAndRun()
-        } else {
-            if (!_supplier.invoke())
-                stopAndRun()
-            else if (_state == TimerState.SUPPLIER_TIMEOUT && _timer.seconds() > _time) {
-                _timeoutAction.invoke()
-                stop()
+            TimerType.SUPPLIER_TIMER -> {
+                if (!_supplier.invoke())
+                    stopAndRun()
+            }
+
+            TimerType.SUPPLIER_TIMEOUT -> {
+                if (_timer.seconds() > _time) {
+                    _timeoutAction.invoke()
+                    stop()
+                }
+            }
+
+            else -> {
+                return
             }
         }
     }
@@ -100,6 +109,6 @@ class Timer : IHandler {
     }
 
     override fun stop() {
-        _isActive = false
+        _type = TimerType.INACTIVE
     }
 }
