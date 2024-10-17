@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils.motor
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDConfig
@@ -28,8 +29,8 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
 
     private lateinit var _battery: Battery
 
-    override fun init(bat: Battery) {
-        _battery = bat
+    override fun init(context: BaseCollector.InitContext) {
+        _battery = context.battery
     }
 
     private val _velocityPid = PIDRegulator(velocityPIDConfig)

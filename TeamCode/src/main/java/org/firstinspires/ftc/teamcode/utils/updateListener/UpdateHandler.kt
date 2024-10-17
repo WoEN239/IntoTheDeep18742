@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.utils.updateListener
 
-import org.firstinspires.ftc.teamcode.utils.devices.Battery
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 
 interface IHandler {
-    fun init(bat: Battery) {}
+    fun init(context: BaseCollector.InitContext) {}
     fun start() {}
     fun update() {}
     fun stop() {}
@@ -27,9 +27,9 @@ class UpdateHandler {
         _handlers.clear()
     }
 
-    fun init(bat: Battery){
+    fun init(context: BaseCollector.InitContext){
         for(i in _handlers)
-            i.init(bat)
+            i.init(context)
     }
 
     fun start() {
