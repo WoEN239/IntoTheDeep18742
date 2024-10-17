@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
@@ -25,7 +26,7 @@ class Test: LinearOpMode() {
 
             val timer = Timer()
 
-            handler.init(battery)
+            handler.init(BaseCollector.InitContext(battery))
 
             waitForStart()
             resetRuntime()

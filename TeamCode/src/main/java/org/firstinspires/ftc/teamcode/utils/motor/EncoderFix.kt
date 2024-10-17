@@ -24,7 +24,7 @@ class EncoderFix(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : I
     val position
         get() = encoder.currentPosition
 
-    val turnPosition
+    val calcPos
         get() = calculateTurn(position)
 
     init{
