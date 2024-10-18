@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.collectors
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
-import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
-import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry

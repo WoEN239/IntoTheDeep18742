@@ -25,6 +25,10 @@ data class Angle(var angle: Double){
         }
     }
 
+    init {
+        angle = chop(angle)
+    }
+
     fun toDegree() = angle / PI * 180
 
     operator fun plus(ang: Angle) = Angle(chop(angle + ang.angle))
