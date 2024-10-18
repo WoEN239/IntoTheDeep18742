@@ -54,7 +54,7 @@ object DriveTrain : IRobotModule {
         direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)
 
     override fun stop(){
-        driveSimpleDirection(Vec2(0.0, 0.0), 0.0)
+        drivePowerDirection(Vec2(0.0, 0.0), 0.0)
     }
 
     override fun update() {
