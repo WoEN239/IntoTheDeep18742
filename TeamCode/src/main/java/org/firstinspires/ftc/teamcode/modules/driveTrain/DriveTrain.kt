@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode.modules.driveTrain
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
-import org.firstinspires.ftc.teamcode.modules.navigation.gyro.Gyro
+import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.motor.Motor
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
@@ -62,6 +61,6 @@ object DriveTrain : IRobotModule {
         driveSimpleDirection(Vec2(
             _velocityPidfForward.update(_targetDirectionVelocity.x - MergeOdometry.velocity.x, _targetDirectionVelocity.x),
             _velocityPidfSide.update(_targetDirectionVelocity.y - MergeOdometry.velocity.y, _targetDirectionVelocity.y)),
-            _velocityPidfRotate.update(_targetRotateVelocity - Gyro.velocity, Gyro.velocity))
+            _velocityPidfRotate.update(_targetRotateVelocity - MergeGyro.velocity, MergeGyro.velocity))
     }
 }

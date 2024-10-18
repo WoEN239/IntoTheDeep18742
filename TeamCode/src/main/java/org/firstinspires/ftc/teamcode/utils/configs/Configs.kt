@@ -165,9 +165,6 @@ object Configs {
         var MERGE_COEF = 0.1
 
         @JvmField
-        var USE_ODOMETRY = false
-
-        @JvmField
-        var GYRO_ITERATIONS = 5
+        var READ_HZ = 50.0
     }
 }
