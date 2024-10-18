@@ -41,7 +41,7 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         val uP = err * config.p
 
         _integral += err * _deltaTime.seconds()
-        _integral = clamp(_integral, -config.limitI, config.limitI)
+        _integral = clamp(_integral, -config.limitI / config.limitI, config.limitI / config.limitI)
         val uI = _integral * config.i
 
         val uD = (err - _errOld) / _deltaTime.seconds() * config.d
@@ -53,6 +53,10 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         _deltaTime.reset()
 
         return u
+    }
+
+    fun resetIntegral(){
+        _integral = 0.0
     }
 
     override fun start() {
