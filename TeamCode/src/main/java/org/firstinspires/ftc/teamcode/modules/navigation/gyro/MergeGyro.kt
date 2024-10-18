@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 
-object Gyro : IRobotModule {
+object MergeGyro : IRobotModule {
     private lateinit var imu: IMU
 
     private val _mergeFilter = ExponentialFilter(Configs.GyroscopeConfig.MERGE_COEF)
@@ -37,31 +37,20 @@ object Gyro : IRobotModule {
         get
         private set
 
-    private var _oldRotateOdometry = Angle(0.0)
+    private var _oldRotateGyro = Angle(0.0)
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF
 
-        if (Configs.GyroscopeConfig.USE_ODOMETRY) {
-            val odometerTurn = OdometersOdometry.calculateRotate()
+        val odometerTurn = OdometerGyro.calculateRotate()
+        val gyroTurn = IMUGyro.calculateRotate().angle
 
-            if (_iterations > Configs.GyroscopeConfig.GYRO_ITERATIONS) {
-                rotation = Angle(_mergeFilter.updateRaw(OdometersOdometry.calculateRotate().angle, odometerTurn.angle - imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)))
+        rotation = Angle(_mergeFilter.updateRaw(gyroTurn, odometerTurn.angle - gyroTurn))
 
-                _iterations = 0
-            } else
-                rotation += odometerTurn - _oldRotateOdometry
+        velocity = OdometerGyro.calculateRotateVelocity()
 
-            _iterations++
-
-            _oldRotateOdometry = odometerTurn
-
-            velocity = OdometersOdometry.calculateRotateVelocity()
-        } else {
-            rotation = Angle(imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS))
-            velocity = imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate.toDouble()
-        }
-
-        StaticTelemetry.addData("robot rotate", rotation.toDegree())
+        StaticTelemetry.addData("robot merge rotate", rotation.toDegree())
+        StaticTelemetry.addData("robot odometer rotate", odometerTurn)
+        StaticTelemetry.addData("robot gyro rotate", gyroTurn)
     }
 }
