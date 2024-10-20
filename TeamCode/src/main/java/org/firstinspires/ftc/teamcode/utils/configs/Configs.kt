@@ -61,10 +61,7 @@ object Configs {
         var MAX_TRANSLATION_VELOCITY = 1.0
 
         @JvmField
-        var ROTATED_PID = PIDConfig(0.0)
-
-        @JvmField
-        var ROTATE_SENS = 0.1
+        var ROTATE_ACCEL = 0.1
     }
 
     @Config
