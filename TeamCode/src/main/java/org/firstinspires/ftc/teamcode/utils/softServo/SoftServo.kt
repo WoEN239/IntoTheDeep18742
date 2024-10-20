@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
+import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 import java.lang.Math.pow
@@ -34,6 +35,20 @@ class SoftServo(
     private var sign = 0.0
     private var t2Pow = 0.0
     private var y0 = 0.0
+
+    var targetAngle: Double
+        set(value) {
+            if(servo !is ServoAngle)
+                throw Exception("Default servo not support angle, request ServoAngle")
+
+            targetPosition = value / servo.maxAngle
+        }
+        get() {
+            if(servo !is ServoAngle)
+                throw Exception("Default servo not support angle, request ServoAngle")
+
+            return targetPosition * servo.maxAngle
+        }
 
     var targetPosition: Double = -1.0
         set(value) {
@@ -69,6 +84,14 @@ class SoftServo(
         get() = servo.position
         private set(value) {
             servo.position = value
+        }
+
+    val currentAngle: Double
+        get(){
+            if(servo !is ServoAngle)
+                throw Exception("Default servo not support angle, request ServoAngle")
+
+            return servo.angle
         }
 
     init {
