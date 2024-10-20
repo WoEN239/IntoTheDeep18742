@@ -48,31 +48,30 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
     }
 
+    private val _drawFrame = Mat()
+    private val _hsvFrame = Mat()
+
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
-        val cloneFrame = frame.clone()
+        frame.copyTo(_drawFrame)
+        frame.copyTo(_hsvFrame)
 
-        normalize(cloneFrame, cloneFrame, 100.0)
+        blur(_hsvFrame, _hsvFrame, Size(10.0, 10.0))
+        cvtColor(_hsvFrame, _hsvFrame, COLOR_RGB2HSV)
 
-        val drawFrame = frame.clone()
-        val hsvFrame = frame.clone()
+        val blueRects = detect(Configs.CameraConfig.BLUE_STICK_DETECT, _hsvFrame.clone())
 
-        blur(hsvFrame, hsvFrame, Size(10.0, 10.0))
-        cvtColor(hsvFrame, hsvFrame, COLOR_RGB2HSV)
+        drawRotatedRects(_drawFrame, blueRects, Scalar(0.0, 0.0, 255.0), Scalar(0.0, 255.0, 0.0))
 
-        val blueRects = detect(Configs.CameraConfig.BLUE_STICK_DETECT, hsvFrame.clone())
+        val redRects = detect(Configs.CameraConfig.RED_STICK_DETECT, _hsvFrame.clone())
 
-        drawRotatedRects(drawFrame, blueRects, Scalar(0.0, 0.0, 255.0), Scalar(0.0, 255.0, 0.0))
-
-        val redRects = detect(Configs.CameraConfig.RED_STICK_DETECT, hsvFrame.clone())
-
-        drawRotatedRects(drawFrame, redRects, Scalar(255.0, 0.0, 0.0), Scalar(0.0, 255.0, 0.0))
+        drawRotatedRects(_drawFrame, redRects, Scalar(255.0, 0.0, 0.0), Scalar(0.0, 255.0, 0.0))
 
         val b = Bitmap.createBitmap(
-            drawFrame.width(),
-            drawFrame.height(),
+            _drawFrame.width(),
+            _drawFrame.height(),
             Bitmap.Config.RGB_565
         )
-        Utils.matToBitmap(drawFrame, b)
+        Utils.matToBitmap(_drawFrame, b)
         lastFrame.set(b)
 
         return frame
