@@ -41,7 +41,7 @@ class EncoderFix(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : I
     override fun update() {
         val hardwareSpeed: Double = encoder.velocity
 
-        if (_deltaTime.seconds() > 0.085) {
+        if (_deltaTime.seconds() > 0.005) {
             val mathSpeed = (position - _oldPosition) / _deltaTime.seconds()
             _deltaTime.reset()
             _oldPosition = position
