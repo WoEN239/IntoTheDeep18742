@@ -22,7 +22,7 @@ object Gamepad : IRobotModule {
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
-            Vec2((_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble()).turn(MergeGyro.rotation.angle),
+            Vec2((_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble())/*.turn(MergeGyro.rotation.angle)*/,
             (_gamepad.right_stick_x).toDouble()
         )
 

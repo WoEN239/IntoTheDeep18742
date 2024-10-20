@@ -27,7 +27,7 @@ class Devices(hardMap: HardwareMap)  {
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
 
-    val camera = hardMap.get("Webcam 1") as WebcamName
+    //val camera = hardMap.get("Webcam 1") as WebcamName
 
     val leftForwardDrive = MotorOnly(hardMap.get("leftForwardDrive") as DcMotorEx)
     val rightForwardDrive = MotorOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
@@ -45,7 +45,7 @@ class Devices(hardMap: HardwareMap)  {
     val horizontalServoRight = hardMap.get("horizontalServoRight") as Servo
     val horizontalServoLeft = hardMap.get("horizontalServoLeft") as Servo
 
-    val forwardOdometerLeft = EncoderOnly(hardMap.get("forwardOdometerLeft") as DcMotorEx)
-    val forwardOdometerRight = EncoderOnly(hardMap.get("forwardOdometerRigth") as DcMotorEx)
+    val forwardOdometerLeft = EncoderOnly(hardMap.get("leftBackDrive") as DcMotorEx)
+    val forwardOdometerRight = EncoderOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
     val sideOdometer = EncoderOnly(hardMap.get("sideOdometer") as DcMotorEx)
 }
