@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
@@ -15,10 +16,16 @@ class Battery (private val _voltageSensor: VoltageSensor){
     var charge = 1.0
     var voltage = 1.0
 
-    fun update(){
-        voltage = _voltageSensor.voltage
+    val _oldUpdateTime = ElapsedTime()
 
-        charge = voltage / Configs.ChargeConfig.NOMINAL_VOLTAGE
+    fun update(){
+        if(_oldUpdateTime.seconds() > Configs.ChargeConfig.BATTERY_UPDATE_SEC) {
+            voltage = _voltageSensor.voltage
+
+            charge = voltage / Configs.ChargeConfig.NOMINAL_VOLTAGE
+
+            _oldUpdateTime.reset()
+        }
     }
 }
 
