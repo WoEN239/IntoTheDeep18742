@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
-import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -45,7 +44,7 @@ object RoadRunner : IRobotModule {
 
         DriveTrain.driveCmDirection(transVelocity, headingVelocity)
 
-        if (if (currentTrajectory is TimeTrajectory) _trajectoryTime.seconds() > currentTrajectory.duration else if (currentTrajectory is Action) currentTrajectory.isEnd() else false) {
+        if ((currentTrajectory is TimeTrajectory && _trajectoryTime.seconds() > currentTrajectory.duration) || (currentTrajectory is Action && currentTrajectory.isEnd())) {
             _currentTrajectory.removeAt(0)
 
             _trajectoryTime.reset()
@@ -227,7 +226,7 @@ object RoadRunner : IRobotModule {
         fun strafeTo(pos: Vec2) =
             strafeTo(_oldPose, pos)
 
-        fun turnTo(rot: Angle): ThreadedTrajectoryBuilder {
+        fun turnTo(rot: Double): ThreadedTrajectoryBuilder {
             _trajectoryBuilders.add(TurnTo(rot))
 
             return this
