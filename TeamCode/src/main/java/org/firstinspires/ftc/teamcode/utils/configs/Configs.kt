@@ -144,19 +144,19 @@ object Configs {
     @Config
     internal object OdometryConfig{
         @JvmField
-        var SIDE_ODOMETER_RADIUS = 1.0
+        var SIDE_ODOMETER_RADIUS = 15.0
 
         @JvmField
-        var FORWARD_ODOMETER_LEFT_RADIUS = 1.0
+        var FORWARD_ODOMETER_LEFT_RADIUS = 15.5
 
         @JvmField
-        var FORWARD_ODOMETER_RIGHT_RADIUS = 1.0
+        var FORWARD_ODOMETER_RIGHT_RADIUS = 15.5
 
         @JvmField
-        var ODOMETER_DIAMETER = 1.0
+        var ODOMETER_DIAMETER = 4.8
 
         @JvmField
-        var ODOMETER_TICKS = 1
+        var ODOMETER_TICKS = 8192
     }
 
     @Config

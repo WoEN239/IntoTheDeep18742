@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.navigation.odometry
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -17,6 +18,9 @@ object HardwareOdometers : IRobotModule {
 
         _forwardOdometerLeft = EncoderFix(collector.devices.forwardOdometerLeft, calc)
         _forwardOdometerRight = EncoderFix(collector.devices.forwardOdometerRight, calc)
+
+        _forwardOdometerRight.encoder.direction = DcMotorSimple.Direction.REVERSE
+
         _sideOdometer = EncoderFix(collector.devices.sideOdometer, calc)
     }
 
