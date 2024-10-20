@@ -14,7 +14,7 @@ object HardwareOdometers : IRobotModule {
 
     override fun init(collector: BaseCollector) {
         val calc: (Int) -> Double =
-            { (it / Configs.OdometryConfig.ODOMETER_TICKS).toDouble() * PI * (Configs.OdometryConfig.ODOMETER_DIAMETER / 2) }
+            { (it.toDouble() / Configs.OdometryConfig.ODOMETER_TICKS) * PI * Configs.OdometryConfig.ODOMETER_DIAMETER }
 
         _forwardOdometerLeft = EncoderFix(collector.devices.forwardOdometerLeft, calc)
         _forwardOdometerRight = EncoderFix(collector.devices.forwardOdometerRight, calc)
