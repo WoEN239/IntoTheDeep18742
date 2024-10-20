@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.driveTrain
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
@@ -24,6 +25,9 @@ object DriveTrain : IRobotModule {
         _rightForwardDrive = collector.devices.rightForwardDrive
         _leftBackDrive = collector.devices.leftBackDrive
         _rightBackDrive = collector.devices.rightBackDrive
+
+        _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
+        _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
@@ -50,17 +54,18 @@ object DriveTrain : IRobotModule {
     )
 
 
-    fun drivePowerDirection(direction: Vec2, rotate: Double) = driveTicksDirection(
-        direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)
+    fun drivePowerDirection(direction: Vec2, rotate: Double) =/* driveTicksDirection(
+        direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)*/
+        driveSimpleDirection(direction, rotate)
 
     override fun stop(){
         drivePowerDirection(Vec2(0.0, 0.0), 0.0)
     }
 
     override fun update() {
-        driveSimpleDirection(Vec2(
+        /*driveSimpleDirection(Vec2(
             _velocityPidfForward.update(_targetDirectionVelocity.x - MergeOdometry.velocity.x, _targetDirectionVelocity.x),
             _velocityPidfSide.update(_targetDirectionVelocity.y - MergeOdometry.velocity.y, _targetDirectionVelocity.y)),
-            _velocityPidfRotate.update(_targetRotateVelocity - MergeGyro.velocity, MergeGyro.velocity))
+            _velocityPidfRotate.update(_targetRotateVelocity - MergeGyro.velocity, MergeGyro.velocity))*/
     }
 }
