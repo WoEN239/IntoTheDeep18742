@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -35,6 +36,8 @@ class Devices(hardMap: HardwareMap)  {
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
 
     //val camera = hardMap.get("Webcam 1") as WebcamName
+
+    val hubs = hardMap.getAll(LynxModule::class.java)
 
     val leftForwardDrive = MotorOnly(hardMap.get("leftForwardDrive") as DcMotorEx)
     val rightForwardDrive = MotorOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
