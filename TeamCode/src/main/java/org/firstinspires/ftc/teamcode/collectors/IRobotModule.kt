@@ -17,4 +17,6 @@ interface IRobotModule {
 
     fun stop() {}
     fun lateStop() {}
+
+    fun reset() {}
 }
