@@ -66,8 +66,11 @@ open class BaseCollector(val robot: LinearOpMode) {
     }
 
     fun stop() {
-        for (i in _allModules)
+        for (i in _allModules) {
             i.stop()
+
+            i.reset()
+        }
 
         for (i in _allModules)
             i.lateStop()
