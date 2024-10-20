@@ -49,8 +49,11 @@ object RoadRunner : IRobotModule {
 
             _trajectoryTime.reset()
 
-            if (_currentTrajectory.isEmpty())
+            if (_currentTrajectory.isEmpty()) {
                 pause = true
+
+                DriveTrain.stop()
+            }
         }
     }
 
@@ -156,11 +159,20 @@ object RoadRunner : IRobotModule {
                 )
             )
 
-        fun splineTo(beginPose: Pose2d, pos: Vec2, tangent: Double): ThreadedTrajectoryBuilder {
-            _trajectoryBuilders.add(
-                newTB(beginPose).splineTo(
-                    Vector2d(pos.x, pos.y), tangent
-                )
+        private fun last(): TrajectoryBuilder {
+            val last = _trajectoryBuilders.last()
+
+            if (last is TrajectoryBuilder)
+                return last
+
+            _trajectoryBuilders.add(newTB(_oldPose))
+
+            return _trajectoryBuilders.last() as TrajectoryBuilder
+        }
+
+        fun splineTo(pos: Vec2, tangent: Double): ThreadedTrajectoryBuilder {
+            last().splineTo(
+                Vector2d(pos.x, pos.y), tangent
             )
 
             _oldPose = Pose2d(Vector2d(pos.x, pos.y), tangent)
@@ -168,18 +180,12 @@ object RoadRunner : IRobotModule {
             return this
         }
 
-        fun splineTo(pos: Vec2, tangent: Double) = splineTo(_oldPose, pos, tangent)
-
-
         fun splineToConstantHeading(
-            beginPose: Pose2d,
             pos: Vec2,
             tangent: Double
         ): ThreadedTrajectoryBuilder {
-            _trajectoryBuilders.add(
-                newTB(beginPose).splineToConstantHeading(
-                    Vector2d(pos.x, pos.y), tangent
-                )
+            last().splineToConstantHeading(
+                Vector2d(pos.x, pos.y), tangent
             )
 
             _oldPose = Pose2d(Vector2d(pos.x, pos.y), tangent)
@@ -187,44 +193,29 @@ object RoadRunner : IRobotModule {
             return this
         }
 
-        fun splineToConstantHeading(pos: Vec2, tangent: Double) =
-            splineToConstantHeading(_oldPose, pos, tangent)
-
         fun strafeToConstantHeading(
-            beginPose: Pose2d,
             pos: Vec2,
         ): ThreadedTrajectoryBuilder {
-            _trajectoryBuilders.add(
-                newTB(beginPose).strafeToConstantHeading(
-                    Vector2d(pos.x, pos.y)
-                )
+            last().strafeToConstantHeading(
+                Vector2d(pos.x, pos.y)
             )
 
             _oldPose = Pose2d(Vector2d(pos.x, pos.y), _oldPose.heading)
 
             return this
         }
-
-        fun strafeToConstantHeading(pos: Vec2) =
-            strafeToConstantHeading(_oldPose, pos)
 
         fun strafeTo(
-            beginPose: Pose2d,
             pos: Vec2,
         ): ThreadedTrajectoryBuilder {
-            _trajectoryBuilders.add(
-                newTB(beginPose).strafeTo(
-                    Vector2d(pos.x, pos.y)
-                )
+            last().strafeTo(
+                Vector2d(pos.x, pos.y)
             )
 
             _oldPose = Pose2d(Vector2d(pos.x, pos.y), _oldPose.heading)
 
             return this
         }
-
-        fun strafeTo(pos: Vec2) =
-            strafeTo(_oldPose, pos)
 
         fun turnTo(rot: Double): ThreadedTrajectoryBuilder {
             _trajectoryBuilders.add(TurnTo(rot))
