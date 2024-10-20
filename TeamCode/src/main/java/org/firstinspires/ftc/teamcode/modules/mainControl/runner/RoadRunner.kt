@@ -74,12 +74,12 @@ object RoadRunner : IRobotModule {
 
     private val _trajectoryTime = ElapsedTimeExtra()
 
-    val endTrajectory: Boolean
+    val isEndTrajectory: Boolean
         get() = _currentTrajectory.isEmpty()
 
     var pause: Boolean = false
         set(value) {
-            if (endTrajectory)
+            if (isEndTrajectory)
                 return
 
             field = value
