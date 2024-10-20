@@ -38,16 +38,18 @@ class EncoderFix(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : I
 
     private val _deltaTime = ElapsedTime()
 
+    private var _lastMathSpeed = 0.0
+
     override fun update() {
         val hardwareSpeed: Double = encoder.velocity
 
-        if (_deltaTime.seconds() > 0.005) {
-            val mathSpeed = (position - _oldPosition) / _deltaTime.seconds()
+        if (_deltaTime.seconds() > 0.045) {
+            _lastMathSpeed = (position - _oldPosition) / _deltaTime.seconds()
             _deltaTime.reset()
             _oldPosition = position
-
-            velocity = hardwareSpeed + Math.round((mathSpeed - hardwareSpeed) / (1 shl 16).toDouble()) * (1 shl 16).toDouble()
         }
+
+        velocity = hardwareSpeed + Math.round((_lastMathSpeed - hardwareSpeed) / (1 shl 16).toDouble()) * (1 shl 16).toDouble()
     }
 
     override fun start() {
