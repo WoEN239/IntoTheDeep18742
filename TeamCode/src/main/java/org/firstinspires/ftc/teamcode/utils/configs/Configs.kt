@@ -130,6 +130,12 @@ object Configs {
 
         @JvmField
         var SERVO_FLIP = 20.0
+
+        @JvmField
+        var SERVO_ROTATE = 20.0
+
+        @JvmField
+        var SERVO_UNROTATE = 10.0
     }
 
     @Config

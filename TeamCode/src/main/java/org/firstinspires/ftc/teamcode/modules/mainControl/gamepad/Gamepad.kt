@@ -19,6 +19,7 @@ object Gamepad : IRobotModule {
     private var _promotedOld = false
     private var _clampOld = false
     private var _servoflip = false
+    private var _rotateold = false
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
@@ -57,5 +58,13 @@ object Gamepad : IRobotModule {
                Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
         _servoflip = _gamepad.dpad_left
+
+        if(_gamepad.square && !_rotateold)
+            if (Intake.rotate == Intake.rotatePosition.SERVO_UNROTATE)
+                Intake.rotate = Intake.rotatePosition.SERVO_ROTATE
+             else
+                 Intake.rotate = Intake.rotatePosition.SERVO_UNROTATE
+        _rotateold = _gamepad.square
+
     }
 }

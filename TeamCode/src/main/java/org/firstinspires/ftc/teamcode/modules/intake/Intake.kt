@@ -10,15 +10,18 @@ object Intake: IRobotModule {
     private lateinit var horizontalServoRight: Servo
     private lateinit var servoClamp: Servo
     private lateinit var servoFlip: Servo
+    private lateinit var servoRotate: Servo
     override fun init(collector: BaseCollector) {
         horizontalServoLeft = collector.devices.horizontalServoLeft
         horizontalServoRight = collector.devices.horizontalServoRight
         servoClamp = collector.devices.servoClamp
         servoFlip = collector.devices.servoFlip
+        servoRotate = collector.devices.servoRotate
     }
     var clamp = ClampPosition.SERVO_UNCLAMP
     var flip = GalaxyFlipPosition.SERVO_FLIP
     var position = AdvancedPosition.SERVO_UNPROMOTED
+    var rotate = rotatePosition.SERVO_UNROTATE
         set(value)
         {
             if(clamp == ClampPosition.SERVO_CLAMP){
@@ -43,12 +46,12 @@ object Intake: IRobotModule {
             }
             field = value
         }
-    enum class AdvancedPosition(double: Double)
+    enum class AdvancedPosition(double: Double)//нижняя
     {
         SERVO_PROMOTED(20.0),
         SERVO_UNPROMOTED(30.0)
     }
-    enum class ClampPosition(double: Double)
+    enum class ClampPosition(double: Double)// захват
     {
         SERVO_CLAMP(10.0),
         SERVO_UNCLAMP(20.0)
@@ -57,5 +60,10 @@ object Intake: IRobotModule {
     {
         SERVO_UNFLIP(10.0),
         SERVO_FLIP(30.0)
+    }
+    enum class rotatePosition(double: Double)
+    {
+        SERVO_ROTATE(20.0),
+        SERVO_UNROTATE(10.0)
     }
 }
