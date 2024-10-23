@@ -49,7 +49,7 @@ object Gamepad : IRobotModule {
              else
                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-        _clampOld = _gamepad.dpad_up
+        _clampOld = _gamepad.dpad_down
 
         if(_gamepad.dpad_left && !_servoflip)
           if(Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP)
