@@ -44,6 +44,12 @@ object Intake: IRobotModule {
             else if(flip == GalaxyFlipPosition.SERVO_UNFLIP){
             servoFlip.position = Configs.IntakeConfig.SERVO_UNFLIP
             }
+            if(rotate == rotatePosition.SERVO_ROTATE){
+                servoRotate.position = Configs.IntakeConfig.SERVO_ROTATE
+            }
+            else if(rotate == rotatePosition.SERVO_UNROTATE){
+                servoRotate.position = Configs.IntakeConfig.SERVO_ROTATE
+            }
             field = value
         }
     enum class AdvancedPosition(double: Double)//нижняя
