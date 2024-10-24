@@ -64,7 +64,7 @@ class SoftServo(
             _servoTime.reset()
 
             yAbs = abs(currentPosition - value)
-            sign = sign(value - field)
+            sign = sign(value - currentPosition)
 
             t2 = WMax / E
             t3 = yAbs / WMax - WMax / E + t2
