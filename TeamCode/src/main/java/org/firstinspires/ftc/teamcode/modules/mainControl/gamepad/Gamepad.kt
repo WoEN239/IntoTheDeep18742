@@ -35,14 +35,14 @@ object Gamepad : IRobotModule {
         if(_gamepad.circle)
             Lift.targetPosition = Lift.LiftPosition.DOWN
 
-        if(_gamepad.dpad_up && !_promotedOld) {
+        if(_gamepad.dpad_down && !_promotedOld) {
             if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED)
                 Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
             else
                 Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
         }
 
-        _promotedOld = _gamepad.dpad_up
+        _promotedOld = _gamepad.dpad_down
 
         if(_gamepad.dpad_down && !_clampOld)
             if(Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP)
