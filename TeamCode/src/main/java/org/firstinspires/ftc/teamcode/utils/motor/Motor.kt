@@ -20,9 +20,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID): IHandler {
-    val maxVelocityTicks = 2400.0
-
+class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID, val maxVelocityTicks: Int = Configs.MotorConfig.DEFAULT_MAX_TICKS): IHandler {
     init {
         UpdateHandler.addHandler(this)
     }
@@ -36,17 +34,17 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
     private val _velocityPid = PIDRegulator(velocityPIDConfig)
     val encoder = EncoderFix(motor) { it.toDouble() }
 
-    var targetTicksVelocity = 0.0
+    var targetTicksVelocity = 0
 
-    var targetPower
-        get() = targetTicksVelocity / maxVelocityTicks
+    var targetPower : Double
+        get() = targetTicksVelocity.toDouble() / maxVelocityTicks
         set(value) {
-            targetTicksVelocity = value * maxVelocityTicks
+            targetTicksVelocity = (value * maxVelocityTicks).toInt()
         }
  
     override fun update() {
         StaticTelemetry.addData("vel", encoder.velocity)
         StaticTelemetry.addData("target", targetTicksVelocity)
-        motor.power = _velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity) / _battery.charge
+        motor.power = _velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity.toDouble()) / _battery.charge
     }
 }
