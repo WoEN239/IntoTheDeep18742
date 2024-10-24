@@ -4,54 +4,72 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 
 object Intake: IRobotModule {
-    private lateinit var horizontalServoLeft: Servo
-    private lateinit var horizontalServoRight: Servo
-    private lateinit var servoClamp: Servo
-    private lateinit var servoFlip: Servo
-    private lateinit var servoRotate: Servo
+    private lateinit var horizontalServoLeft: ServoAngle
+    private lateinit var horizontalServoRight: ServoAngle
+    private lateinit var servoClamp: ServoAngle
+    private lateinit var servoFlip: ServoAngle
+    private lateinit var servoRotate: ServoAngle
     override fun init(collector: BaseCollector) {
-        horizontalServoLeft = collector.devices.horizontalServoLeft
-        horizontalServoRight = collector.devices.horizontalServoRight
-        servoClamp = collector.devices.servoClamp
-        servoFlip = collector.devices.servoFlip
-        servoRotate = collector.devices.servoRotate
+        horizontalServoLeft = ServoAngle(collector.devices.horizontalServoLeft, 180.0)
+        horizontalServoRight = ServoAngle(collector.devices.horizontalServoRight, 180.0)
+        servoClamp = ServoAngle(collector.devices.servoClamp, 180.0)
+        servoFlip = ServoAngle(collector.devices.servoFlip, 180.0)
+        servoRotate = ServoAngle(collector.devices.servoRotate, 180.0)
     }
+
     var clamp = ClampPosition.SERVO_UNCLAMP
+        set(value) {
+            if(value == ClampPosition.SERVO_CLAMP){
+                servoClamp.angle = Configs.IntakeConfig.SERVO_CLAMP
+            }
+            else if(value == ClampPosition.SERVO_UNCLAMP){
+                servoClamp.angle = Configs.IntakeConfig.SERVO_UNCLAMP
+            }
+
+            field = value
+        }
+
     var flip = GalaxyFlipPosition.SERVO_FLIP
+        set(value) {
+            if(value == GalaxyFlipPosition.SERVO_FLIP){
+                servoFlip.angle = Configs.IntakeConfig.SERVO_FLIP
+            }
+            else if(value == GalaxyFlipPosition.SERVO_UNFLIP){
+                servoFlip.angle = Configs.IntakeConfig.SERVO_UNFLIP
+            }
+
+            field = value;
+        }
+
     var position = AdvancedPosition.SERVO_UNPROMOTED
+        set(value) {
+            if(value == AdvancedPosition.SERVO_PROMOTED) {
+                horizontalServoLeft.angle = Configs.IntakeConfig.SERVO_PROMOTED
+                horizontalServoRight.angle = Configs.IntakeConfig.SERVO_PROMOTED
+            }
+            else if(value == AdvancedPosition.SERVO_UNPROMOTED) {
+                horizontalServoLeft.angle = Configs.IntakeConfig.SERVO_UNPROMOTED
+                horizontalServoRight.angle = Configs.IntakeConfig.SERVO_UNPROMOTED
+            }
+
+            field = value
+        }
+
     var rotate = rotatePosition.SERVO_UNROTATE
         set(value)
         {
-            if(clamp == ClampPosition.SERVO_CLAMP){
-                servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
-            }
-            else if(clamp == ClampPosition.SERVO_UNCLAMP){
-                servoClamp.position = Configs.IntakeConfig.SERVO_UNCLAMP
-            }
-            if(position == AdvancedPosition.SERVO_PROMOTED) {
-                horizontalServoLeft.position = Configs.IntakeConfig.SERVO_PROMOTED
-                horizontalServoRight.position = Configs.IntakeConfig.SERVO_PROMOTED
-            }
-           else if(position == AdvancedPosition.SERVO_UNPROMOTED) {
-                horizontalServoLeft.position = Configs.IntakeConfig.SERVO_UNPROMOTED
-                horizontalServoRight.position = Configs.IntakeConfig.SERVO_UNPROMOTED
-            }
-            if(flip == GalaxyFlipPosition.SERVO_FLIP){
-                servoFlip.position = Configs.IntakeConfig.SERVO_FLIP
-            }
-            else if(flip == GalaxyFlipPosition.SERVO_UNFLIP){
-            servoFlip.position = Configs.IntakeConfig.SERVO_UNFLIP
-            }
             if(rotate == rotatePosition.SERVO_ROTATE){
-                servoRotate.position = Configs.IntakeConfig.SERVO_ROTATE
+                servoRotate.angle = Configs.IntakeConfig.SERVO_ROTATE
             }
             else if(rotate == rotatePosition.SERVO_UNROTATE){
-                servoRotate.position = Configs.IntakeConfig.SERVO_ROTATE
+                servoRotate.angle = Configs.IntakeConfig.SERVO_UNROTATE
             }
             field = value
         }
+
     enum class AdvancedPosition(double: Double)//нижняя
     {
         SERVO_PROMOTED(20.0),
