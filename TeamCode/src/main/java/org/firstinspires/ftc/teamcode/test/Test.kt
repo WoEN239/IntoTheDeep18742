@@ -25,7 +25,8 @@ class Test: LinearOpMode() {
 
             val battery = Battery(hardwareMap.get(VoltageSensor::class.java, "Control Hub"))
 
-            val serv = SoftServo(hardwareMap.get("servoClamp") as ServoImplEx, 0.88)
+            val servRight = SoftServo(hardwareMap.get("horizontalServoRight") as ServoImplEx, 0.88)
+            val servLeft = SoftServo(hardwareMap.get("horizontalServoLeft") as ServoImplEx, 0.1)
 
             val timer = Timer()
 
@@ -36,28 +37,35 @@ class Test: LinearOpMode() {
 
             handler.start()
 
-            var currentPos = 0.26
+            var currentRightPos = 0.26
+            var currentLeftPos = 0.72
 
             var a = {}
 
+            // 0.88 0.26
+            // 0.1 0.72
+
             a = {
-                currentPos = 0.88
+                currentRightPos = 0.88
+                currentLeftPos = 0.1
 
-                timer.start({!serv.isEnd}, {
-                    currentPos = 0.26
+                timer.start({!servRight.isEnd || !servLeft.isEnd}, {
+                    currentRightPos = 0.26
+                    currentLeftPos = 0.72
 
-                    timer.start({!serv.isEnd}, a)
+                    timer.start({!servRight.isEnd || !servLeft.isEnd}, a)
                 })
             }
 
-            timer.start({!serv.isEnd}, a)
+            timer.start({!servRight.isEnd || !servLeft.isEnd}, a)
 
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
                 handler.update()
 
-                serv.targetPosition = currentPos
+                servRight.targetPosition = currentRightPos
+                servLeft.targetPosition = currentLeftPos
             }
 
             handler.stop()
