@@ -19,8 +19,6 @@ object HardwareOdometers : IRobotModule {
         _forwardOdometerLeft = EncoderFix(collector.devices.forwardOdometerLeft, calc)
         _forwardOdometerRight = EncoderFix(collector.devices.forwardOdometerRight, calc)
 
-        _forwardOdometerRight.encoder.direction = DcMotorSimple.Direction.REVERSE
-
         _sideOdometer = EncoderFix(collector.devices.sideOdometer, calc)
     }
 
