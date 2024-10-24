@@ -117,10 +117,16 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
-        var SERVO_PROMOTED = 20.0
+        var SERVO_PROMOTED_LEFT = 0.72
 
         @JvmField
-        var SERVO_UNPROMOTED = 30.0
+        var SERVO_UNPROMOTED_LEFT = 0.1
+
+        @JvmField
+        var SERVO_UNPROMOTED_RIGHT = 0.88
+
+        @JvmField
+        var SERVO_PROMOTED_RIGHT = 0.26
 
         @JvmField
         var SERVO_CLAMP = 10.0
@@ -144,7 +150,7 @@ object Configs {
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 2.0
+        var DEFAULT_E = 3.0
 
         @JvmField
         var DEFAULT_W_MAX = 20.0
