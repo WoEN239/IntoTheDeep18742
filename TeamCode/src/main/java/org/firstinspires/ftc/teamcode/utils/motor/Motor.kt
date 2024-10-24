@@ -43,8 +43,6 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
         }
  
     override fun update() {
-        StaticTelemetry.addData("vel", encoder.velocity)
-        StaticTelemetry.addData("target", targetTicksVelocity)
         motor.power = _velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity.toDouble()) / _battery.charge
     }
 }
