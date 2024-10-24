@@ -17,6 +17,9 @@ object Configs {
     internal object MotorConfig {
         @JvmField
         var VELOCITY_PID = PIDConfig(0.0001, 0.006, 0.9, 0.00000001, 0.000375)
+
+        @JvmField
+        var DEFAULT_MAX_TICKS = 2400
     }
 
     @Config
@@ -148,6 +151,18 @@ object Configs {
     }
 
     @Config
+    internal object ContServo {
+        @JvmField
+        var DEFAULT_E = 8.0
+
+        @JvmField
+        var DEFAULT_W_MAX = 25.0
+
+        @JvmField
+        var DEFAULT_MAX_VELOCITY = 1.0
+    }
+
+    @Config
     internal object OdometryConfig{
         @JvmField
         var SIDE_ODOMETER_RADIUS = 15.0
@@ -168,7 +183,7 @@ object Configs {
     @Config
     internal object GyroscopeConfig{
         @JvmField
-        var MERGE_COEF = 0.1
+        var MERGE_COEF = 0.5
 
         @JvmField
         var READ_HZ = 50.0
