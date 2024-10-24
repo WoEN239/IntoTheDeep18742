@@ -144,22 +144,19 @@ object Configs {
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 8.0
+        var DEFAULT_E = 2.0
 
         @JvmField
-        var DEFAULT_W_MAX = 25.0
+        var DEFAULT_W_MAX = 20.0
     }
 
     @Config
     internal object ContServo {
         @JvmField
-        var DEFAULT_E = 8.0
+        var DEFAULT_E = 1.0
 
         @JvmField
-        var DEFAULT_W_MAX = 25.0
-
-        @JvmField
-        var DEFAULT_MAX_VELOCITY = 1.0
+        var DEFAULT_MAX_VELOCITY = 12.775810124598493
     }
 
     @Config

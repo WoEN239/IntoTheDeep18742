@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.utils.contServo
 
+import com.qualcomm.robotcore.hardware.PwmControl.PwmRange
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
@@ -10,10 +12,10 @@ import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sqrt
 
+
 class ContServo(
     private val _servo: Servo,
     var E: Double = Configs.ContServo.DEFAULT_E,
-    var WMax: Double = Configs.ContServo.DEFAULT_W_MAX,
     var maxRadSpeed: Double = Configs.ContServo.DEFAULT_MAX_VELOCITY
 ) : IHandler {
     init {
@@ -34,12 +36,19 @@ class ContServo(
     var currentPosition: Double = 0.0
         private set
 
-    var targetAngle: Double = 0.0
-        set(value) {
-            if(value < 0)
-                return
+    fun resetAngleTo(ang: Double){
+        currentPosition = ang
+        _targetAngle = ang
+    }
 
-            if (abs(value - field) < 0.002) {
+    fun resetAngle() = resetAngleTo(0.0)
+
+    private var _targetAngle = 0.0
+
+    var targetAngle: Double
+        get() = _targetAngle
+        set(value) {
+            if (abs(value - _targetAngle) < 0.002) {
                 return
             }
 
@@ -50,8 +59,8 @@ class ContServo(
             yAbs = abs(currentPosition - value)
             sign = sign(value - currentPosition)
 
-            t2 = WMax / E
-            t3 = yAbs / WMax - WMax / E + t2
+            t2 = maxRadSpeed / E
+            t3 = yAbs / maxRadSpeed - maxRadSpeed / E + t2
 
             if (t3 > t2)
                 t2Pow = E * t2.pow(2) / 2
@@ -61,7 +70,7 @@ class ContServo(
                 t5 = t4 * 2
             }
 
-            field = value
+            _targetAngle = value
         }
 
     var currentVelocity: Double = 0.0
@@ -80,17 +89,19 @@ class ContServo(
                     currentPosition = y0 + sign * (E * _servoTime.seconds().pow(2) / 2)
                 }
                 else if (_servoTime.seconds() <= t3) {
-                    currentVelocity = WMax * sign
+                    currentVelocity = maxRadSpeed * sign
 
-                    currentPosition = y0 + sign * (t2Pow + WMax * (_servoTime.seconds() - t2))
+                    currentPosition = y0 + sign * (t2Pow + maxRadSpeed * (_servoTime.seconds() - t2))
                 }
                 else {
-                    currentVelocity = sign * (WMax - _servoTime.seconds() * E)
+                    currentVelocity = sign * (maxRadSpeed - (_servoTime.seconds() - t3) * E)
 
                     currentPosition =
-                        y0 + sign * (t2Pow + WMax * (t3 - t2) + WMax * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(2) / 2)
+                        y0 + sign * (t2Pow + maxRadSpeed * (t3 - t2) + maxRadSpeed * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(2) / 2)
                 }
             }
+            else
+                currentVelocity = 0.0
 
             return
         }
@@ -102,10 +113,14 @@ class ContServo(
                 currentPosition = y0 + sign * (E * _servoTime.seconds().pow(2) / 2)
             }
             else {
-                currentVelocity = -sign * E * _servoTime.seconds()
+                currentVelocity = sign * (t4 * E - E * (_servoTime.seconds() - t4))
 
                 currentPosition = y0 + sign * (E * t4.pow(2) / 2 + sqrt(yAbs / E) * E * (_servoTime.seconds() - t4) - E * (_servoTime.seconds() - t4).pow(2) / 2)
             }
         }
+        else
+            currentVelocity = 0.0
     }
+
+    val isEnd get() = _servoTime.seconds() > t5 || (t3 > t2 && _servoTime.seconds() > t2 + t3)
 }

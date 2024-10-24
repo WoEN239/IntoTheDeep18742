@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.PwmControl
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.utils.contServo.ContServo
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
@@ -22,7 +25,7 @@ class Test: LinearOpMode() {
 
             val battery = Battery(hardwareMap.get(VoltageSensor::class.java, "Control Hub"))
 
-            val softServo = SoftServo(hardwareMap.get("servo") as Servo)
+            val serv = SoftServo(hardwareMap.get("servoClamp") as ServoImplEx, 0.88)
 
             val timer = Timer()
 
@@ -33,28 +36,28 @@ class Test: LinearOpMode() {
 
             handler.start()
 
-            var currentPos = 0.0
+            var currentPos = 0.26
 
             var a = {}
 
             a = {
-                currentPos = 0.0
+                currentPos = 0.88
 
-                timer.start({!softServo.isEnd}, {
-                    currentPos = 1.0
+                timer.start({!serv.isEnd}, {
+                    currentPos = 0.26
 
-                    timer.start({!softServo.isEnd}, a)
+                    timer.start({!serv.isEnd}, a)
                 })
             }
 
-            timer.start({!softServo.isEnd}, a)
+            timer.start({!serv.isEnd}, a)
 
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
                 handler.update()
 
-                softServo.targetPosition = currentPos
+                serv.targetPosition = currentPos
             }
 
             handler.stop()
