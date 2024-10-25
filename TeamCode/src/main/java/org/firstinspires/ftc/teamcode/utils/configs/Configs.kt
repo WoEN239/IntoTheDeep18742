@@ -70,7 +70,9 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var LIFT_PID = PIDConfig(1.0)
+        var LIFT_PID = PIDConfig(1.0, limitU = 1.0)
+        @JvmField
+        var LIFT_PID_SYNC = PIDConfig(1.0, limitU = 1.0)
 
         @JvmField
         var DOWN_SPEED = 0.30
@@ -83,6 +85,9 @@ object Configs {
 
         @JvmField
         var UP_SPEEDLOW = 0.10
+
+        @JvmField
+        var LIFT_MIDDLE_POS = 500
     }
 
     @Config

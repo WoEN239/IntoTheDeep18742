@@ -44,7 +44,8 @@ class Devices(hardMap: HardwareMap)  {
     val leftBackDrive = MotorOnly(hardMap.get("leftBackDrive") as DcMotorEx)
     val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
-    val liftMotor = hardMap.get("liftMotor") as DcMotorEx
+    val liftMotorRight = hardMap.get("liftMotorRight") as DcMotorEx
+    val liftMotorLeft = hardMap.get("liftMotorLeft") as DcMotorEx
 
     val endingDown = hardMap.get("endingDown") as DigitalChannel
     val endingUP = hardMap.get("endingUp") as DigitalChannel
