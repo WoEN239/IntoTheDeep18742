@@ -19,7 +19,7 @@ object Configs {
         var VELOCITY_PID = PIDConfig(0.0001, 0.006, 0.9, 0.00000001, 0.000375)
 
         @JvmField
-        var DEFAULT_MAX_TICKS = 2400
+        var DEFAULT_MAX_TICKS = 2400.0
     }
 
     @Config
