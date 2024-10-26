@@ -41,7 +41,7 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         val uP = err * config.p
 
         _integral += err * _deltaTime.seconds()
-        _integral = clamp(_integral, -config.limitI / config.limitI, config.limitI / config.limitI)
+        _integral = clamp(_integral, -config.limitI / config.i, config.limitI / config.i)
         val uI = _integral * config.i
 
         val uD = (err - _errOld) / _deltaTime.seconds() * config.d
