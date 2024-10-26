@@ -42,13 +42,10 @@ object MergeGyro : IRobotModule {
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF
 
-        val odometerTurn = OdometerGyro.calculateRotate() * -1.0
+        val odometerTurn = OdometerGyro.calculateRotate()
         val gyroTurn = IMUGyro.calculateRotate().angle
 
         rotation = Angle(_mergeFilter.updateRaw(gyroTurn, odometerTurn.angle - gyroTurn))
-
-        //rotation = Angle(gyroTurn)
-        //rotation = odometerTurn
 
         velocity = OdometerGyro.calculateRotateVelocity()
 
