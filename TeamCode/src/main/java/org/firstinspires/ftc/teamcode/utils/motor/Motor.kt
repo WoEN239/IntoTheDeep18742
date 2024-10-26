@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID, val maxVelocityTicks: Int = Configs.MotorConfig.DEFAULT_MAX_TICKS): IHandler {
+class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID, val maxVelocityTicks: Double = Configs.MotorConfig.DEFAULT_MAX_TICKS): IHandler {
     init {
         UpdateHandler.addHandler(this)
     }
@@ -34,12 +34,12 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
     private val _velocityPid = PIDRegulator(velocityPIDConfig)
     val encoder = EncoderFix(motor) { it.toDouble() }
 
-    var targetTicksVelocity = 0
+    var targetTicksVelocity = 0.0
 
     var targetPower : Double
-        get() = targetTicksVelocity.toDouble() / maxVelocityTicks
+        get() = targetTicksVelocity / maxVelocityTicks
         set(value) {
-            targetTicksVelocity = (value * maxVelocityTicks).toInt()
+            targetTicksVelocity = value * maxVelocityTicks
         }
  
     override fun update() {
