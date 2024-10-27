@@ -28,7 +28,7 @@ object Configs {
         var WHEEL_CENTER_RADIUS = 1.0
 
         @JvmField
-        var Y_LAG = 1.0
+        var Y_LAG = 1.2
 
         @JvmField
         var VELOCITY_PIDF_FORWARD = PIDConfig(0.0)
@@ -38,6 +38,9 @@ object Configs {
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
+
+        @JvmField
+        var VELOSITY_SLOW_K = 0.5
 
         @JvmField
         var MAX_SPEED_FORWARD = 1.0

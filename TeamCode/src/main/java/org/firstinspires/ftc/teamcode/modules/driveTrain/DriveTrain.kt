@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
-import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
-import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
@@ -20,7 +19,11 @@ object DriveTrain : IRobotModule {
     private val _velocityPidfSide = PIDRegulator(Configs.DriveTrainConfig.VELOCITY_PIDF_SIDE)
     private val _velocityPidfRotate = PIDRegulator(Configs.DriveTrainConfig.VELOCITY_PIDF_ROTATE)
 
+    private var _isAuto: Boolean = false
+
     override fun init(collector: BaseCollector) {
+        _isAuto = collector.gameSettings.isAuto
+
         _leftForwardDrive = collector.devices.leftForwardDrive
         _rightForwardDrive = collector.devices.rightForwardDrive
         _leftBackDrive = collector.devices.leftBackDrive
@@ -56,9 +59,14 @@ object DriveTrain : IRobotModule {
 
     fun drivePowerDirection(direction: Vec2, rotate: Double) =/* driveTicksDirection(
         direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)*/
-        driveSimpleDirection(direction, rotate)
+        driveSimpleDirection(
+            if (!_isAuto && Intake.position == Intake.AdvancedPosition.SERVO_PROMOTED) direction * Vec2(
+                Configs.DriveTrainConfig.VELOSITY_SLOW_K,
+                Configs.DriveTrainConfig.VELOSITY_SLOW_K
+            ) else direction * Vec2(1.0, Configs.DriveTrainConfig.Y_LAG), rotate
+        )
 
-    override fun stop(){
+    override fun stop() {
         drivePowerDirection(Vec2(0.0, 0.0), 0.0)
     }
 
