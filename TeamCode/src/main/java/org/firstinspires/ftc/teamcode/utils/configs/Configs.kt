@@ -78,16 +78,13 @@ object Configs {
         var DOWN_SPEED = 0.30
 
         @JvmField
-        var UP_SPEED = 0.30
-
-        @JvmField
         var DOWN_SPEEDLOW = 0.0
 
         @JvmField
-        var UP_SPEEDLOW = 0.10
+        var LIFT_MIDDLE_POS = 500
 
         @JvmField
-        var LIFT_MIDDLE_POS = 500
+        var LIFT_UP_POS = 1500
     }
 
     @Config

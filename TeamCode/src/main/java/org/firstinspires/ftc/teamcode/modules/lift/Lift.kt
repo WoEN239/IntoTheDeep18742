@@ -17,12 +17,14 @@ object Lift : IRobotModule {
         val encLeft = _motorLeft.currentPosition.toDouble()
         val encRight = _motorRight.currentPosition.toDouble()
 
-        if(targetPosition == LiftPosition.MIDDLE)
-            power = _posPID.update(Configs.LiftConfig.LIFT_MIDDLE_POS - (encLeft + encRight) / 2.0)
-        else if(targetPosition == LiftPosition.DOWN)
-            power = if(_endingDown.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+        if (targetPosition == LiftPosition.MIDDLE)
+            power =
+                _posPID.update(
+                    (if (targetPosition == LiftPosition.MIDDLE) Configs.LiftConfig.LIFT_MIDDLE_POS else Configs.LiftConfig.LIFT_UP_POS)
+                            - (encLeft + encRight) / 2.0)
         else
-            power = if(_endingUp.state) Configs.LiftConfig.UP_SPEED else Configs.LiftConfig.UP_SPEEDLOW
+            power =
+                if (_endingDown.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
 
         val uEnc = _syncPID.update(encLeft - encRight)
 
