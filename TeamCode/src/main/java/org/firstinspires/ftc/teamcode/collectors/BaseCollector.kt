@@ -13,6 +13,9 @@ import org.firstinspires.ftc.teamcode.utils.bulk.Bulk
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
+import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Color
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 /**
@@ -20,7 +23,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-open class BaseCollector(val robot: LinearOpMode) {
+open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings) {
     data class InitContext(val battery: Battery)
 
     val devices = Devices(robot.hardwareMap)
@@ -32,6 +35,19 @@ open class BaseCollector(val robot: LinearOpMode) {
     private val _bulkAdapter = Bulk(devices)
 
     fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
+
+    data class GameSettings(val startPosition: GameStartPosition = GameStartPosition.NONE, val isAuto: Boolean)
+
+    enum class GameColor{ RED, BLUE }
+    enum class GameOrientation { FORWARD, BACK }
+
+    enum class GameStartPosition(val position: Vec2, val angle: Angle, color: GameColor, orientation: GameOrientation){
+        RED_FORWARD(Vec2(0.0, 0.0), Angle(0.0), GameColor.RED, GameOrientation.FORWARD),
+        RED_BACK(Vec2(0.0, 0.0), Angle(0.0), GameColor.RED, GameOrientation.BACK),
+        BLUE_FORWARD(Vec2(0.0, 0.0), Angle(0.0), GameColor.BLUE, GameOrientation.FORWARD),
+        BLUE_BACK(Vec2(0.0, 0.0), Angle(0.0), GameColor.BLUE, GameOrientation.BACK),
+        NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BACK)
+    }
 
     fun init() {
         for (i in _allModules)

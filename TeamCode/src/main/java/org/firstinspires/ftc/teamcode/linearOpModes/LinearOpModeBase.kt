@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
+import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 /**
  * Класс для всех опмодов который запускает всю программу
