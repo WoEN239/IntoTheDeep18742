@@ -12,31 +12,47 @@ object Lift : IRobotModule {
     var targetPosition = LiftPosition.DOWN
 
     override fun update() {
-        var power = 0.0
+        val encLeft = _motorLeft.currentPosition.toDouble() - _softResetPositionLeft
+        val encRight = _motorRight.currentPosition.toDouble() - _softResetPositionRight
 
-        val encLeft = _motorLeft.currentPosition.toDouble()
-        val encRight = _motorRight.currentPosition.toDouble()
+        var powerLeft = 0.0
+        var powerRight = 0.0
 
-        if (targetPosition == LiftPosition.MIDDLE)
-            power =
+        if (targetPosition == LiftPosition.MIDDLE) {
+            val power =
                 _posPID.update(
                     (if (targetPosition == LiftPosition.MIDDLE) Configs.LiftConfig.LIFT_MIDDLE_POS else Configs.LiftConfig.LIFT_UP_POS)
-                            - (encLeft + encRight) / 2.0)
-        else
-            power =
-                if (_endingDown.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+                            - (encLeft + encRight) / 2.0
+                )
+
+            powerRight = power
+            powerLeft = power
+        }
+        else {
+            powerLeft = if (_endingLeft.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+            powerRight = if (_endingRight.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+
+            if(!_endingLeft.state)
+                _softResetPositionLeft = _motorLeft.currentPosition
+
+            if(!_endingRight.state)
+                _softResetPositionRight = _motorRight.currentPosition
+        }
 
         val uEnc = _syncPID.update(encLeft - encRight)
 
-        _motorLeft.power = power - uEnc
-        _motorRight.power = power + uEnc
+        _motorLeft.power = powerLeft - uEnc
+        _motorRight.power = powerRight + uEnc
     }
+
+    private var _softResetPositionLeft = 0
+    private var _softResetPositionRight = 0
 
     private lateinit var _motorLeft: DcMotor
     private lateinit var _motorRight: DcMotor
 
-    private lateinit var _endingDown: DigitalChannel
-    private lateinit var _endingUp: DigitalChannel
+    private lateinit var _endingRight: DigitalChannel
+    private lateinit var _endingLeft: DigitalChannel
 
     private val _posPID = PIDRegulator(Configs.LiftConfig.LIFT_PID)
     private val _syncPID = PIDRegulator(Configs.LiftConfig.LIFT_PID_SYNC)
@@ -47,8 +63,8 @@ object Lift : IRobotModule {
 
         _motorRight.direction = DcMotorSimple.Direction.REVERSE
 
-        _endingUp = collector.devices.endingUP
-        _endingDown = collector.devices.endingDown
+        _endingLeft = collector.devices.liftEndingLeft
+        _endingRight = collector.devices.liftEndingRight
     }
 
     override fun start() {
