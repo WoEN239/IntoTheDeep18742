@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
@@ -51,8 +52,11 @@ class Devices(hardMap: HardwareMap)  {
     val liftEndingRight = hardMap.get("liftEndingRigth") as DigitalChannel
 
     val servoClamp = hardMap.get("servoClamp") as Servo
-    val servoFlip = hardMap.get("servoFlip") as Servo
+    val servoFlip = hardMap.get("servoFlip") as ServoImplEx
     val servoRotate = hardMap.get("servoRotate") as Servo
+
+    val endingFlipped = hardMap.get("endingFlipped") as DigitalChannel
+    val endingUnflipped = hardMap.get("endingUnflipped") as DigitalChannel
 
     val horizontalServoRight = hardMap.get("horizontalServoRight") as Servo
     val horizontalServoLeft = hardMap.get("horizontalServoLeft") as Servo

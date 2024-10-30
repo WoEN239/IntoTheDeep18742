@@ -63,7 +63,7 @@ object Configs {
         @JvmField
         var MAX_ACCEL = 1.0
 
-        @JvmField
+        @JvmField   
         var MAX_TRANSLATION_VELOCITY = 1.0
 
         @JvmField
@@ -140,16 +140,16 @@ object Configs {
         var SERVO_UNCLAMP = 20.0
 
         @JvmField
-        var SERVO_UNFLIP = 10.0
-
-        @JvmField
-        var SERVO_FLIP = 20.0
-
-        @JvmField
         var SERVO_ROTATE = 20.0
 
         @JvmField
         var SERVO_UNROTATE = 10.0
+
+        @JvmField
+        var FLIP_VELOCITY = 0.25
+
+        @JvmField
+        var FLIP_STOP_POSITION = 0.5
     }
 
     @Config
