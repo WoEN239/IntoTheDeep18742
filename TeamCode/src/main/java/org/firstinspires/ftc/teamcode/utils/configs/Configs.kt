@@ -150,6 +150,9 @@ object Configs {
 
         @JvmField
         var FLIP_STOP_POSITION = 0.5
+
+        @JvmField
+        var MAX_ROTATE_VELOCITY = 0.05
     }
 
     @Config
