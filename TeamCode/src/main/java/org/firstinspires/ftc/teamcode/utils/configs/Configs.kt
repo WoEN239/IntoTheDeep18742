@@ -140,16 +140,22 @@ object Configs {
         var SERVO_UNCLAMP = 0.6
 
         @JvmField
+        var SERVO_CLAMPUP = 0.45
+
+        @JvmField
+        var SERVO_UNCLAMPUP = 0.6
+
+        @JvmField
         var SERVO_CLAMPF = 0.42
 
         @JvmField
         var SERVO_UNCLAMPF = 0.87
 
         @JvmField
-        var SERVO_ROTATE = 0.7
+        var SERVO_ROTATEUP = 0.7
 
         @JvmField
-        var SERVO_UNROTATE = 0.3
+        var SERVO_UNROTATEUP = 0.3
 
         @JvmField
         var FLIP_VELOCITY = 0.25

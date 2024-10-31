@@ -21,8 +21,9 @@ object Gamepad : IRobotModule {
     private var _promotedOld = false
     private var _clampOld = false
     private var _servoflip = false
-    private var _rotateold = false
     private var _clampOldF = false
+    private var _clampOldU = false
+    private var _rotateOldU = false
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
@@ -69,6 +70,21 @@ object Gamepad : IRobotModule {
 
         _clampOld = _gamepad.dpad_up
 
+        if (_gamepad.dpad_right && !_clampOldU)
+            if (Intake.clampUp == Intake.ClampPositionUp.SERVO_UNCLAMPUP)
+                Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP
+            else
+                Intake.clampUp = Intake.ClampPositionUp.SERVO_UNCLAMPUP
+
+        _clampOldU = _gamepad.dpad_right
+
+        if (_gamepad.dpad_left && !_rotateOldU)
+            if (Intake.rotateUp == Intake.RotatePositionUp.SERVO_UNROTATEUP)
+                Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
+            else
+                Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
+
+        _rotateOldU = _gamepad.dpad_left
             /*   if (_gamepad.dpad_right && !_servoflip)
             if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP)
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP

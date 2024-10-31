@@ -19,6 +19,8 @@ object Intake : IRobotModule {
     private lateinit var _servoClamp: Servo
     private lateinit var _servoRotate: Servo
     private lateinit var _servoClampForv: Servo
+    private lateinit var _servoClampUp: Servo
+    private lateinit var _servoRotateUp: Servo
 
     private lateinit var _servoFlip: ServoImplEx
 
@@ -32,6 +34,8 @@ object Intake : IRobotModule {
         _servoClamp = collector.devices.servoClamp
         _servoRotate = collector.devices.servoRotate
         _servoClampForv = collector.devices.servoClampForv
+        _servoClampUp = collector.devices.servoClampUp
+        _servoRotateUp = collector.devices.servoRotateUp
 
         _servoFlip = collector.devices.servoFlip
         _servoFlip.pwmRange = PwmRange(500.0, 2500.0)
@@ -48,6 +52,17 @@ object Intake : IRobotModule {
                 _servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
             } else if (value == ClampPosition.SERVO_UNCLAMP) {
                 _servoClamp.position = Configs.IntakeConfig.SERVO_UNCLAMP
+            }
+
+            field = value
+        }
+
+    var rotateUp = RotatePositionUp.SERVO_UNROTATEUP
+        set(value) {
+            if (value == RotatePositionUp.SERVO_ROTATEUP) {
+                _servoRotateUp.position = Configs.IntakeConfig.SERVO_ROTATEUP
+            } else if (value == RotatePositionUp.SERVO_UNROTATEUP) {
+                _servoRotateUp.position = Configs.IntakeConfig.SERVO_UNROTATEUP
             }
 
             field = value
@@ -72,6 +87,17 @@ object Intake : IRobotModule {
                 _servoClampForv.position = Configs.IntakeConfig.SERVO_CLAMPF
         } else if (value == ClampPositionF.SERVO_UNCLAMPF) {
                 _servoClampForv.position = Configs.IntakeConfig.SERVO_UNCLAMPF
+            }
+
+            field = value
+        }
+
+    var clampUp = ClampPositionUp.SERVO_UNCLAMPUP
+        set(value) {
+            if (value == ClampPositionUp.SERVO_CLAMPUP) {
+                _servoClampUp.position = Configs.IntakeConfig.SERVO_CLAMPUP
+            } else if (value == ClampPositionUp.SERVO_UNCLAMPUP) {
+                _servoClampUp.position = Configs.IntakeConfig.SERVO_UNCLAMPUP
             }
 
             field = value
@@ -128,9 +154,19 @@ object Intake : IRobotModule {
         SERVO_CLAMPF,
         SERVO_UNCLAMPF
     }
+    enum class ClampPositionUp// захват
+    {
+        SERVO_CLAMPUP,
+        SERVO_UNCLAMPUP
+    }
 
     enum class GalaxyFlipPosition {
         SERVO_UNFLIP,
         SERVO_FLIP
+    }
+    enum class RotatePositionUp
+    {
+        SERVO_ROTATEUP,
+        SERVO_UNROTATEUP
     }
 }
