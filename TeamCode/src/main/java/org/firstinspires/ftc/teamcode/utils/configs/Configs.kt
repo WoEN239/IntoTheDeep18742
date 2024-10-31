@@ -134,16 +134,22 @@ object Configs {
         var SERVO_PROMOTED_RIGHT = 0.26
 
         @JvmField
-        var SERVO_CLAMP = 10.0
+        var SERVO_CLAMP = 0.45
 
         @JvmField
-        var SERVO_UNCLAMP = 20.0
+        var SERVO_UNCLAMP = 0.6
 
         @JvmField
-        var SERVO_ROTATE = 20.0
+        var SERVO_CLAMPF = 0.42
 
         @JvmField
-        var SERVO_UNROTATE = 10.0
+        var SERVO_UNCLAMPF = 0.87
+
+        @JvmField
+        var SERVO_ROTATE = 0.7
+
+        @JvmField
+        var SERVO_UNROTATE = 0.3
 
         @JvmField
         var FLIP_VELOCITY = 0.25
@@ -152,7 +158,7 @@ object Configs {
         var FLIP_STOP_POSITION = 0.5
 
         @JvmField
-        var MAX_ROTATE_VELOCITY = 0.05
+        var MAX_ROTATE_VELOCITY = 0.5
     }
 
     @Config

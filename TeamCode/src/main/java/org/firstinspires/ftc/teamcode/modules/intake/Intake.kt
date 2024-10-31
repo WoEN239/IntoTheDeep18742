@@ -18,6 +18,7 @@ object Intake : IRobotModule {
 
     private lateinit var _servoClamp: Servo
     private lateinit var _servoRotate: Servo
+    private lateinit var _servoClampForv: Servo
 
     private lateinit var _servoFlip: ServoImplEx
 
@@ -30,6 +31,7 @@ object Intake : IRobotModule {
 
         _servoClamp = collector.devices.servoClamp
         _servoRotate = collector.devices.servoRotate
+        _servoClampForv = collector.devices.servoClampForv
 
         _servoFlip = collector.devices.servoFlip
         _servoFlip.pwmRange = PwmRange(500.0, 2500.0)
@@ -64,6 +66,17 @@ object Intake : IRobotModule {
             field = value
         }
 
+    var clampF = ClampPositionF.SERVO_UNCLAMPF
+        set(value) {
+            if (value == ClampPositionF.SERVO_CLAMPF) {
+                _servoClampForv.position = Configs.IntakeConfig.SERVO_CLAMPF
+        } else if (value == ClampPositionF.SERVO_UNCLAMPF) {
+                _servoClampForv.position = Configs.IntakeConfig.SERVO_UNCLAMPF
+            }
+
+            field = value
+        }
+
     val servoRotatePosition
         get() = _servoRotate.position
 
@@ -77,22 +90,25 @@ object Intake : IRobotModule {
 
     override fun update() {
         if (flip == GalaxyFlipPosition.SERVO_FLIP) {
-            if (_endingFlipped.state)
+            if (!_endingFlipped.state)
                 _servoFlip.position =
                     Configs.IntakeConfig.FLIP_STOP_POSITION + Configs.IntakeConfig.FLIP_VELOCITY
             else
                 _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
         } else {
-            if (_endingUnflipped.state)
+            if (!_endingUnflipped.state)
                 _servoFlip.position =
                     Configs.IntakeConfig.FLIP_STOP_POSITION - Configs.IntakeConfig.FLIP_VELOCITY
             else
                 _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
         }
 
-        _servoRotate.position =
-            clamp(_servoRotate.position + servoRotateVelocity * _deltaTime.seconds(), 0.0, 1.0)
-
+        if(position == AdvancedPosition.SERVO_PROMOTED)
+        _servoRotate.position = clamp(_servoRotate.position + servoRotateVelocity * _deltaTime.seconds(), 0.0, 1.0)
+          else {
+            servoRotateVelocity = 0.0
+            _servoRotate.position = 0.5
+        }
         _deltaTime.reset()
     }
 
@@ -106,6 +122,11 @@ object Intake : IRobotModule {
     {
         SERVO_CLAMP,
         SERVO_UNCLAMP
+    }
+    enum class ClampPositionF// захват
+    {
+        SERVO_CLAMPF,
+        SERVO_UNCLAMPF
     }
 
     enum class GalaxyFlipPosition {

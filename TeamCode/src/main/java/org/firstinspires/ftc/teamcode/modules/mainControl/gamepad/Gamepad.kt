@@ -22,6 +22,7 @@ object Gamepad : IRobotModule {
     private var _clampOld = false
     private var _servoflip = false
     private var _rotateold = false
+    private var _clampOldF = false
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
@@ -40,29 +41,41 @@ object Gamepad : IRobotModule {
             Lift.targetPosition = Lift.LiftPosition.DOWN
 
         if (_gamepad.dpad_down && !_promotedOld) {
-            if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED)
+            if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED){
                 Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
-            else
+            Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
+
+            }
+            else{
                 Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
+            Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP}
         }
 
         _promotedOld = _gamepad.dpad_down
 
-        if (_gamepad.dpad_down && !_clampOld)
-            if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP)
+        if (_gamepad.dpad_up && !_clampOld)
+            if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP){
                 Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-            else
+                Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
+                Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
+                Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+            }
+            else{
+                Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
+                Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+            }
 
-        _clampOld = _gamepad.dpad_down
+        _clampOld = _gamepad.dpad_up
 
-        if (_gamepad.dpad_left && !_servoflip)
+        if (_gamepad.dpad_right && !_servoflip)
             if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP)
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
             else
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
-        _servoflip = _gamepad.dpad_left
+        _servoflip = _gamepad.dpad_right
 
         Intake.servoRotateVelocity =
             (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY

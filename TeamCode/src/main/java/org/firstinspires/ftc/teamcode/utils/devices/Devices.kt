@@ -54,6 +54,9 @@ class Devices(hardMap: HardwareMap)  {
     val servoClamp = hardMap.get("servoClamp") as Servo
     val servoFlip = hardMap.get("servoFlip") as ServoImplEx
     val servoRotate = hardMap.get("servoRotate") as Servo
+    val servoClampForv = hardMap.get("servoClampForv") as Servo
+    val servoClampUp = hardMap.get("servoClampUp") as Servo
+    val servoRotateUp = hardMap.get("servoRotateUp") as Servo
 
     val endingFlipped = hardMap.get("endingFlipped") as DigitalChannel
     val endingUnflipped = hardMap.get("endingUnflipped") as DigitalChannel
