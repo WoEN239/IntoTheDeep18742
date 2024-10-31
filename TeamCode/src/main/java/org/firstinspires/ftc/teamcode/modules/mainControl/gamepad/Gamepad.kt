@@ -40,7 +40,7 @@ object Gamepad : IRobotModule {
         if (_gamepad.circle)
             Lift.targetPosition = Lift.LiftPosition.DOWN
 
-        if (_gamepad.dpad_down && !_promotedOld) {
+   /*     if (_gamepad.dpad_down && !_promotedOld) {
             if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED){
                 Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
             Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
@@ -52,7 +52,7 @@ object Gamepad : IRobotModule {
         }
 
         _promotedOld = _gamepad.dpad_down
-
+*/
         if (_gamepad.dpad_up && !_clampOld)
             if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP){
                 Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
@@ -69,14 +69,14 @@ object Gamepad : IRobotModule {
 
         _clampOld = _gamepad.dpad_up
 
-        if (_gamepad.dpad_right && !_servoflip)
+            /*   if (_gamepad.dpad_right && !_servoflip)
             if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP)
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
             else
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
         _servoflip = _gamepad.dpad_right
-
+*/
         Intake.servoRotateVelocity =
             (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
     }
