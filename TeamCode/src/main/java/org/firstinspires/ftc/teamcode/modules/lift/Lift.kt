@@ -15,8 +15,8 @@ object Lift : IRobotModule {
         val encLeft = _motorLeft.currentPosition.toDouble() - _softResetPositionLeft
         val encRight = _motorRight.currentPosition.toDouble() - _softResetPositionRight
 
-        var powerLeft = 0.0
-        var powerRight = 0.0
+        val powerLeft: Double
+        val powerRight: Double
 
         if (targetPosition == LiftPosition.MIDDLE) {
             val power =
@@ -29,13 +29,13 @@ object Lift : IRobotModule {
             powerLeft = power
         }
         else {
-            powerLeft = if (_endingLeft.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
-            powerRight = if (_endingRight.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+            powerLeft = if (!_endingLeft.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
+            powerRight = if (!_endingRight.state) Configs.LiftConfig.DOWN_SPEED else Configs.LiftConfig.DOWN_SPEEDLOW
 
-            if(!_endingLeft.state)
+            if(_endingLeft.state)
                 _softResetPositionLeft = _motorLeft.currentPosition
 
-            if(!_endingRight.state)
+            if(_endingRight.state)
                 _softResetPositionRight = _motorRight.currentPosition
         }
 

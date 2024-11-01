@@ -85,7 +85,7 @@ object Intake : IRobotModule {
         set(value) {
             if (value == ClampPositionF.SERVO_CLAMPF) {
                 _servoClampForv.position = Configs.IntakeConfig.SERVO_CLAMPF
-        } else if (value == ClampPositionF.SERVO_UNCLAMPF) {
+            } else if (value == ClampPositionF.SERVO_UNCLAMPF) {
                 _servoClampForv.position = Configs.IntakeConfig.SERVO_UNCLAMPF
             }
 
@@ -116,22 +116,23 @@ object Intake : IRobotModule {
 
     override fun update() {
         if (flip == GalaxyFlipPosition.SERVO_FLIP) {
-            if (!_endingFlipped.state)
+            if (_endingFlipped.state)
+                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
+            else
                 _servoFlip.position =
                     Configs.IntakeConfig.FLIP_STOP_POSITION + Configs.IntakeConfig.FLIP_VELOCITY
-            else
-                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
         } else {
-            if (!_endingUnflipped.state)
+            if (_endingUnflipped.state)
+                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
+            else
                 _servoFlip.position =
                     Configs.IntakeConfig.FLIP_STOP_POSITION - Configs.IntakeConfig.FLIP_VELOCITY
-            else
-                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
         }
 
-        if(position == AdvancedPosition.SERVO_PROMOTED)
-        _servoRotate.position = clamp(_servoRotate.position + servoRotateVelocity * _deltaTime.seconds(), 0.0, 1.0)
-          else {
+        if (position == AdvancedPosition.SERVO_PROMOTED)
+            _servoRotate.position =
+                clamp(_servoRotate.position + servoRotateVelocity * _deltaTime.seconds(), 0.0, 1.0)
+        else {
             servoRotateVelocity = 0.0
             _servoRotate.position = 0.5
         }
@@ -149,11 +150,13 @@ object Intake : IRobotModule {
         SERVO_CLAMP,
         SERVO_UNCLAMP
     }
+
     enum class ClampPositionF// захват
     {
         SERVO_CLAMPF,
         SERVO_UNCLAMPF
     }
+
     enum class ClampPositionUp// захват
     {
         SERVO_CLAMPUP,
@@ -164,8 +167,8 @@ object Intake : IRobotModule {
         SERVO_UNFLIP,
         SERVO_FLIP
     }
-    enum class RotatePositionUp
-    {
+
+    enum class RotatePositionUp {
         SERVO_ROTATEUP,
         SERVO_UNROTATEUP
     }
