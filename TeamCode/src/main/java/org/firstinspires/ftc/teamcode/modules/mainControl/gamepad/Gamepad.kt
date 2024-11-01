@@ -24,6 +24,7 @@ object Gamepad : IRobotModule {
     private var _clampOldF = false
     private var _clampOldU = false
     private var _rotateOldU = false
+    private var _liftOld = false
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
@@ -95,5 +96,17 @@ object Gamepad : IRobotModule {
 */
         Intake.servoRotateVelocity =
             (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
+
+        if(!_liftOld && _gamepad.triangle){
+            when (Lift.targetPosition) {
+                Lift.LiftPosition.DOWN -> Lift.targetPosition = Lift.LiftPosition.MIDDLE
+
+                Lift.LiftPosition.MIDDLE -> Lift.targetPosition = Lift.LiftPosition.UP
+
+                else -> Lift.targetPosition = Lift.LiftPosition.DOWN
+            }
+        }
+
+        _liftOld = _gamepad.triangle
     }
 }

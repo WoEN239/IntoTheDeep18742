@@ -45,7 +45,7 @@ class Test: LinearOpMode() {
             StaticTelemetry.addLine(e.message!!)
 
             for (i in e.stackTrace)
-                StaticTelemetry.addLine(i.javaClass.`package`!!.name)
+                StaticTelemetry.addLine(i.fileName)
 
             StaticTelemetry.update()
 
