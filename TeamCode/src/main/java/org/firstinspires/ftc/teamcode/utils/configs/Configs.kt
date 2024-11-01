@@ -73,21 +73,24 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var LIFT_PID = PIDConfig(1.0, limitU = 1.0)
+        var LIFT_PID = PIDConfig(0.05, d = 0.01, limitU = 1.0)
         @JvmField
-        var LIFT_PID_SYNC = PIDConfig(1.0, limitU = 1.0)
+        var LIFT_PID_SYNC = PIDConfig(0.001, limitU = 1.0)
 
         @JvmField
-        var DOWN_SPEED = 0.30
+        var DOWN_SPEED = -0.30
 
         @JvmField
         var DOWN_SPEEDLOW = 0.0
 
         @JvmField
-        var LIFT_MIDDLE_POS = 500
+        var LIFT_MIDDLE_POS = 1470
 
         @JvmField
-        var LIFT_UP_POS = 1500
+        var LIFT_UP_POS = 1470
+
+        @JvmField
+        var LIFT_POWER = 0.5
     }
 
     @Config
@@ -155,7 +158,7 @@ object Configs {
         var SERVO_ROTATEUP = 0.7
 
         @JvmField
-        var SERVO_UNROTATEUP = 0.3
+        var SERVO_UNROTATEUP = 0.7
 
         @JvmField
         var FLIP_VELOCITY = 0.25

@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.test
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
@@ -22,21 +25,36 @@ class Test: LinearOpMode() {
 
             handler.init(BaseCollector.InitContext(battery))
 
-            val rightLiftMotor = hardwareMap.get("liftMotorRight") as DcMotorEx
-            val leftLiftMotor = hardwareMap.get("liftMotorLeft") as DcMotorEx
+            val rightMotor = hardwareMap.get("liftMotorRight") as DcMotor
+            val leftMotor = hardwareMap.get("liftMotorLeft") as DcMotor
+
+            rightMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
+            leftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
+            rightMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+            leftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+            rightMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+            leftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+            leftMotor.direction = DcMotorSimple.Direction.REVERSE
 
             waitForStart()
             resetRuntime()
 
             handler.start()
 
+            //верхняя левая 2940 правая 2940
+            //средняя
+
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
                 handler.update()
 
-                StaticTelemetry.addLine("leftEnc = " + leftLiftMotor.currentPosition)
-                StaticTelemetry.addLine("rightEnc = " + rightLiftMotor.currentPosition)
+                StaticTelemetry.addLine("leftPos = " + leftMotor.currentPosition)
+                StaticTelemetry.addLine("rightPos = " + rightMotor.currentPosition)
             }
 
             handler.stop()

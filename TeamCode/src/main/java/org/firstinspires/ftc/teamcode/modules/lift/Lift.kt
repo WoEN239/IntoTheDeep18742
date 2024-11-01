@@ -7,9 +7,12 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
 object Lift : IRobotModule {
     var targetPosition = LiftPosition.DOWN
+
+    var powerUp = 0.0
 
     override fun update() {
         val encLeft = _motorLeft.currentPosition.toDouble() - _softResetPositionLeft
@@ -18,8 +21,10 @@ object Lift : IRobotModule {
         val powerLeft: Double
         val powerRight: Double
 
-        if (targetPosition == LiftPosition.MIDDLE) {
-            val power =
+        /*StaticTelemetry.addLine("targetPosition = $targetPosition")
+
+        if (targetPosition != LiftPosition.DOWN) {
+            val power =p
                 _posPID.update(
                     (if (targetPosition == LiftPosition.MIDDLE) Configs.LiftConfig.LIFT_MIDDLE_POS else Configs.LiftConfig.LIFT_UP_POS)
                             - (encLeft + encRight) / 2.0
@@ -37,12 +42,12 @@ object Lift : IRobotModule {
 
             if(_endingRight.state)
                 _softResetPositionRight = _motorRight.currentPosition
-        }
+        }*/
 
         val uEnc = _syncPID.update(encLeft - encRight)
 
-        _motorLeft.power = powerLeft - uEnc
-        _motorRight.power = powerRight + uEnc
+        _motorLeft.power = powerUp + uEnc
+        _motorRight.power = powerUp - uEnc
     }
 
     private var _softResetPositionLeft = 0
@@ -61,7 +66,10 @@ object Lift : IRobotModule {
         _motorLeft = collector.devices.liftMotorLeft
         _motorRight = collector.devices.liftMotorRight
 
-        _motorRight.direction = DcMotorSimple.Direction.REVERSE
+        _motorLeft.direction = DcMotorSimple.Direction.REVERSE
+
+        _motorLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        _motorRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         _endingLeft = collector.devices.liftEndingLeft
         _endingRight = collector.devices.liftEndingRight
