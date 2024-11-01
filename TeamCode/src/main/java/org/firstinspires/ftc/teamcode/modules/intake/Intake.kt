@@ -44,7 +44,7 @@ object Intake : IRobotModule {
         _endingUnflipped = collector.devices.endingUnflipped
     }
 
-    var flip = GalaxyFlipPosition.SERVO_FLIP
+    var flip = GalaxyFlipPosition.SERVO_UNFLIP
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
@@ -115,14 +115,14 @@ object Intake : IRobotModule {
     }
 
     override fun update() {
-        if (flip == GalaxyFlipPosition.SERVO_FLIP) {
-            if (_endingFlipped.state)
+        if (flip == GalaxyFlipPosition.SERVO_UNFLIP) {//FLIP
+            if (_endingFlipped.state)//Flipped
                 _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
             else
                 _servoFlip.position =
                     Configs.IntakeConfig.FLIP_STOP_POSITION + Configs.IntakeConfig.FLIP_VELOCITY
         } else {
-            if (_endingUnflipped.state)
+            if (_endingUnflipped.state)//un
                 _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
             else
                 _servoFlip.position =

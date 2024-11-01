@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.intake.Intake.GalaxyFlipPosition
 import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -18,6 +19,7 @@ object Gamepad : IRobotModule {
     override fun init(collector: BaseCollector) {
         _gamepad = collector.robot.gamepad1
         Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
+        Intake.flip = GalaxyFlipPosition.SERVO_FLIP
 
     }
 
@@ -39,37 +41,36 @@ object Gamepad : IRobotModule {
             (_gamepad.right_stick_x).toDouble()
         )
 
-      //  if (_gamepad.cross)
-      //      Lift.targetPosition = Lift.LiftPosition.MIDDLE
-   //     if (_gamepad.triangle)
-      //      Lift.targetPosition = Lift.LiftPosition.UP
- //       if (_gamepad.circle)
-     //       Lift.targetPosition = Lift.LiftPosition.DOWN
+        //  if (_gamepad.cross)
+        //      Lift.targetPosition = Lift.LiftPosition.MIDDLE
+        //     if (_gamepad.triangle)
+        //      Lift.targetPosition = Lift.LiftPosition.UP
+        //       if (_gamepad.circle)
+        //       Lift.targetPosition = Lift.LiftPosition.DOWN
 
-             if (_gamepad.dpad_down && !_promotedOld) {
-                 if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED){
-                     Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
-               //  Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
+        if (_gamepad.dpad_down && !_promotedOld) {
+            if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED) {
+                Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
+                //  Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
 
-                 }
-                 else {
-                     Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
-                     //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP}
-                 }
-             }
+            } else {
+                Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
+                //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP}
+            }
+        }
 
-             _promotedOld = _gamepad.dpad_down
+        _promotedOld = _gamepad.dpad_down
 
-        if (_gamepad.dpad_up && !_clampOld)
-            if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
-                     Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-                   Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
-              //  Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
-                // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
-                //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+         if (_gamepad.dpad_up && !_clampOld)
+           if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
+               Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+               Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
+               //  Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
+               // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
+               //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
-                // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP//
-                /*     _timer.start(1.0) {//
+               // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP//
+               /*     _timer.start(1.0) {//
                     Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP//
 
                     _timer.start(1.0) {//
@@ -80,9 +81,9 @@ object Gamepad : IRobotModule {
                     }//
                 }//
             */
-
-            } else {
-                   Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+           }
+         else {
+                  Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
               //  Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
                 // Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
                  Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
@@ -99,26 +100,44 @@ object Gamepad : IRobotModule {
 
         _clampOldU = _gamepad.dpad_right
 
-       // if (_gamepad.dpad_left && !_rotateOldU)
-       //     if (Intake.rotateUp == Intake.RotatePositionUp.SERVO_UNROTATEUP)
-           //     Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
-           // else
-            //    Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
+        // if (_gamepad.dpad_left && !_rotateOldU)
+        //     if (Intake.rotateUp == Intake.RotatePositionUp.SERVO_UNROTATEUP)
+        //     Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
+        // else
+        //    Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
 
-      //  _rotateOldU = _gamepad.dpad_left
+        //  _rotateOldU = _gamepad.dpad_left
         if (_gamepad.dpad_left && !_servoflip)
-            if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {
+            if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP хаваем
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
-                Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
-                Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
-            } else {
                 Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
                 Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
-                _timer.start(0.5) {//
+            } else {
+                Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                _timer.start(0.5) {
                     Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
                 }
             }
-    _servoflip = _gamepad.dpad_left
+        _servoflip = _gamepad.dpad_left
+        //////////////
+      /*  if (_gamepad.dpad_up && !_servoflip)
+            if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP
+                Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
+                _timer.start(2.0) {
+
+                    Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                    Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                }
+            } else {
+        Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+        Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
+         _timer.start(0.5) {
+             Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+         }
+    }
+        _servoflip = _gamepad.dpad_up
+*/
         Intake.servoRotateVelocity =
             (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
 
