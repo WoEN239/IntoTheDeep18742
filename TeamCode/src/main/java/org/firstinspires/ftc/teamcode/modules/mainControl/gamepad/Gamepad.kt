@@ -45,12 +45,13 @@ object Gamepad : IRobotModule {
     private val _deltaTime = ElapsedTime()
 
     override fun lateUpdate() {
-        _lightPopit.power = 1.0
-        _lightPopit1.power = 1.0
+        _lightPopit.power = 0.5
+        _lightPopit1.power = 0.5
         DriveTrain.drivePowerDirection(
             Vec2(
                 (-_gamepad.left_stick_y).toDouble(),
-                (-_gamepad.left_stick_x).toDouble()),
+                (-_gamepad.left_stick_x).toDouble()
+            ),
             (-_gamepad.right_stick_x).toDouble()
         )
 
@@ -73,14 +74,16 @@ object Gamepad : IRobotModule {
         }
 
 //        when(_msg[_currentNumber]) {
-//            0 -> if (_deltaTime.seconds() > 0.1) {
+//            0 ->{ if (_deltaTime.seconds() > 0.1) {
 //                _lightPopit.power = 0.0
 //                _lightPopit1.power = 0.0
 //            }
-//            1 -> if (_deltaTime.seconds() > 0.3) {
+    }
+//            1 ->{ if (_deltaTime.seconds() > 0.3) {
 //                _lightPopit.power = 0.0
 //                _lightPopit1.power = 0.0
 //            }
+    }
 //            2 -> {
 //                if(_deltaTime.seconds() > 0.5) {
 //                    _deltaTime.reset()

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.autoEndState
 
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
@@ -13,11 +14,19 @@ import org.firstinspires.ftc.teamcode.utils.timer.Timer
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object AutoEndState : IRobotModule {
+    private lateinit var _lightPopit: DcMotorEx
+    private lateinit var _lightPopit1: DcMotorEx
     override fun init(collector: BaseCollector) {
         Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP
+        _lightPopit = collector.devices.lightPopit
+        _lightPopit1 = collector.devices.lightPopit1
+        _lightPopit.power = 1.0
+        _lightPopit1.power = 1.0
     }
 
     override fun update() {
+        _lightPopit.power = 1.0
+        _lightPopit1.power = 1.0
         StaticTelemetry.addLine("odometer position = ${MergeOdometry.position}") //odometer positino = Vec2(5.0, 2.0)
 
         val err = _targetPosition - MergeOdometry.position
