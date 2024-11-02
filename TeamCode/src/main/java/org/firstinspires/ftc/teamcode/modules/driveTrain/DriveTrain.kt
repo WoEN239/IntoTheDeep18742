@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
@@ -57,14 +58,32 @@ object DriveTrain : IRobotModule {
     )
 
 
-    fun drivePowerDirection(direction: Vec2, rotate: Double) =/* driveTicksDirection(
+    fun drivePowerDirection(direction: Vec2, rotate: Double) {/* driveTicksDirection(
         direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)*/
-        driveSimpleDirection(
-            if (!_isAuto && Intake.position == Intake.AdvancedPosition.SERVO_PROMOTED) direction * Vec2(
-                Configs.DriveTrainConfig.VELOSITY_SLOW_K,
-                Configs.DriveTrainConfig.VELOSITY_SLOW_K
-            ) else direction * Vec2(1.0, Configs.DriveTrainConfig.Y_LAG), rotate
-        )
+        if(_isAuto)
+            driveSimpleDirection(direction, rotate)
+        else {
+            if (Intake.position == Intake.AdvancedPosition.SERVO_PROMOTED) {
+                driveSimpleDirection(
+                    direction * Vec2(
+                        Configs.DriveTrainConfig.VELOSITY_SLOW_K_PROMOTED,
+                        Configs.DriveTrainConfig.VELOSITY_SLOW_K_PROMOTED
+                    ),
+                    rotate * Configs.DriveTrainConfig.VELOSITY_SLOW_K_PROMOTED
+                )
+            }
+            else if (!Lift.isDown)
+                driveSimpleDirection(
+                    direction * Vec2(
+                        Configs.DriveTrainConfig.VELOCITY_SLOW_K_LIFT,
+                        Configs.DriveTrainConfig.VELOCITY_SLOW_K_LIFT
+                    ),
+                    rotate * Configs.DriveTrainConfig.VELOCITY_SLOW_K_LIFT
+                )
+            else
+                driveSimpleDirection(direction, rotate)
+        }
+    }
 
     override fun stop() {
         drivePowerDirection(Vec2(0.0, 0.0), 0.0)

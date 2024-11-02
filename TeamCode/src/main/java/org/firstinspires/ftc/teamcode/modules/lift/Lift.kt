@@ -56,11 +56,14 @@ object Lift : IRobotModule {
     private lateinit var _motorLeft: DcMotor
     private lateinit var _motorRight: DcMotor
 
-    private lateinit var _endingRight: DigitalChannel
+    private lateinit var _endingRight: DigitalChannel  //goida
     private lateinit var _endingLeft: DigitalChannel
 
     private val _posPID = PIDRegulator(Configs.LiftConfig.LIFT_PID)
     private val _syncPID = PIDRegulator(Configs.LiftConfig.LIFT_PID_SYNC)
+
+    val isDown: Boolean
+        get() = (_motorLeft.currentPosition + _motorRight.currentPosition) / 2.0 < Configs.LiftConfig.LIFT_DOWN_POS
 
     override fun init(collector: BaseCollector) {
         _motorLeft = collector.devices.liftMotorLeft

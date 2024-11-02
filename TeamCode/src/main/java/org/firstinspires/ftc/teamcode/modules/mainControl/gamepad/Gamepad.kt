@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.gamepad
 
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
@@ -15,12 +16,14 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object Gamepad : IRobotModule {
     private lateinit var _gamepad: Gamepad
+    private lateinit var _lightPopit: DcMotorEx
 
     override fun init(collector: BaseCollector) {
         _gamepad = collector.robot.gamepad1
         Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
         Intake.flip = GalaxyFlipPosition.SERVO_FLIP
 
+        _lightPopit = collector.devices.lightPopit
     }
 
     private var _promotedOld = false
@@ -31,14 +34,15 @@ object Gamepad : IRobotModule {
     private var _rotateOldU = false
     private var _liftOld = false
     private val _timer = Timer()
+    private var _lightOld = false
+    private var _lightOn = false
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
             Vec2(
-                (_gamepad.left_stick_y).toDouble(),
-                (_gamepad.left_stick_x).toDouble()
-            ).turn(-MergeGyro.rotation.angle),
-            (_gamepad.right_stick_x).toDouble()
+                (-_gamepad.left_stick_y).toDouble(),
+                (-_gamepad.left_stick_x).toDouble()),
+            (-_gamepad.right_stick_x).toDouble()
         )
 
         //  if (_gamepad.cross)
@@ -48,7 +52,7 @@ object Gamepad : IRobotModule {
         //       if (_gamepad.circle)
         //       Lift.targetPosition = Lift.LiftPosition.DOWN
 
-        if (_gamepad.dpad_down && !_promotedOld) {
+        if (_gamepad.dpad_up && !_promotedOld) {
             if (Intake.position == Intake.AdvancedPosition.SERVO_UNPROMOTED) {
                 Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
                 //  Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
@@ -58,8 +62,15 @@ object Gamepad : IRobotModule {
                 //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP}
             }
         }
+        if(_gamepad.circle && !_lightOld){
+            _lightOn = !_lightOn
+        }
 
-        _promotedOld = _gamepad.dpad_down
+        _lightPopit.power = if(_lightOn) 1.0 else 0.0
+
+        _lightOld = _gamepad.circle
+
+        _promotedOld = _gamepad.dpad_up
         /*
         if (_gamepad.dpad_up && !_clampOld)
             if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
@@ -92,13 +103,13 @@ object Gamepad : IRobotModule {
 
         _clampOld = _gamepad.dpad_up
 */
-        if (_gamepad.dpad_right && !_clampOldU)
+        if (_gamepad.triangle && !_clampOldU)
             if (Intake.clampUp == Intake.ClampPositionUp.SERVO_UNCLAMPUP)
                 Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP
             else
                 Intake.clampUp = Intake.ClampPositionUp.SERVO_UNCLAMPUP
 
-        _clampOldU = _gamepad.dpad_right
+        _clampOldU = _gamepad.triangle
 
         // if (_gamepad.dpad_left && !_rotateOldU)
         //     if (Intake.rotateUp == Intake.RotatePositionUp.SERVO_UNROTATEUP)
@@ -107,7 +118,7 @@ object Gamepad : IRobotModule {
         //    Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
 
         //  _rotateOldU = _gamepad.dpad_left
-        if (_gamepad.dpad_left && !_servoflip)
+        if (_gamepad.dpad_down && !_servoflip)
             if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP хаваем
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
                 Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
@@ -118,9 +129,9 @@ object Gamepad : IRobotModule {
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
             }
-        _servoflip = _gamepad.dpad_left
+        _servoflip = _gamepad.dpad_down
         //////////////
-        if (_gamepad.dpad_up)
+        if (_gamepad.cross)
              {
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
                 _timer.start(2.0)

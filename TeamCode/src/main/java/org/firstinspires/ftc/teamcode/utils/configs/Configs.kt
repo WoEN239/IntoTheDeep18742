@@ -40,7 +40,10 @@ object Configs {
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
 
         @JvmField
-        var VELOSITY_SLOW_K = 0.5
+        var VELOSITY_SLOW_K_PROMOTED = 0.25
+
+        @JvmField
+        var VELOCITY_SLOW_K_LIFT = 0.75
 
         @JvmField
         var MAX_SPEED_FORWARD = 1.0
@@ -91,6 +94,9 @@ object Configs {
 
         @JvmField
         var LIFT_POWER = 0.5
+
+        @JvmField
+        var LIFT_DOWN_POS = 100
     }
 
     @Config
@@ -161,13 +167,13 @@ object Configs {
         var SERVO_UNROTATEUP = 0.7
 
         @JvmField
-        var FLIP_VELOCITY = 0.25
+        var FLIP_VELOCITY = 0.5
 
         @JvmField
         var FLIP_STOP_POSITION = 0.5
 
         @JvmField
-        var MAX_ROTATE_VELOCITY = 0.5
+        var MAX_ROTATE_VELOCITY = 0.7
     }
 
     @Config
