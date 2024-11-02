@@ -67,5 +67,6 @@ class Devices(hardMap: HardwareMap)  {
     val forwardOdometerLeft = EncoderOnly(hardMap.get("leftBackDrive") as DcMotorEx)
     val forwardOdometerRight = EncoderOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
     val lightPopit = MotorOnly(hardMap.get("lightPopit") as DcMotorEx)
+    val lightPopit1 = MotorOnly(hardMap.get("sideOdometer") as DcMotorEx)
     val sideOdometer = EncoderOnly(hardMap.get("sideOdometer") as DcMotorEx)
 }

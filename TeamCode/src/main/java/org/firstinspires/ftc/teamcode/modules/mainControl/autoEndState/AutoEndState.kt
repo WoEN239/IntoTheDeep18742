@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.autoEndState
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object AutoEndState : IRobotModule {
     override fun init(collector: BaseCollector) {
-
+        Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP
     }
 
     override fun update() {
@@ -48,7 +49,10 @@ object AutoEndState : IRobotModule {
 
     override fun lateStart(){
         DriveTrain.drivePowerDirection(Vec2(-0.3, 0.0), 0.0)
-
+        _timer.start(5.0){
+            DriveTrain.drivePowerDirection(Vec2(0.0, 0.0), 0.0)
+        }
+        DriveTrain.drivePowerDirection(Vec2(-0.3, 0.0), 0.0)
         _timer.start(5.0){
             DriveTrain.drivePowerDirection(Vec2(0.0, 0.0), 0.0)
         }

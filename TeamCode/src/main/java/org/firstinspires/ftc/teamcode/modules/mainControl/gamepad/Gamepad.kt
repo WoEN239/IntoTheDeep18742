@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 object Gamepad : IRobotModule {
     private lateinit var _gamepad: Gamepad
     private lateinit var _lightPopit: DcMotorEx
+    private lateinit var _lightPopit1: DcMotorEx
 
     override fun init(collector: BaseCollector) {
         _gamepad = collector.robot.gamepad1
@@ -25,6 +26,7 @@ object Gamepad : IRobotModule {
         Intake.flip = GalaxyFlipPosition.SERVO_FLIP
 
         _lightPopit = collector.devices.lightPopit
+        _lightPopit1 = collector.devices.lightPopit1
     }
 
     private var _promotedOld = false
@@ -43,6 +45,8 @@ object Gamepad : IRobotModule {
     private val _deltaTime = ElapsedTime()
 
     override fun lateUpdate() {
+        _lightPopit.power = 1.0
+        _lightPopit1.power = 1.0
         DriveTrain.drivePowerDirection(
             Vec2(
                 (-_gamepad.left_stick_y).toDouble(),
@@ -68,19 +72,26 @@ object Gamepad : IRobotModule {
             }
         }
 
-        when(_msg[_currentNumber]) {
-            0 -> if (_deltaTime.seconds() > 0.1) _lightPopit.power = 0.0
-            1 -> if (_deltaTime.seconds() > 0.3) _lightPopit.power = 0.0
-            2 -> {
-                if(_deltaTime.seconds() > 0.5) {
-                    _deltaTime.reset()
-                    _lightPopit.power = 1.0
-
-                    _currentNumber++
-                    _currentNumber %= _msg.size
-                }
-            }
-        }
+//        when(_msg[_currentNumber]) {
+//            0 -> if (_deltaTime.seconds() > 0.1) {
+//                _lightPopit.power = 0.0
+//                _lightPopit1.power = 0.0
+//            }
+//            1 -> if (_deltaTime.seconds() > 0.3) {
+//                _lightPopit.power = 0.0
+//                _lightPopit1.power = 0.0
+//            }
+//            2 -> {
+//                if(_deltaTime.seconds() > 0.5) {
+//                    _deltaTime.reset()
+//                    _lightPopit.power = 1.0
+//                    _lightPopit1.power = 1.0
+//
+//                    _currentNumber++
+//                    _currentNumber %= _msg.size
+//                }
+//            }
+//        }
 
 
         _promotedOld = _gamepad.dpad_up
