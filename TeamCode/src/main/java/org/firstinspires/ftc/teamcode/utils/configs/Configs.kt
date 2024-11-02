@@ -155,7 +155,7 @@ object Configs {
         var SERVO_UNCLAMP = 0.6
 
         @JvmField
-        var SERVO_CLAMPUP = 0.45
+        var SERVO_CLAMPUP = 0.43
 
         @JvmField
         var SERVO_UNCLAMPUP = 0.6
