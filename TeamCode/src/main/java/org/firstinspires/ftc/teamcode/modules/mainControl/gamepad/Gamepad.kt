@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.gamepad
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
@@ -37,7 +38,9 @@ object Gamepad : IRobotModule {
     private var _lightOld = false
     private var _lightOn = false
 
-    private val msg = arrayOf(0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, ) //.-. --- -- .-  .--. .. -.. .-. . --. ..- .-.. .-.- - --- .-.
+    private val _msg = arrayOf(0, 1, 0, 2, 1, 1, 1, 2, 1, 1, 2, 0, 1, 2, 0, 0, 2, 1, 0, 0, 2, 0, 1, 0, 2, 0, 2, 1, 1, 0, 2, 0, 0, 1, 2, 0, 1, 0, 0, 2, 0, 1, 0, 1, 2, 1, 2, 1, 1, 1, 2, 0, 1, 0 )
+    private var _currentNumber = 0
+    private val _deltaTime = ElapsedTime()
 
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
@@ -64,13 +67,21 @@ object Gamepad : IRobotModule {
                 //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP}
             }
         }
-        if(_gamepad.circle && !_lightOld){
-            _lightOn = !_lightOn
+
+        when(_msg[_currentNumber]) {
+            0 -> if (_deltaTime.seconds() > 0.1) _lightPopit.power = 0.0
+            1 -> if (_deltaTime.seconds() > 0.3) _lightPopit.power = 0.0
+            2 -> {
+                if(_deltaTime.seconds() > 0.5) {
+                    _deltaTime.reset()
+                    _lightPopit.power = 1.0
+
+                    _currentNumber++
+                    _currentNumber %= _msg.size
+                }
+            }
         }
 
-        _lightPopit.power = if(_lightOn) 1.0 else 0.0
-
-        _lightOld = _gamepad.circle
 
         _promotedOld = _gamepad.dpad_up
         /*
@@ -120,6 +131,8 @@ object Gamepad : IRobotModule {
         //    Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
 
         //  _rotateOldU = _gamepad.dpad_left
+
+
         if (_gamepad.dpad_down && !_servoflip)
             if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP хаваем
                 Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP

@@ -40,7 +40,7 @@ object Configs {
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
 
         @JvmField
-        var VELOSITY_SLOW_K_PROMOTED = 0.70
+        var VELOSITY_SLOW_K_PROMOTED = 0.90
 
         @JvmField
         var VELOCITY_SLOW_K_LIFT = 0.70

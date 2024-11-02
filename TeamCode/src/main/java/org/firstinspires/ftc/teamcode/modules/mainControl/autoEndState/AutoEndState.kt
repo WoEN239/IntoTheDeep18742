@@ -47,9 +47,9 @@ object AutoEndState : IRobotModule {
     private var _isStop = true
 
     override fun lateStart(){
-        DriveTrain.drivePowerDirection(Vec2(0.0, 1.0), 0.0)
+        DriveTrain.drivePowerDirection(Vec2(-0.3, 0.0), 0.0)
 
-        _timer.start(1.5){
+        _timer.start(5.0){
             DriveTrain.drivePowerDirection(Vec2(0.0, 0.0), 0.0)
         }
     }
