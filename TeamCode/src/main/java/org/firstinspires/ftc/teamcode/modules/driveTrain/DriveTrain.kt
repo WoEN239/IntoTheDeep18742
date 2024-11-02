@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.driveTrain
 
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
@@ -32,6 +33,11 @@ object DriveTrain : IRobotModule {
 
         _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
         _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
+
+        _leftForwardDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE //z
+        _rightForwardDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE //z
+        _leftBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE //z
+        _rightBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE //z
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {

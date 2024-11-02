@@ -37,6 +37,8 @@ object Gamepad : IRobotModule {
     private var _lightOld = false
     private var _lightOn = false
 
+    private val msg = arrayOf(0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, ) //.-. --- -- .-  .--. .. -.. .-. . --. ..- .-.. .-.- - --- .-.
+
     override fun lateUpdate() {
         DriveTrain.drivePowerDirection(
             Vec2(
