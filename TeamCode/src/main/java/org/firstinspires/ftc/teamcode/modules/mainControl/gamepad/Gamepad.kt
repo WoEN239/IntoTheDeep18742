@@ -60,38 +60,38 @@ object Gamepad : IRobotModule {
         }
 
         _promotedOld = _gamepad.dpad_down
+        /*
+        if (_gamepad.dpad_up && !_clampOld)
+            if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
+                Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+                Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
+                //  Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
+                // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
+                //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
 
-         if (_gamepad.dpad_up && !_clampOld)
-           if (Intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
-               Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-               Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
-               //  Intake.position = Intake.AdvancedPosition.SERVO_UNPROMOTED
-               // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP
-               //   Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+                // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP//
+                /*     _timer.start(1.0) {//
+                     Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP//
 
-               // Intake.rotateUp = Intake.RotatePositionUp.SERVO_ROTATEUP//
-               /*     _timer.start(1.0) {//
-                    Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP//
-
-                    _timer.start(1.0) {//
-                        Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP//
-                        _timer.start(1.0) {//
-                            Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP//
-                        }//
-                    }//
-                }//
-            */
-           }
-         else {
-                  Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
-              //  Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
+                     _timer.start(1.0) {//
+                         Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP//
+                         _timer.start(1.0) {//
+                             Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP//
+                         }//
+                     }//
+                 }//
+             */
+            }
+            else {
+                Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                //  Intake.position = Intake.AdvancedPosition.SERVO_PROMOTED
                 // Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
-                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
                 // Intake.rotateUp = Intake.RotatePositionUp.SERVO_UNROTATEUP
             }
 
         _clampOld = _gamepad.dpad_up
-
+*/
         if (_gamepad.dpad_right && !_clampOldU)
             if (Intake.clampUp == Intake.ClampPositionUp.SERVO_UNCLAMPUP)
                 Intake.clampUp = Intake.ClampPositionUp.SERVO_CLAMPUP
@@ -115,33 +115,42 @@ object Gamepad : IRobotModule {
             } else {
                 Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
                 Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
-                _timer.start(0.5) {
-                    Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
-                }
+                Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+
             }
         _servoflip = _gamepad.dpad_left
         //////////////
-      /*  if (_gamepad.dpad_up && !_servoflip)
-            if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP
-                Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
-                _timer.start(2.0) {
-
+        if (_gamepad.dpad_up)
+             {
+                Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+                _timer.start(2.0)
+               {
                     Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
                     Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                    Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
                 }
-            } else {
-        Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-        Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
-         _timer.start(0.5) {
-             Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
-         }
-    }
-        _servoflip = _gamepad.dpad_up
-*/
-        Intake.servoRotateVelocity =
-            (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
+            }
+                /*  if (_gamepad.dpad_up && !_servoflip)
+              if (Intake.flip == Intake.GalaxyFlipPosition.SERVO_UNFLIP) {//UNFLIP
+                  Intake.flip = Intake.GalaxyFlipPosition.SERVO_FLIP
+                  _timer.start(2.0) {
 
-        /*if (!_liftOld && _gamepad.triangle) {
+                      Intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                      Intake.clampF = Intake.ClampPositionF.SERVO_UNCLAMPF
+                  }
+              } else {
+          Intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+          Intake.clampF = Intake.ClampPositionF.SERVO_CLAMPF
+           _timer.start(0.5) {
+               Intake.flip = Intake.GalaxyFlipPosition.SERVO_UNFLIP
+           }
+      }
+          _servoflip = _gamepad.dpad_up
+  */
+                Intake.servoRotateVelocity =
+                    (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
+
+                /*if (!_liftOld && _gamepad.triangle) {
             when (Lift.targetPosition) {
                 Lift.LiftPosition.DOWN -> Lift.targetPosition = Lift.LiftPosition.MIDDLE
 
@@ -153,6 +162,6 @@ object Gamepad : IRobotModule {
 
         _liftOld = _gamepad.triangle*/
 
-        Lift.powerUp = if(_gamepad.left_bumper) Configs.LiftConfig.LIFT_POWER else if(_gamepad.right_bumper) -Configs.LiftConfig.LIFT_POWER else 0.0
+                Lift.powerUp =
+                    if (_gamepad.left_bumper) Configs.LiftConfig.LIFT_POWER else if (_gamepad.right_bumper) -Configs.LiftConfig.LIFT_POWER else 0.0 }
     }
-}
