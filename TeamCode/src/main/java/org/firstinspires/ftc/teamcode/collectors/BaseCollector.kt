@@ -65,6 +65,8 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     }
 
     fun start() {
+        _timers.reset()
+
         for (i in _allModules)
             i.start()
 

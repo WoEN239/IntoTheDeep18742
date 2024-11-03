@@ -20,6 +20,10 @@ class Timers {
         }
     }
 
+    fun reset(){
+        _timers.clear()
+    }
+
     fun update(){
         var activeCount = 0
 
