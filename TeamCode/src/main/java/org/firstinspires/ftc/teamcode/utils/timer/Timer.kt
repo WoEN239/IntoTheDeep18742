@@ -10,24 +10,22 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * start(time: Double, action: () -> Unit):
  * вызывает функцию action через time секунд
+ *
  * start(suppler: () -> Boolean, action: () -> Unit):
  * вызывает функцию action когда suppler вернет false
+ *
  * start(suppler: () -> Boolean, action: () -> Unit, timeout: Double, timeoutAction: () -> Unit):
  * вызывает функцию action когда suppler вернет false, но если action не будет исполнен спустя timeout секунд, то вызовится timeoutAction
  *
  * @author tikhonsmovzh
  * @see UpdateHandler
  */
-class Timer : IHandler {
+class Timer {
     private val _timer = ElapsedTimeExtra()
 
     fun timePause() = _timer.pause()
     fun timeStart() = _timer.start()
     fun isTimePaused() = _timer.isPause()
-
-    init {
-        UpdateHandler.addHandler(this)
-    }
 
     private enum class TimerType {
         DEFAULT_TIMER,
@@ -77,7 +75,7 @@ class Timer : IHandler {
         _timer.reset()
     }
 
-    override fun update() {
+    fun update() {
         when (_type) {
             TimerType.DEFAULT_TIMER -> {
                 if (_timer.seconds() > _time)
@@ -102,13 +100,16 @@ class Timer : IHandler {
         }
     }
 
+    val isActive: Boolean
+        get() = _type != TimerType.INACTIVE
+
     fun stopAndRun() {
         stop()
 
         _action.invoke()
     }
 
-    override fun stop() {
+    fun stop() {
         _type = TimerType.INACTIVE
     }
 }

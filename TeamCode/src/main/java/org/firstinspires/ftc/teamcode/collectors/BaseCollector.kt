@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.collectors
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.IMUGyro
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.bulk.Bulk
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
+import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
@@ -33,6 +35,8 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     private val _updateHandler = UpdateHandler()
 
     private val _bulkAdapter = Bulk(devices)
+
+    private val _timers = Timers()
 
     fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
@@ -68,11 +72,18 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
             i.lateStart()
 
         _updateHandler.start()
+        _deltaTime.reset()
     }
+
+    private val _deltaTime = ElapsedTime()
 
     fun update() {
         StaticTelemetry.addData("runtime", System.currentTimeMillis())
+        StaticTelemetry.addData("update time", _deltaTime.milliseconds())
 
+        _deltaTime.reset()
+
+        _timers.update()
         _bulkAdapter.update()
         devices.battery.update()
 
