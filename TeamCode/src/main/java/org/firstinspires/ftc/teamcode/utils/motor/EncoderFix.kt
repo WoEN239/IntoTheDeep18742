@@ -16,16 +16,19 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-class EncoderFix(val encoder: DcMotorEx, val calculateTurn: (Int) -> Double) : IHandler {
+class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> Double) : IHandler {
     private var _oldPosition = 0
 
     var velocity: Double = 0.0
 
+    val realVelocity
+        get() = calculateRealPosition(velocity)
+
     val position
         get() = encoder.currentPosition
 
-    val calcPos
-        get() = calculateTurn(position)
+    val realPosition
+        get() = calculateRealPosition(position.toDouble())
 
     init{
         UpdateHandler.addHandler(this)
