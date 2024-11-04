@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.modules.navigation.odometry
 
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object MergeOdometry: IRobotModule {
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
 
     }
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
@@ -27,7 +28,7 @@ object Intake : IRobotModule {
     private lateinit var _endingFlipped: DigitalChannel
     private lateinit var _endingUnflipped: DigitalChannel
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _horizontalServoLeft = SoftServo(collector.devices.horizontalServoLeft, 0.1)
         _horizontalServoRight = SoftServo(collector.devices.horizontalServoRight, 0.88)
 

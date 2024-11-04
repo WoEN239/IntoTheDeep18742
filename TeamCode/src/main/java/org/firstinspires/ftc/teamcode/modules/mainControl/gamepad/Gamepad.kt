@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.gamepad
 import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.lift.Lift
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 object Gamepad : IRobotModule {
     private lateinit var _gamepad: Gamepad
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _gamepad = collector.robot.gamepad1
     }
 

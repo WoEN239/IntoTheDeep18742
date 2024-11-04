@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.navigation.odometry
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderFix
 import kotlin.math.PI
@@ -12,7 +13,7 @@ object HardwareOdometers : IRobotModule {
     private lateinit var _forwardOdometerRight: EncoderFix
     private lateinit var _sideOdometer: EncoderFix
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         val calc: (Int) -> Double =
             { (it.toDouble() / Configs.OdometryConfig.ODOMETER_TICKS) * PI * Configs.OdometryConfig.ODOMETER_DIAMETER }
 

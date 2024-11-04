@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 
@@ -57,7 +58,7 @@ object Lift : IRobotModule {
     private val _posPID = PIDRegulator(Configs.LiftConfig.LIFT_PID)
     private val _syncPID = PIDRegulator(Configs.LiftConfig.LIFT_PID_SYNC)
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _motorLeft = collector.devices.liftMotorLeft
         _motorRight = collector.devices.liftMotorRight
 

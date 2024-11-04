@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.modules.driveTrain
 
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
@@ -21,13 +23,18 @@ object DriveTrain : IRobotModule {
 
     private var _isAuto: Boolean = false
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _isAuto = collector.gameSettings.isAuto
 
         _leftForwardDrive = collector.devices.leftForwardDrive
         _rightForwardDrive = collector.devices.rightForwardDrive
         _leftBackDrive = collector.devices.leftBackDrive
         _rightBackDrive = collector.devices.rightBackDrive
+
+        _leftForwardDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        _rightForwardDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        _leftBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        _rightBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
         _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE

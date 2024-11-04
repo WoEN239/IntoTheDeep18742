@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.OdometersOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
@@ -18,7 +19,7 @@ object MergeGyro : IRobotModule {
 
     private var _iterations = 0
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         imu = collector.devices.imu
 
         imu.initialize(

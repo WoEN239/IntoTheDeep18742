@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors
 object RoadRunner : IRobotModule {
     private lateinit var _robot: LinearOpMode
 
-    override fun init(collector: BaseCollector) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _robot = collector.robot
     }
 

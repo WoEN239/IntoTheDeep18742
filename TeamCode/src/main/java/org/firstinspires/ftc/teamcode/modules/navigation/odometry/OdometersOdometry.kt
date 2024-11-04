@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.modules.navigation.odometry
 
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object OdometersOdometry : IRobotModule {
-    override fun init(collector: BaseCollector) {}
+    override fun init(collector: BaseCollector, bus: EventBus) {}
 
     var position = Vec2.ZERO
     var velocity = Vec2.ZERO
