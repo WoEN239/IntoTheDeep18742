@@ -60,7 +60,7 @@ class RoadRunner : IRobotModule {
             if (_currentTrajectory.isEmpty()) {
                 pause = true
 
-                _eventBus.invoke(DriveTrain.SetDriveTicksEvent(Vec2.ZERO, 0.0))
+                _eventBus.invoke(DriveTrain.SetDriveCmEvent(Vec2.ZERO, 0.0))
             }
         }
     }
@@ -116,7 +116,7 @@ class RoadRunner : IRobotModule {
 
             _trajectoryTime.pause()
 
-            _eventBus.invoke(DriveTrain.SetDriveTicksEvent(Vec2.ZERO, 0.0))
+            _eventBus.invoke(DriveTrain.SetDriveCmEvent(Vec2.ZERO, 0.0))
         }
 
     class ThreadedTrajectoryBuilder(
