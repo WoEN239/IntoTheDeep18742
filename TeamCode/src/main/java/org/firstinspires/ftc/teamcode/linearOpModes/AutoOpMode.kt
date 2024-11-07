@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.linearOpModes
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RoadRunner
 
+@Autonomous
 class AutoOpMode: LinearOpModeBase() {
     override fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = true, preInitOpModeName = "TeleOpMode")
 
@@ -12,7 +15,7 @@ class AutoOpMode: LinearOpModeBase() {
                 isAuto = true
             ))
 
-        collector.addAdditionalModules(arrayOf(/* ся модули для автонома*/))
+        collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ RoadRunner()))
 
         return collector
     }

@@ -27,7 +27,7 @@ object Gamepad : IRobotModule {
     private var _rotateOldU = false
 
     override fun lateUpdate() {
-        DriveTrain.drivePowerDirection(
+        /*DriveTrain.drivePowerDirection(
             Vec2(
                 (_gamepad.left_stick_y).toDouble(),
                 (_gamepad.left_stick_x).toDouble()
@@ -96,5 +96,6 @@ object Gamepad : IRobotModule {
 */
         Intake.servoRotateVelocity =
             (_gamepad.left_trigger - _gamepad.right_trigger).toDouble() * Configs.IntakeConfig.MAX_ROTATE_VELOCITY
+         */
     }
 }

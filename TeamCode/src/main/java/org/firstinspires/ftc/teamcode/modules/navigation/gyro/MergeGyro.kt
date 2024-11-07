@@ -26,7 +26,7 @@ class MergeGyro : IRobotModule {
         }
 
         bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
-            val rotation = Angle(_mergeFilter.updateRaw(_gyroRotate.angle, (it.rotate - _gyroRotate).angle))
+            val rotation = it.rotate //Angle(_mergeFilter.updateRaw(_gyroRotate.angle, (it.rotate - _gyroRotate).angle))
 
             bus.invoke(UpdateMergeGyroEvent(rotation, _oldRotation, it.velocity))
 
@@ -38,7 +38,7 @@ class MergeGyro : IRobotModule {
         }
     }
 
-    class UpdateMergeGyroEvent(val rotation: Angle, val oldRotation, val velocity: Double): IEvent
+    class UpdateMergeGyroEvent(val rotation: Angle, val oldRotation: Angle, val velocity: Double): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

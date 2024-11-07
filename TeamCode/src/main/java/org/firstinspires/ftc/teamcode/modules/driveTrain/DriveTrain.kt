@@ -6,12 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
+import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
+import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
-object DriveTrain : IRobotModule {
+class DriveTrain : IRobotModule {
     private lateinit var _leftForwardDrive: DcMotorEx
     private lateinit var _rightForwardDrive: DcMotorEx
     private lateinit var _leftBackDrive: DcMotorEx
@@ -23,7 +28,13 @@ object DriveTrain : IRobotModule {
 
     private var _isAuto: Boolean = false
 
+    private var _rotateVelocity = 0.0
+
+    private lateinit var _eventBus: EventBus
+
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _eventBus = bus
+
         _isAuto = collector.gameSettings.isAuto
 
         _leftForwardDrive = collector.devices.leftForwardDrive
@@ -38,6 +49,29 @@ object DriveTrain : IRobotModule {
 
         _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
         _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
+
+        bus.subscribe(SetDrivePowerEvent::class){
+            bus.invoke(SetDriveCmEvent(it.direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), it.rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN))
+        }
+
+        bus.subscribe(SetDriveCmEvent::class){
+            _targetDirectionVelocity = it.direction
+            _targetRotateVelocity = it.rotate
+        }
+
+        bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){
+            _rotateVelocity = it.velocity
+        }
+
+        bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
+            driveSimpleDirection(Vec2(
+                _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
+                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
+                _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _rotateVelocity))
+
+            StaticTelemetry.addData("current velocity", it.velocity.x)
+            StaticTelemetry.addData("target velocity", _targetDirectionVelocity.x)
+        }
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
@@ -50,37 +84,27 @@ object DriveTrain : IRobotModule {
     private var _targetDirectionVelocity = Vec2.ZERO
     private var _targetRotateVelocity = 0.0
 
-    fun driveTicksDirection(direction: Vec2, rotate: Double) {
-        _targetDirectionVelocity = direction
-        _targetRotateVelocity = rotate
-    }
-
-    fun driveCmDirection(direction: Vec2, rotate: Double) = driveTicksDirection(
-        Vec2(
-            direction.x / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS,
-            direction.y / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS * Configs.DriveTrainConfig.Y_LAG
-        ),
-        rotate * Configs.DriveTrainConfig.WHEEL_CENTER_RADIUS / Configs.OdometryConfig.ODOMETER_DIAMETER * Configs.OdometryConfig.ODOMETER_TICKS
-    )
-
-
-    fun drivePowerDirection(direction: Vec2, rotate: Double) =/* driveTicksDirection(
-        direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN)*/
-        driveSimpleDirection(
-            if (!_isAuto && Intake.position == Intake.AdvancedPosition.SERVO_PROMOTED) direction * Vec2(
-                Configs.DriveTrainConfig.VELOSITY_SLOW_K,
-                Configs.DriveTrainConfig.VELOSITY_SLOW_K
-            ) else direction * Vec2(1.0, Configs.DriveTrainConfig.Y_LAG), rotate
-        )
-
     override fun stop() {
-        drivePowerDirection(Vec2(0.0, 0.0), 0.0)
+        _targetDirectionVelocity = Vec2.ZERO
+        _targetRotateVelocity = 0.0
     }
 
-    override fun update() {
-        /*driveSimpleDirection(Vec2(
-            _velocityPidfForward.update(_targetDirectionVelocity.x - MergeOdometry.velocity.x, _targetDirectionVelocity.x),
-            _velocityPidfSide.update(_targetDirectionVelocity.y - MergeOdometry.velocity.y, _targetDirectionVelocity.y)),
-            _velocityPidfRotate.update(_targetRotateVelocity - MergeGyro.velocity, MergeGyro.velocity))*/
+    override fun start() {
+        var action = {}
+
+        action = {
+            _eventBus.invoke(SetDriveCmEvent(Vec2(100.0, 0.0), 0.0))
+
+            Timers.newTimer().start(0.8){
+                _eventBus.invoke(SetDriveCmEvent(Vec2(-100.0, 0.0), 0.0))
+
+                Timers.newTimer().start(0.8, action)
+            }
+        }
+
+        action.invoke()
     }
+
+    class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
+    class SetDriveCmEvent(val direction: Vec2, val rotate: Double): IEvent
 }

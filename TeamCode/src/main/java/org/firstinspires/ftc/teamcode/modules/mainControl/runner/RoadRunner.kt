@@ -22,11 +22,18 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-object RoadRunner : IRobotModule {
+class RoadRunner : IRobotModule {
     private lateinit var _robot: LinearOpMode
+
+    private lateinit var _eventBus: EventBus
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         _robot = collector.robot
+        _eventBus = bus
+    }
+
+    override fun start() {
+        runTrajectory(newTrajectory.turnTo(Math.toRadians(90.0)))
     }
 
     override fun update() {
@@ -43,7 +50,7 @@ object RoadRunner : IRobotModule {
             if (currentTrajectory is TimeTrajectory) Vec2(currentTrajectory[_trajectoryTime.seconds()].velocity().linearVel.value())
             else if (currentTrajectory is Action) currentTrajectory.transVelocity(_trajectoryTime.seconds()) else Vec2.ZERO
 
-        DriveTrain.driveCmDirection(transVelocity, headingVelocity)
+        _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
 
         if ((currentTrajectory is TimeTrajectory && _trajectoryTime.seconds() > currentTrajectory.duration) || (currentTrajectory is Action && currentTrajectory.isEnd())) {
             _currentTrajectory.removeAt(0)
@@ -53,7 +60,7 @@ object RoadRunner : IRobotModule {
             if (_currentTrajectory.isEmpty()) {
                 pause = true
 
-                DriveTrain.stop()
+                _eventBus.invoke(DriveTrain.SetDriveTicksEvent(Vec2.ZERO, 0.0))
             }
         }
     }
@@ -100,7 +107,7 @@ object RoadRunner : IRobotModule {
                         _trajectoryTime.seconds()
                     ) else Vec2.ZERO
 
-                DriveTrain.driveCmDirection(transVelocity, headingVelocity)
+                _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
 
                 _trajectoryTime.start()
 
@@ -108,7 +115,8 @@ object RoadRunner : IRobotModule {
             }
 
             _trajectoryTime.pause()
-            DriveTrain.stop()
+
+            _eventBus.invoke(DriveTrain.SetDriveTicksEvent(Vec2.ZERO, 0.0))
         }
 
     class ThreadedTrajectoryBuilder(
@@ -131,12 +139,7 @@ object RoadRunner : IRobotModule {
             val result = arrayListOf<Any>()
 
             for (i in threadResult) {
-                while (!i.isDone)
-                    if (!_robot.opModeIsActive()) {
-                        _executorService.shutdown()
-
-                        return emptyList()
-                    }
+                while (!i.isDone);
 
                 result.add(i.get())
             }

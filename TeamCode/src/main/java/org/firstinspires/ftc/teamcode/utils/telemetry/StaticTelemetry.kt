@@ -59,7 +59,7 @@ object StaticTelemetry {
         val inchX = DoubleArray(points.size)
         val inchY = DoubleArray(points.size)
 
-        for (i in 0..points.size) {
+        for (i in points.indices) {
             inchX[i] = DistanceUnit.INCH.fromCm(points[i].x)
             inchY[i] = DistanceUnit.INCH.fromCm(points[i].y)
         }

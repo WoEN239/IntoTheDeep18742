@@ -13,6 +13,9 @@ class EventBus {
     }
 
     fun invoke(event: IEvent){
+        if(_events[event::class] == null)
+            return
+
         for(i in _events[event::class]!!)
             i.invoke(event)
     }

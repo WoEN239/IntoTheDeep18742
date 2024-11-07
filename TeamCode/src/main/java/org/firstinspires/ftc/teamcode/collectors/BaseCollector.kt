@@ -31,7 +31,7 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/DriveTrain, HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry())
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain())
 
     private val _updateHandler = UpdateHandler()
     private val _bulkAdapter = Bulk(devices)
