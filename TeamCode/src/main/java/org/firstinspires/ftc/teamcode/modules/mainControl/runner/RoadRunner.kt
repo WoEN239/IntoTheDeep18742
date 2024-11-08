@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
@@ -23,6 +24,10 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 class RoadRunner : IRobotModule {
+    companion object{
+        fun newTrajectory() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
+    }
+
     private lateinit var _robot: LinearOpMode
 
     private lateinit var _eventBus: EventBus
@@ -30,10 +35,24 @@ class RoadRunner : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _robot = collector.robot
         _eventBus = bus
+
+        bus.subscribe(RunTrajectoryEvent::class){
+            if (_currentTrajectory.isEmpty())
+                _trajectoryTime.reset()
+
+            for (i in it.trajectory.build())
+                _currentTrajectory.add(if (i is Trajectory) TimeTrajectory(i) else i)
+
+            bus.invoke(PauseTrajectoryEvent(false))
+        }
+
+        bus.subscribe(PauseTrajectoryEvent::class){
+            _pause = it.pause
+        }
     }
 
     override fun start() {
-        runTrajectory(newTrajectory.turnTo(Math.toRadians(90.0)))
+        _eventBus.invoke(RunTrajectoryEvent(newTrajectory().turnTo(Math.toRadians(90.0))))
     }
 
     override fun update() {
@@ -44,26 +63,14 @@ class RoadRunner : IRobotModule {
 
     private var _currentTrajectory = arrayListOf<Any>()
 
-    val newTrajectory
-        get() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
-
-    fun runTrajectory(trajectory: ThreadedTrajectoryBuilder) {
-        if (_currentTrajectory.isEmpty())
-            _trajectoryTime.reset()
-
-        for (i in trajectory.build())
-            _currentTrajectory.add(if (i is Trajectory) TimeTrajectory(i) else i)
-
-        pause = false
-    }
+    class RunTrajectoryEvent(val trajectory: ThreadedTrajectoryBuilder): IEvent
+    class EndTrajectoryEvent: IEvent
+    class PauseTrajectoryEvent(val pause: Boolean): IEvent
 
     private val _trajectoryTime = ElapsedTimeExtra()
 
-    val isEndTrajectory: Boolean
-        get() = _currentTrajectory.isEmpty()
-
     private fun updateTrajectory(trajectory: Any, time: Double){
-        if (pause)
+        if (_pause)
             return
 
         val headingVelocity =
@@ -86,16 +93,18 @@ class RoadRunner : IRobotModule {
             _currentTrajectory.removeAt(0)
 
             if (_currentTrajectory.isEmpty()) {
-                pause = true
+                _eventBus.invoke(EndTrajectoryEvent())
+
+                _pause = true
 
                 _eventBus.invoke(DriveTrain.SetDriveCmEvent(Vec2.ZERO, 0.0))
             }
         }
     }
 
-    var pause: Boolean = false
+    private var _pause: Boolean = false
         set(value) {
-            if (isEndTrajectory)
+            if (_currentTrajectory.isEmpty())
                 return
 
             field = value
@@ -121,7 +130,7 @@ class RoadRunner : IRobotModule {
     ) {
         private val _executorService = Executors.newWorkStealingPool(builderThreadCount)
 
-        private val _trajectoryBuilders = mutableListOf<Any>();
+        private val _trajectoryBuilders = mutableListOf<Any>()
         fun build(): List<Any> {
             val tasks = arrayListOf<Callable<Any>>()
 

@@ -26,11 +26,11 @@ class OdometersOdometry : IRobotModule {
                 deltaSidePosition - (Angle(Configs.OdometryConfig.SIDE_ODOMETER_RADIUS) * deltaRotate).angle
             ).turn(_rotation.angle)
 
-            _velocity = Vec2(
+            val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
                 it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity
             )
-            bus.invoke(UpdateOdometersOdometryEvent(_position, _velocity))
+            bus.invoke(UpdateOdometersOdometryEvent(_position, velocity))
         }
 
         bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){
@@ -41,7 +41,6 @@ class OdometersOdometry : IRobotModule {
     }
 
     private var _position = Vec2.ZERO
-    private var _velocity = Vec2.ZERO
 
     class UpdateOdometersOdometryEvent(val position: Vec2, val velocity: Vec2): IEvent
 }
