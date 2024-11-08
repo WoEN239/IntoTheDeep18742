@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Angle.Companion.chop
 import java.lang.Math.signum
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Класс для угла, все углы в радианах, каждыя оперция проходящая через класс обрезает угол
@@ -19,7 +20,7 @@ data class Angle(var angle: Double){
             var chopedAng = ang
 
             while (abs(chopedAng) > PI)
-                chopedAng -= 2 * PI * signum(chopedAng)
+                chopedAng -= 2 * PI * sign(chopedAng)
 
             return chopedAng
         }
