@@ -37,32 +37,9 @@ class RoadRunner : IRobotModule {
     }
 
     override fun update() {
-        if (pause)
-            return
-
         val currentTrajectory = _currentTrajectory[0]
 
-        val headingVelocity =
-            if (currentTrajectory is TimeTrajectory) currentTrajectory[_trajectoryTime.seconds()].velocity().angVel.value()
-            else if (currentTrajectory is Action) currentTrajectory.turnVelocity(_trajectoryTime.seconds()) else 0.0
-
-        val transVelocity =
-            if (currentTrajectory is TimeTrajectory) Vec2(currentTrajectory[_trajectoryTime.seconds()].velocity().linearVel.value())
-            else if (currentTrajectory is Action) currentTrajectory.transVelocity(_trajectoryTime.seconds()) else Vec2.ZERO
-
-        _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
-
-        if ((currentTrajectory is TimeTrajectory && _trajectoryTime.seconds() > currentTrajectory.duration) || (currentTrajectory is Action && currentTrajectory.isEnd())) {
-            _currentTrajectory.removeAt(0)
-
-            _trajectoryTime.reset()
-
-            if (_currentTrajectory.isEmpty()) {
-                pause = true
-
-                _eventBus.invoke(DriveTrain.SetDriveCmEvent(Vec2.ZERO, 0.0))
-            }
-        }
+        updateTrajectory(currentTrajectory, _trajectoryTime.seconds())
     }
 
     private var _currentTrajectory = arrayListOf<Any>()
@@ -85,6 +62,37 @@ class RoadRunner : IRobotModule {
     val isEndTrajectory: Boolean
         get() = _currentTrajectory.isEmpty()
 
+    private fun updateTrajectory(trajectory: Any, time: Double){
+        if (pause)
+            return
+
+        val headingVelocity =
+            when (trajectory) {
+                is TimeTrajectory -> trajectory[time].velocity().angVel.value()
+                is Action -> trajectory.turnVelocity(time)
+                else -> throw Exception("trajectory not support " + trajectory::class.simpleName)
+            }
+
+        val transVelocity =
+            when (trajectory) {
+                is TimeTrajectory -> Vec2(trajectory[time].velocity().linearVel.value())
+                is Action -> trajectory.transVelocity(time)
+                else -> throw Exception("trajectory not support " + trajectory::class.simpleName)
+            }
+
+        _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
+
+        if ((trajectory is TimeTrajectory && time > trajectory.duration) || (trajectory is Action && trajectory.isEnd())) {
+            _currentTrajectory.removeAt(0)
+
+            if (_currentTrajectory.isEmpty()) {
+                pause = true
+
+                _eventBus.invoke(DriveTrain.SetDriveCmEvent(Vec2.ZERO, 0.0))
+            }
+        }
+    }
+
     var pause: Boolean = false
         set(value) {
             if (isEndTrajectory)
@@ -93,21 +101,7 @@ class RoadRunner : IRobotModule {
             field = value
 
             if (!value) {
-                val currentTrajectory = _currentTrajectory[0]
-
-                val headingVelocity =
-                    if (currentTrajectory is TimeTrajectory) currentTrajectory[_trajectoryTime.seconds()].velocity().angVel.value()
-                    else if (currentTrajectory is Action) currentTrajectory.turnVelocity(
-                        _trajectoryTime.seconds()
-                    ) else 0.0
-
-                val transVelocity =
-                    if (currentTrajectory is TimeTrajectory) Vec2(currentTrajectory[_trajectoryTime.seconds()].velocity().linearVel.value())
-                    else if (currentTrajectory is Action) currentTrajectory.transVelocity(
-                        _trajectoryTime.seconds()
-                    ) else Vec2.ZERO
-
-                _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
+                updateTrajectory(_currentTrajectory[0], _trajectoryTime.seconds())
 
                 _trajectoryTime.start()
 
