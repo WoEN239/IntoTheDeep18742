@@ -31,13 +31,13 @@ object Configs {
         var Y_LAG = 1.2
 
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.0)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.025, 0.1, 0.2, 0.0005, 0.0006)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.0)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.1)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.05, 0.05, 0.15, 0.003, 0.185)
 
         @JvmField
         var VELOSITY_SLOW_K = 0.5

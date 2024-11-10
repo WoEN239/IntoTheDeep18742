@@ -66,10 +66,10 @@ class DriveTrain : IRobotModule {
             driveSimpleDirection(Vec2(
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
-                _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _rotateVelocity))
+                _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity))
 
-            StaticTelemetry.addData("current velocity", it.velocity.x)
-            StaticTelemetry.addData("target velocity", _targetDirectionVelocity.x)
+            StaticTelemetry.addData("current velocity", _rotateVelocity)
+            StaticTelemetry.addData("target velocity", _targetRotateVelocity)
         }
     }
 
@@ -89,19 +89,19 @@ class DriveTrain : IRobotModule {
     }
 
     override fun start() {
-        var action = {}
+        /*var action = {}
 
         action = {
-            _eventBus.invoke(SetDriveCmEvent(Vec2(100.0, 0.0), 0.0))
+            _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 0.0), 2.0))
 
             Timers.newTimer().start(0.8){
-                _eventBus.invoke(SetDriveCmEvent(Vec2(-100.0, 0.0), 0.0))
+                _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 0.0), -2.0))
 
                 Timers.newTimer().start(0.8, action)
             }
         }
 
-        action.invoke()
+        action.invoke()*/
     }
 
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
