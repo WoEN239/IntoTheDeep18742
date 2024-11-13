@@ -23,6 +23,8 @@ data class Angle(var angle: Double){
 
             return chopedAng
         }
+
+        val ZERO = Angle(0.0)
     }
 
     init {
