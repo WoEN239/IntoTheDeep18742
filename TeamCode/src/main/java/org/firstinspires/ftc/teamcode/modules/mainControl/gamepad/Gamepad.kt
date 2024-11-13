@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
@@ -12,11 +13,13 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
-object Gamepad : IRobotModule {
+class Gamepad : IRobotModule {
     private lateinit var _gamepad: Gamepad
+    private lateinit var _eventBus: EventBus
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         _gamepad = collector.robot.gamepad1
+        _eventBus = bus
     }
 
     private var _promotedOld = false
@@ -27,6 +30,7 @@ object Gamepad : IRobotModule {
     private var _rotateOldU = false
 
     override fun lateUpdate() {
+        _eventBus.invoke(SetDrivePowerEvent(Vec2((_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble()), (_gamepad.right_stick_x).toDouble()))
         /*DriveTrain.drivePowerDirection(
             Vec2(
                 (_gamepad.left_stick_y).toDouble(),

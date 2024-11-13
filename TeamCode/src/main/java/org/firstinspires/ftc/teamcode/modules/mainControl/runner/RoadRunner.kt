@@ -17,26 +17,36 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
+import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
+import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 class RoadRunner : IRobotModule {
-    companion object{
-        fun newTrajectory() = ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
+    companion object {
+        fun newTrajectory() =
+            ThreadedTrajectoryBuilder(Configs.RoadRunnerConfig.BUILDER_THREAD_COUNT)
     }
 
     private lateinit var _robot: LinearOpMode
 
     private lateinit var _eventBus: EventBus
 
+    private var _odometerPosition = Vec2.ZERO
+    private var _gyroRotation = Angle.ZERO
+
+    private var _odometerVelocity = Vec2.ZERO
+    private var _gyroVelocity = 0.0
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _robot = collector.robot
         _eventBus = bus
 
-        bus.subscribe(RunTrajectoryEvent::class){
+        bus.subscribe(RunTrajectoryEvent::class) {
             if (_currentTrajectory.isEmpty())
                 _trajectoryTime.reset()
 
@@ -46,16 +56,37 @@ class RoadRunner : IRobotModule {
             bus.invoke(PauseTrajectoryEvent(false))
         }
 
-        bus.subscribe(PauseTrajectoryEvent::class){
+        bus.subscribe(PauseTrajectoryEvent::class) {
             _pause = it.pause
+        }
+
+        bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class) {
+            _odometerPosition = it.position
+            _odometerVelocity = it.velocity
+        }
+
+        bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class) {
+            _gyroRotation = it.rotation
+            _gyroVelocity = it.velocity
         }
     }
 
     override fun start() {
-        _eventBus.invoke(RunTrajectoryEvent(newTrajectory().turnTo(Math.toRadians(90.0))))
+        _eventBus.invoke(RunTrajectoryEvent(newTrajectory().strafeTo(Vec2(50.0, 50.0))))
     }
 
     override fun update() {
+
+        _eventBus.invoke(
+            DriveTrain.SetDriveCmEvent(
+                _transVelocity,
+                _headingVelocity/* + (_headingVelocity - _gyroVelocity) * Configs.RoadRunnerConfig.ROTATE_VELOCITY_P + (Angle(_headingPosition) - _gyroRotation).angle * Configs.RoadRunnerConfig.ROTATE_POSITION_P*/
+            )
+        )
+
+        if (_pause || _currentTrajectory.isEmpty())
+            return
+
         val currentTrajectory = _currentTrajectory[0]
 
         updateTrajectory(currentTrajectory, _trajectoryTime.seconds())
@@ -63,31 +94,40 @@ class RoadRunner : IRobotModule {
 
     private var _currentTrajectory = arrayListOf<Any>()
 
-    class RunTrajectoryEvent(val trajectory: ThreadedTrajectoryBuilder): IEvent
-    class EndTrajectoryEvent: IEvent
-    class PauseTrajectoryEvent(val pause: Boolean): IEvent
+    class RunTrajectoryEvent(val trajectory: ThreadedTrajectoryBuilder) : IEvent
+    class EndTrajectoryEvent : IEvent
+    class PauseTrajectoryEvent(val pause: Boolean) : IEvent
 
     private val _trajectoryTime = ElapsedTimeExtra()
 
-    private fun updateTrajectory(trajectory: Any, time: Double){
+    private var _headingVelocity = 0.0
+    private var _transVelocity = Vec2.ZERO
+    private var _headingPosition = 0.0
+
+    private fun updateTrajectory(trajectory: Any, time: Double) {
         if (_pause)
             return
 
-        val headingVelocity =
+        _headingVelocity =
             when (trajectory) {
                 is TimeTrajectory -> trajectory[time].velocity().angVel.value()
                 is Action -> trajectory.turnVelocity(time)
                 else -> throw Exception("trajectory not support " + trajectory::class.simpleName)
             }
 
-        val transVelocity =
+        _transVelocity =
             when (trajectory) {
                 is TimeTrajectory -> Vec2(trajectory[time].velocity().linearVel.value())
                 is Action -> trajectory.transVelocity(time)
                 else -> throw Exception("trajectory not support " + trajectory::class.simpleName)
             }
 
-        _eventBus.invoke(DriveTrain.SetDriveCmEvent(transVelocity, headingVelocity))
+        _headingPosition =
+            when (trajectory) {
+                is TimeTrajectory -> trajectory[time].heading.value().real
+                is Action -> trajectory.turnPosition(time)
+                else -> throw Exception("trajectory not support " + trajectory::class.simpleName)
+            }
 
         if ((trajectory is TimeTrajectory && time > trajectory.duration) || (trajectory is Action && trajectory.isEnd())) {
             _currentTrajectory.removeAt(0)
@@ -167,10 +207,12 @@ class RoadRunner : IRobotModule {
             )
 
         private fun last(): TrajectoryBuilder {
-            val last = _trajectoryBuilders.last()
+            if(_trajectoryBuilders.isNotEmpty()) {
+                val last = _trajectoryBuilders.last()
 
-            if (last is TrajectoryBuilder)
-                return last
+                if (last is TrajectoryBuilder)
+                    return last
+            }
 
             _trajectoryBuilders.add(newTB(_oldPose))
 

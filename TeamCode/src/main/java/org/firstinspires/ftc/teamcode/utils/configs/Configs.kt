@@ -34,22 +34,22 @@ object Configs {
         var VELOCITY_PIDF_FORWARD = PIDConfig(0.025, 0.1, 0.2, 0.0005, 0.0006)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.1)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.07, 0.15, 0.00005, 0.01)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.05, 0.05, 0.15, 0.003, 0.185)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.04, 0.15, 0.05, 0.002, 0.23)
 
         @JvmField
         var VELOSITY_SLOW_K = 0.5
 
         @JvmField
-        var MAX_SPEED_FORWARD = 1.0
+        var MAX_SPEED_FORWARD = 100.0
 
         @JvmField
-        var MAX_SPEED_SIDE = 1.0
+        var MAX_SPEED_SIDE = 100.0
 
         @JvmField
-        var MAX_SPEED_TURN = 1.0
+        var MAX_SPEED_TURN = 4.0
     }
 
     @Config
@@ -58,7 +58,7 @@ object Configs {
         var BUILDER_THREAD_COUNT = 5
 
         @JvmField
-        var MAX_ROTATE_VELOCITY = 1.0
+        var MAX_ROTATE_VELOCITY = 5.0
 
         @JvmField
         var MAX_ACCEL = 1.0
@@ -67,7 +67,13 @@ object Configs {
         var MAX_TRANSLATION_VELOCITY = 1.0
 
         @JvmField
-        var ROTATE_ACCEL = 0.1
+        var ROTATE_ACCEL = 1.0
+
+        @JvmField
+        var ROTATE_VELOCITY_P = 0.1
+
+        @JvmField
+        var ROTATE_POSITION_P = 10.0
     }
 
     @Config

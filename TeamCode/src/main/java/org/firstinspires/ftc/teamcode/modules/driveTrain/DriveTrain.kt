@@ -68,8 +68,8 @@ class DriveTrain : IRobotModule {
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
                 _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity))
 
-            StaticTelemetry.addData("current velocity", _rotateVelocity)
-            StaticTelemetry.addData("target velocity", _targetRotateVelocity)
+            StaticTelemetry.addData("current velocity", it.velocity.y)
+            StaticTelemetry.addData("target velocity", _targetDirectionVelocity.y)
         }
     }
 
@@ -92,12 +92,12 @@ class DriveTrain : IRobotModule {
         /*var action = {}
 
         action = {
-            _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 0.0), 2.0))
+            _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, -50.0), 0.0))
 
-            Timers.newTimer().start(0.8){
-                _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 0.0), -2.0))
+            Timers.newTimer().start(1.8){
+                _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 50.0), 0.0))
 
-                Timers.newTimer().start(0.8, action)
+                Timers.newTimer().start(1.8, action)
             }
         }
 

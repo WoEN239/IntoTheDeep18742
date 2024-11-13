@@ -28,7 +28,7 @@ class OdometersOdometry : IRobotModule {
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
-                it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity
+                it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * -_rotateVelocity
             )
             bus.invoke(UpdateOdometersOdometryEvent(_position, velocity))
         }
