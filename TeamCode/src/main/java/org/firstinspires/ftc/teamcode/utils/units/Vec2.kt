@@ -20,6 +20,7 @@ data class Vec2(var x: Double, var y: Double) {
     }
 
     constructor(rrVec: Vector2d) : this(rrVec.x, rrVec.y);
+    constructor(x: Double) : this(x, x)
 
     fun length() = x * x + y * y
 

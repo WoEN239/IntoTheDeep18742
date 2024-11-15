@@ -25,12 +25,6 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var WHEEL_CENTER_RADIUS = 1.0
-
-        @JvmField
-        var Y_LAG = 1.2
-
-        @JvmField
         var VELOCITY_PIDF_FORWARD = PIDConfig(0.025, 0.1, 0.2, 0.0005, 0.0006)
 
         @JvmField
@@ -38,9 +32,6 @@ object Configs {
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.04, 0.15, 0.05, 0.002, 0.23)
-
-        @JvmField
-        var VELOSITY_SLOW_K = 0.5
 
         @JvmField
         var MAX_SPEED_FORWARD = 100.0
@@ -54,9 +45,6 @@ object Configs {
 
     @Config
     internal object RoadRunnerConfig {
-        @JvmField
-        var BUILDER_THREAD_COUNT = 5
-
         @JvmField
         var MAX_ROTATE_VELOCITY = 5.0
 
@@ -73,7 +61,13 @@ object Configs {
         var ROTATE_VELOCITY_P = 0.1
 
         @JvmField
-        var ROTATE_POSITION_P = 10.0
+        var ROTATE_P = 10.0
+
+        @JvmField
+        var POSITION_VELOCITY_P = 0.1
+
+        @JvmField
+        var POSITION_P = 10.0
     }
 
     @Config

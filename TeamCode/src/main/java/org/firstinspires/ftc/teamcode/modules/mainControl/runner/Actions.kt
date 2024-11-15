@@ -1,38 +1,97 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.runner
 
+import com.acmerobotics.roadrunner.AngularVelConstraint
+import com.acmerobotics.roadrunner.MinVelConstraint
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.Pose2dDual
+import com.acmerobotics.roadrunner.ProfileAccelConstraint
+import com.acmerobotics.roadrunner.ProfileParams
+import com.acmerobotics.roadrunner.Time
+import com.acmerobotics.roadrunner.TimeTrajectory
 import com.acmerobotics.roadrunner.TimeTurn
+import com.acmerobotics.roadrunner.TrajectoryBuilder
+import com.acmerobotics.roadrunner.TrajectoryBuilderParams
+import com.acmerobotics.roadrunner.TranslationalVelConstraint
 import com.acmerobotics.roadrunner.TurnConstraints
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 interface Action {
-    fun isEnd(): Boolean
+    fun isEnd(time: Double): Boolean
 
     fun transVelocity(time: Double): Vec2
 
     fun turnVelocity(time: Double): Double
 
-    fun turnPosition(time: Double): Double
+    fun targetHeading(time: Double): Angle
+
+    fun targetPosition(time: Double): Vec2
 }
 
-class TurnTo(val angle: Double): Action{
+class TurnTo(val angle: Double, val currentPosition: Vec2): Action{
     private val _turn = TimeTurn(Pose2d(0.0, 0.0, 0.0), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
-    private val _time = ElapsedTime()
-
-    init {
-        _time.reset()
-    }
-
-    override fun isEnd(): Boolean = _time.seconds() > _turn.duration
+    override fun isEnd(time: Double) = time > _turn.duration
 
     override fun transVelocity(time: Double) = Vec2.ZERO
 
-    override fun turnVelocity(time: Double) = _turn[_time.seconds()].heading.velocity().value()
+    override fun turnVelocity(time: Double) = _turn[time].heading.velocity().value()
 
-    override fun turnPosition(time: Double) = _turn[_time.seconds()].heading.value().toDouble()
+    override fun targetHeading(time: Double) = Angle(_turn[time].heading.value().toDouble())
+
+    override fun targetPosition(time: Double) = currentPosition
+}
+
+class RunTrajectory(rawTrajectory: TrajectoryBuilder): Action{
+    companion object{
+        fun newTB(begPose: Pose2d) =
+            TrajectoryBuilder(
+                TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
+                begPose, 0.0,
+                MinVelConstraint(
+                    listOf(
+                        TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
+                        AngularVelConstraint(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY)
+                    )
+                ),
+                ProfileAccelConstraint(
+                    -Configs.RoadRunnerConfig.MAX_ACCEL,
+                    Configs.RoadRunnerConfig.MAX_ACCEL
+                )
+            )
+    }
+
+    private val _trajectory: Array<TimeTrajectory>
+
+    init {
+        val buildedTrajectory = rawTrajectory.build()
+        _trajectory = Array(buildedTrajectory.size){TimeTrajectory(buildedTrajectory[it])}
+    }
+
+    private fun getPoseTime(time: Double): Pose2dDual<Time> {
+        var sumDuration = 0.0
+
+        for(i in _trajectory){
+            if(i.duration + sumDuration > time)
+                return i[time - sumDuration]
+
+            sumDuration += i.duration
+        }
+
+        return _trajectory.last()[time]
+    }
+
+    fun duration() = _trajectory.sumOf { it.duration }
+
+    override fun isEnd(time: Double) = _trajectory.sumOf { it.duration } < time
+
+    override fun transVelocity(time: Double) = Vec2(getPoseTime(time).velocity().linearVel.value())
+
+    override fun turnVelocity(time: Double) = getPoseTime(time).velocity().angVel.value()
+
+    override fun targetHeading(time: Double) = Angle(getPoseTime(time).heading.value().toDouble())
+
+    override fun targetPosition(time: Double) = Vec2(getPoseTime(time).position.value())
 }
