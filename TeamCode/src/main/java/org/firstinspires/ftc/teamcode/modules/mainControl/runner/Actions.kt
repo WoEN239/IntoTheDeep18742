@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.ProfileParams
 import com.acmerobotics.roadrunner.Time
 import com.acmerobotics.roadrunner.TimeTrajectory
 import com.acmerobotics.roadrunner.TimeTurn
+import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TrajectoryBuilder
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams
 import com.acmerobotics.roadrunner.TranslationalVelConstraint
@@ -44,7 +45,8 @@ class TurnTo(val angle: Double, val currentPosition: Vec2): Action{
     override fun targetPosition(time: Double) = currentPosition
 }
 
-class RunTrajectory(rawTrajectory: TrajectoryBuilder): Action{
+
+open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Action{
     companion object{
         fun newTB(begPose: Pose2d) =
             TrajectoryBuilder(
@@ -63,12 +65,7 @@ class RunTrajectory(rawTrajectory: TrajectoryBuilder): Action{
             )
     }
 
-    private val _trajectory: Array<TimeTrajectory>
-
-    init {
-        val buildedTrajectory = rawTrajectory.build()
-        _trajectory = Array(buildedTrajectory.size){TimeTrajectory(buildedTrajectory[it])}
-    }
+    private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
 
     private fun getPoseTime(time: Double): Pose2dDual<Time> {
         var sumDuration = 0.0

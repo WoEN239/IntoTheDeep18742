@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.runner
 
 import com.acmerobotics.roadrunner.TimeTrajectory
+import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TrajectoryBuilder
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
@@ -114,11 +115,15 @@ class RoadRunner : IRobotModule {
             return this
         }
 
-        fun runRRTrajectory(trajectory: TrajectoryBuilder): ActionsBuilder{
-            val action = RunTrajectory(trajectory)
+        fun runRRTrajectory(trajectory: TrajectoryBuilder) = runRRBuildedTrajectory(trajectory.build())
+
+        fun runRRBuildedTrajectory(build: List<Trajectory>): ActionsBuilder {
+            val action = RunBuildedTrajectory(build)
 
             currentPosition = action.targetPosition(action.duration())
             currentHeading = action.targetHeading(action.duration())
+
+            actions.add(action)
 
             return this
         }
