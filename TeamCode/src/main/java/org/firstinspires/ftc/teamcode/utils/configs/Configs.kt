@@ -31,7 +31,7 @@ object Configs {
         var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.07, 0.15, 0.00005, 0.01)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.06, 0.0, 0.0, 0.0, 0.07, 0.21)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.06, 0.0, 0.0, 0.0, 0.07, fr = 0.21)
 
         @JvmField
         var MAX_SPEED_FORWARD = 100.0
@@ -58,13 +58,7 @@ object Configs {
         var ROTATE_ACCEL = 2.0
 
         @JvmField
-        var ROTATE_VELOCITY_P = 0.5
-
-        @JvmField
         var ROTATE_P = 5.0
-
-        @JvmField
-        var POSITION_VELOCITY_P = 0.0
 
         @JvmField
         var POSITION_P = 0.0

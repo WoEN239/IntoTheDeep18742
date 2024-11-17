@@ -112,13 +112,10 @@ class ActionRunner : IRobotModule {
     }
 
     override fun update() {
-        val targetTansVelocity = _targetTransVelocity + (_targetPosition - _odometerPosition) * Vec2(Configs.RoadRunnerConfig.POSITION_P)
-        val targetHeadingVelocity = _targetHeadingVelocity + (_targetHeading - _gyroRotation).angle * Configs.RoadRunnerConfig.ROTATE_P
-
         _eventBus.invoke(
             DriveTrain.SetDriveCmEvent(
-                _targetTransVelocity + (targetTansVelocity - _odometerVelocity) * Vec2(Configs.RoadRunnerConfig.POSITION_VELOCITY_P),
-                _targetHeadingVelocity + (targetHeadingVelocity - _gyroVelocity) * Configs.RoadRunnerConfig.ROTATE_VELOCITY_P
+                _targetTransVelocity + (_targetPosition - _odometerPosition) * Vec2(Configs.RoadRunnerConfig.POSITION_P),
+                _targetHeadingVelocity + (_targetHeading - _gyroRotation).angle * Configs.RoadRunnerConfig.ROTATE_P
             )
         )
 
