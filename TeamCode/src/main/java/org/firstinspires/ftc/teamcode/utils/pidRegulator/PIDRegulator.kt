@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
+import kotlin.math.sign
 
 /**
  * Класс для настроек пида, класс можно использовать в дашборде
@@ -18,7 +19,8 @@ data class PIDConfig(
     @JvmField var d: Double = 0.0,
     @JvmField var f: Double = 0.0,
     @JvmField var g: Double = 0.0,
-    @JvmField var limitU: Double = 1.0
+    @JvmField var limitU: Double = 1.0,
+    @JvmField var fr: Double = 0.0
 )
 
 /**
@@ -47,7 +49,7 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         val uD = (err - _errOld) / _deltaTime.seconds() * config.d
         _errOld = err
 
-        var u = uP + uI + uD + target * config.f + config.g
+        var u = uP + uI + uD + target * config.f + config.g + sign(target) * config.fr
         u = clamp(u, -config.limitU, config.limitU)
 
         _deltaTime.reset()
