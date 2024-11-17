@@ -30,15 +30,15 @@ interface Action {
     fun targetPosition(time: Double): Vec2
 }
 
-class TurnTo(val angle: Double, val currentPosition: Vec2): Action{
-    private val _turn = TimeTurn(Pose2d(0.0, 0.0, 0.0), angle,
+class TurnTo(val angle: Double, currentAngle: Angle, val currentPosition: Vec2): Action{
+    private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentAngle.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
     override fun isEnd(time: Double) = time > _turn.duration
 
     override fun transVelocity(time: Double) = Vec2.ZERO
 
-    override fun turnVelocity(time: Double) = _turn[time].heading.velocity().value()
+    override fun turnVelocity(time: Double) = _turn[time].velocity().angVel.value()
 
     override fun targetHeading(time: Double) = Angle(_turn[time].heading.value().toDouble())
 
@@ -47,24 +47,6 @@ class TurnTo(val angle: Double, val currentPosition: Vec2): Action{
 
 
 open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Action{
-    companion object{
-        fun newTB(begPose: Pose2d) =
-            TrajectoryBuilder(
-                TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
-                begPose, 0.0,
-                MinVelConstraint(
-                    listOf(
-                        TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
-                        AngularVelConstraint(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY)
-                    )
-                ),
-                ProfileAccelConstraint(
-                    -Configs.RoadRunnerConfig.MAX_ACCEL,
-                    Configs.RoadRunnerConfig.MAX_ACCEL
-                )
-            )
-    }
-
     private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
 
     private fun getPoseTime(time: Double): Pose2dDual<Time> {

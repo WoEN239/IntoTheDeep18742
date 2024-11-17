@@ -25,6 +25,8 @@ class HardwareOdometers : IRobotModule {
 
         _sideOdometer = EncoderFix(collector.devices.sideOdometer, calc)
 
+        collector.devices.sideOdometer.direction = DcMotorSimple.Direction.REVERSE
+
         _eventBus = bus
     }
 

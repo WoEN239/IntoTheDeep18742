@@ -31,7 +31,7 @@ object Configs {
         var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.07, 0.15, 0.00005, 0.01)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.04, 0.15, 0.05, 0.002, 0.23)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.06, 0.0, 0.0, 0.0, 0.07, 0.21)
 
         @JvmField
         var MAX_SPEED_FORWARD = 100.0
@@ -46,7 +46,7 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var MAX_ROTATE_VELOCITY = 5.0
+        var MAX_ROTATE_VELOCITY = 5.5
 
         @JvmField
         var MAX_ACCEL = 1.0
@@ -55,19 +55,19 @@ object Configs {
         var MAX_TRANSLATION_VELOCITY = 1.0
 
         @JvmField
-        var ROTATE_ACCEL = 1.0
+        var ROTATE_ACCEL = 2.0
 
         @JvmField
-        var ROTATE_VELOCITY_P = 0.1
+        var ROTATE_VELOCITY_P = 0.5
 
         @JvmField
-        var ROTATE_P = 10.0
+        var ROTATE_P = 5.0
 
         @JvmField
-        var POSITION_VELOCITY_P = 0.1
+        var POSITION_VELOCITY_P = 0.0
 
         @JvmField
-        var POSITION_P = 10.0
+        var POSITION_P = 0.0
     }
 
     @Config
@@ -188,7 +188,7 @@ object Configs {
     @Config
     internal object OdometryConfig{
         @JvmField
-        var SIDE_ODOMETER_RADIUS = 15.0
+        var SIDE_ODOMETER_RADIUS = 12.0
 
         @JvmField
         var FORWARD_ODOMETER_LEFT_RADIUS = 15.5

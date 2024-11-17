@@ -33,8 +33,6 @@ class MergeGyro : IRobotModule {
             _oldRotation = rotation
 
             StaticTelemetry.addData("robot merge rotate", rotation.toDegree())
-            StaticTelemetry.addData("robot odometer rotate", it.rotate.toDegree())
-            StaticTelemetry.addData("robot gyro rotate",  _gyroRotate.toDegree())
         }
     }
 

@@ -127,9 +127,19 @@ class EncoderOnly(private val _motor: DcMotorEx): DcMotorEx {
         throw Exception("encoderOnly not support velocity")
     }
 
-    override fun getVelocity() = _motor.velocity
+    override fun getVelocity(): Double {
+        if(_direction == Direction.FORWARD)
+            return _motor.velocity
 
-    override fun getVelocity(unit: AngleUnit?) = _motor.getVelocity(unit)
+        return -_motor.velocity
+    }
+
+    override fun getVelocity(unit: AngleUnit?): Double {
+        if (_direction == Direction.FORWARD)
+            return _motor.getVelocity(unit)
+
+        return -_motor.getVelocity(unit)
+    }
 
     override fun setPIDCoefficients(mode: DcMotor.RunMode?, pidCoefficients: PIDCoefficients?) {
         throw Exception("encoderOnly not support pid")

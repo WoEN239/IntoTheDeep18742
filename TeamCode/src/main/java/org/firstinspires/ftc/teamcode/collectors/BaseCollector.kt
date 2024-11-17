@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
-import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RoadRunner
+import org.firstinspires.ftc.teamcode.modules.mainControl.runner.ActionRunner
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.IMUGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.OdometerGyro
@@ -18,7 +17,6 @@ import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
-import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
@@ -32,7 +30,8 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain()/*, RoadRunner()*/)
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
+        ActionRunner())
 
     private val _updateHandler = UpdateHandler()
     private val _bulkAdapter = Bulk(devices)
