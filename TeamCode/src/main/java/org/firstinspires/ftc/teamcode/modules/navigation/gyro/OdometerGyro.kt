@@ -14,7 +14,7 @@ class OdometerGyro : IRobotModule {
             bus.invoke(
                 UpdateOdometerGyroEvent(
                     Angle((it.rightPosition / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftPosition / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS) / 2.0),
-                    it.rightVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS
+                    (it.rightVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS) / 2
                 )
             )
         }

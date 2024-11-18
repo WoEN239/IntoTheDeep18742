@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import kotlin.math.abs
 
 class ActionRunner : IRobotModule {
     class NewActionsEvent(var builder: ActionsBuilder?): IEvent
@@ -48,6 +49,9 @@ class ActionRunner : IRobotModule {
     private var _targetHeading = Angle.ZERO
     private var _targetPosition = Vec2.ZERO
 
+    private var _currentActionAngle = Angle.ZERO
+    private var _currentActionPosition = Vec2.ZERO
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
@@ -56,6 +60,9 @@ class ActionRunner : IRobotModule {
                 _trajectoryTime.reset()
 
             _currentActions.addAll(it.trajectory.actions)
+
+            _currentActionPosition = it.trajectory.currentPosition
+            _currentActionAngle = it.trajectory.currentHeading
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class) {
@@ -69,7 +76,7 @@ class ActionRunner : IRobotModule {
         }
 
         bus.subscribe(NewActionsEvent::class){
-            it.builder = ActionsBuilder(_targetPosition, _targetHeading)
+            it.builder = ActionsBuilder(_currentActionPosition, _currentActionAngle)
         }
         
         bus.subscribe(NewRRBuilder::class) {
@@ -92,34 +99,36 @@ class ActionRunner : IRobotModule {
     }
 
     override fun start() {
-        Timers.newTimer().start(5.0) {
-            var actionRunner = NewActionsEvent(null)
+        var a = {}
 
-            _eventBus.invoke(actionRunner)
-
-            _eventBus.invoke(
-                RunActionsEvent(
-                    actionRunner.builder!!.turnTo(
-                        Angle(
-                            Math.toDegrees(
-                                180.0
-                            )
-                        )
-                    )
-                )
+        a = {
+            ActionRunnerHelper.runActions(
+                ActionRunnerHelper.newAB().turn(Angle(Math.toRadians(180.0)))
             )
+
+            Timers.newTimer().start(10.0) {
+                ActionRunnerHelper.runActions(
+                    ActionRunnerHelper.newAB().turn(Angle(Math.toRadians(-180.0)))
+                )
+
+                Timers.newTimer().start(10.0, a)
+            }
         }
+
+        Timers.newTimer().start(10.0, a)
     }
 
     override fun update() {
+        val headingErr = (_targetHeading - _gyroRotation).angle
+
         _eventBus.invoke(
             DriveTrain.SetDriveCmEvent(
                 _targetTransVelocity + (_targetPosition - _odometerPosition) * Vec2(Configs.RoadRunnerConfig.POSITION_P),
-                _targetHeadingVelocity + (_targetHeading - _gyroRotation).angle * Configs.RoadRunnerConfig.ROTATE_P
+                _targetHeadingVelocity + if(abs(headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0
             )
         )
 
-        StaticTelemetry.addData("targetPosition", _targetPosition)
+        StaticTelemetry.addData("targetHeading", _targetHeading.toDegree())
 
         if (_currentActions.isEmpty)
             return
@@ -148,10 +157,10 @@ class ActionRunner : IRobotModule {
     class ActionsBuilder(var currentPosition: Vec2, var currentHeading: Angle) {
         val actions = arrayListOf<Action>()
 
-        fun turnTo(rot: Angle): ActionsBuilder {
-            actions.add(TurnTo(rot.angle, currentHeading, currentPosition))
+        fun turn(rot: Angle): ActionsBuilder {
+            actions.add(Turn(rot.angle, currentHeading, currentPosition))
 
-            currentHeading = rot
+            currentHeading += rot
 
             return this
         }

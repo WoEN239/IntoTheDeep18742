@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry

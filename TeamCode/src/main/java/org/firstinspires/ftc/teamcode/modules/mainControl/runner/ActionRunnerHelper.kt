@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.runner.ActionRunner.Ne
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.ActionRunner.RunActionsEvent
 
 object ActionRunnerHelper: IRobotModule {
-    lateinit var _eventBus: EventBus
+    private lateinit var _eventBus: EventBus
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus

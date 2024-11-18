@@ -30,7 +30,7 @@ interface Action {
     fun targetPosition(time: Double): Vec2
 }
 
-class TurnTo(val angle: Double, currentAngle: Angle, val currentPosition: Vec2): Action{
+class Turn(val angle: Double, currentAngle: Angle, val currentPosition: Vec2): Action{
     private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentAngle.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
@@ -40,7 +40,7 @@ class TurnTo(val angle: Double, currentAngle: Angle, val currentPosition: Vec2):
 
     override fun turnVelocity(time: Double) = _turn[time].velocity().angVel.value()
 
-    override fun targetHeading(time: Double) = Angle(_turn[time].heading.value().toDouble())
+    override fun targetHeading(time: Double) = Angle(_turn[time].value().heading.toDouble())
 
     override fun targetPosition(time: Double) = currentPosition
 }
