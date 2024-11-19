@@ -1,18 +1,11 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.runner
 
-import com.acmerobotics.roadrunner.AngularVelConstraint
-import com.acmerobotics.roadrunner.MinVelConstraint
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Pose2dDual
-import com.acmerobotics.roadrunner.ProfileAccelConstraint
-import com.acmerobotics.roadrunner.ProfileParams
 import com.acmerobotics.roadrunner.Time
 import com.acmerobotics.roadrunner.TimeTrajectory
 import com.acmerobotics.roadrunner.TimeTurn
 import com.acmerobotics.roadrunner.Trajectory
-import com.acmerobotics.roadrunner.TrajectoryBuilder
-import com.acmerobotics.roadrunner.TrajectoryBuilderParams
-import com.acmerobotics.roadrunner.TranslationalVelConstraint
 import com.acmerobotics.roadrunner.TurnConstraints
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
@@ -28,10 +21,12 @@ interface Action {
     fun targetHeading(time: Double): Angle
 
     fun targetPosition(time: Double): Vec2
+
+    fun getEndPosition(startHeading: Angle, startPosition: Vec2): Pair<Angle, Vec2>
 }
 
-class Turn(val angle: Double, currentAngle: Angle, val currentPosition: Vec2): Action{
-    private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentAngle.angle), angle,
+class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2): Action{
+    private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentHeading.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
     override fun isEnd(time: Double) = time > _turn.duration
@@ -43,6 +38,8 @@ class Turn(val angle: Double, currentAngle: Angle, val currentPosition: Vec2): A
     override fun targetHeading(time: Double) = Angle(_turn[time].value().heading.toDouble())
 
     override fun targetPosition(time: Double) = currentPosition
+
+    override fun getEndPosition(startHeading: Angle, startPosition: Vec2) = Pair(startHeading + Angle(angle), startPosition)
 }
 
 
@@ -62,8 +59,6 @@ open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Action{
         return _trajectory.last()[time]
     }
 
-    fun duration() = _trajectory.sumOf { it.duration }
-
     override fun isEnd(time: Double) = _trajectory.sumOf { it.duration } < time
 
     override fun transVelocity(time: Double) = Vec2(getPoseTime(time).velocity().linearVel.value())
@@ -73,4 +68,10 @@ open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Action{
     override fun targetHeading(time: Double) = Angle(getPoseTime(time).heading.value().toDouble())
 
     override fun targetPosition(time: Double) = Vec2(getPoseTime(time).position.value())
+
+    override fun getEndPosition(startHeading: Angle, startPosition: Vec2): Pair<Angle, Vec2> {
+        val duration = _trajectory.sumOf { it.duration }
+
+        return Pair(targetHeading(duration), targetPosition(duration))
+    }
 }

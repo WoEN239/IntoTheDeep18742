@@ -83,7 +83,7 @@ class ActionRunner : IRobotModule {
             it.builder =
                 TrajectoryBuilder(
                     TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
-                    Pose2d(_targetPosition.x, _targetPosition.y, _targetHeading.angle), 0.0,
+                    Pose2d(_currentActionPosition.x, _currentActionPosition.y, _currentActionAngle.angle), 0.0,
                     MinVelConstraint(
                         listOf(
                             TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
@@ -158,9 +158,14 @@ class ActionRunner : IRobotModule {
         val actions = arrayListOf<Action>()
 
         fun turn(rot: Angle): ActionsBuilder {
-            actions.add(Turn(rot.angle, currentHeading, currentPosition))
+            val action = Turn(rot.angle, currentHeading, currentPosition)
 
-            currentHeading += rot
+            actions.add(action)
+
+            val pos = action.getEndPosition(currentHeading, currentPosition)
+
+            currentPosition = pos.second
+            currentHeading = pos.first
 
             return this
         }
@@ -170,10 +175,12 @@ class ActionRunner : IRobotModule {
         fun runRRBuildedTrajectory(build: List<Trajectory>): ActionsBuilder {
             val action = RunBuildedTrajectory(build)
 
-            currentPosition = action.targetPosition(action.duration())
-            currentHeading = action.targetHeading(action.duration())
-
             actions.add(action)
+
+            val pos = action.getEndPosition(currentHeading, currentPosition)
+
+            currentPosition = pos.second
+            currentHeading = pos.first
 
             return this
         }
