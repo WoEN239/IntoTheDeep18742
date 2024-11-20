@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TrajectoryBuilder
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams
 import com.acmerobotics.roadrunner.TranslationalVelConstraint
+import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
@@ -91,44 +92,33 @@ class ActionRunner : IRobotModule {
                         )
                     ),
                     ProfileAccelConstraint(
-                        -Configs.RoadRunnerConfig.MAX_ACCEL,
-                        Configs.RoadRunnerConfig.MAX_ACCEL
+                        -Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL,
+                        Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL
                     )
                 )
         }
     }
 
     override fun start() {
-        var a = {}
-
-        a = {
-            ActionRunnerHelper.runActions(
-                ActionRunnerHelper.newAB().turn(Angle(Math.toRadians(180.0)))
-            )
-
-            Timers.newTimer().start(10.0) {
-                ActionRunnerHelper.runActions(
-                    ActionRunnerHelper.newAB().turn(Angle(Math.toRadians(-180.0)))
-                )
-
-                Timers.newTimer().start(10.0, a)
-            }
-        }
-
-        Timers.newTimer().start(10.0, a)
+        ActionRunnerHelper.runActions(ActionRunnerHelper.newAB()
+            .runRRTrajectory(ActionRunnerHelper.newTB().strafeTo(Vector2d(40.0, 40.0))).turn(Angle(Math.toRadians(90.0))))
     }
 
     override fun update() {
         val headingErr = (_targetHeading - _gyroRotation).angle
+        val posErr = (_targetPosition - _odometerPosition).turn(-_gyroRotation.angle)
 
         _eventBus.invoke(
             DriveTrain.SetDriveCmEvent(
-                _targetTransVelocity + (_targetPosition - _odometerPosition) * Vec2(Configs.RoadRunnerConfig.POSITION_P),
+                _targetTransVelocity +
+                        if(abs(posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) Vec2(posErr.x * Configs.RoadRunnerConfig.POSITION_P_X, 0.0) else Vec2.ZERO +
+                        if(abs(posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) Vec2(0.0, -posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y) else Vec2.ZERO,
                 _targetHeadingVelocity + if(abs(headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0
             )
         )
 
-        StaticTelemetry.addData("targetHeading", _targetHeading.toDegree())
+        StaticTelemetry.addData("err", posErr)
+        StaticTelemetry.addData("targetPosition", _targetPosition)
 
         if (_currentActions.isEmpty)
             return
@@ -143,7 +133,7 @@ class ActionRunner : IRobotModule {
 
         _targetHeading = trajectory.targetHeading(time)
 
-        _targetPosition = trajectory.targetPosition(time)
+        _targetPosition = trajectory.targetPosition(time) * Vec2(1.0, -1.0)
 
         if(trajectory.isEnd(time)){
             _currentActions.removeAt(0)

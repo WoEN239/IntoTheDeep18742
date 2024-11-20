@@ -63,16 +63,16 @@ class DriveTrain : IRobotModule {
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
-            val rotU = _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity) / collector.devices.battery.charge
+            val velS = _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge
 
             driveSimpleDirection(Vec2(
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
-                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
-                rotU)
+                velS),
+                _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity) / collector.devices.battery.charge)
 
-            StaticTelemetry.addData("rot u",  rotU)
-            StaticTelemetry.addData("current velocity", _rotateVelocity)
-            StaticTelemetry.addData("target velocity", _targetRotateVelocity)
+            StaticTelemetry.addData("vel s",  velS)
+            StaticTelemetry.addData("current velocity", it.velocity.y)
+            StaticTelemetry.addData("target velocity", _targetDirectionVelocity.y)
         }
     }
 

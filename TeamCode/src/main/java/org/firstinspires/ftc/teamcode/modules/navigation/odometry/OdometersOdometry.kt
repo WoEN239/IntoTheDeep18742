@@ -6,7 +6,9 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class OdometersOdometry : IRobotModule {
@@ -23,13 +25,15 @@ class OdometersOdometry : IRobotModule {
 
             _position += Vec2(
                 (deltaRightPosition + deltaLeftPosition) / 2.0,
-                deltaSidePosition - (Angle(Configs.OdometryConfig.SIDE_ODOMETER_RADIUS) * deltaRotate).angle
-            ).turn(-_rotation.angle)
+                deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
+            ).turn(_rotation.angle)
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
                 -(it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity)
             )
+
+            StaticTelemetry.drawRect(_position, Vec2(40.0, 10.0), _rotation.angle, Color.RED)
             bus.invoke(UpdateOdometersOdometryEvent(_position, velocity))
         }
 

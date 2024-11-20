@@ -19,6 +19,7 @@ class MergeOdometry: IRobotModule {
 
             StaticTelemetry.drawRect(it.position, Vec2(30.0, 30.0), _rotation.angle, Color.BLUE)
             StaticTelemetry.addData("odometerPosition", it.position)
+            StaticTelemetry.addData("odomeeterVelocity", it.velocity)
         }
 
         bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){

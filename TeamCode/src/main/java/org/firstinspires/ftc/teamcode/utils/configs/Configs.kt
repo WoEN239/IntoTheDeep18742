@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils.configs
 
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDConfig
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object Configs {
     @Config
@@ -25,13 +26,13 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.025, 0.1, 0.2, 0.0005, 0.0006)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.0078, 0.0045, 0.015, 0.0, 0.0035, fr = 0.15)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.07, 0.15, 0.00005, 0.01)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.0078, 0.0045, 0.02, 0.0, 0.005, fr = 0.31)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.19, 0.0, 0.0, 0.0007, 0.147, fr = 0.21)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.19, 0.0, 0.0, 0.0, 0.147, fr = 0.21)
 
         @JvmField
         var MAX_SPEED_FORWARD = 100.0
@@ -49,22 +50,31 @@ object Configs {
         var MAX_ROTATE_VELOCITY = 7.9
 
         @JvmField
-        var MAX_ACCEL = 1.0
+        var MAX_TRANSLATION_ACCEL = 70.0
 
         @JvmField   
-        var MAX_TRANSLATION_VELOCITY = 1.0
+        var MAX_TRANSLATION_VELOCITY = 130.0
 
         @JvmField
         var ROTATE_ACCEL = 4.8
 
         @JvmField
-        var ROTATE_P = 0.0
+        var ROTATE_P = 0.1
 
         @JvmField
-        var ROTATE_SENS = 0.11
+        var ROTATE_SENS = 0.14
 
         @JvmField
-        var POSITION_P = 0.1
+        var POSITION_P_X = 0.1
+
+        @JvmField
+        var POSITION_P_Y = 0.1
+
+        @JvmField
+        var POSITION_SENS_X = 1.3
+
+        @JvmField
+        var POSITION_SENS_Y = 1.3
     }
 
     @Config

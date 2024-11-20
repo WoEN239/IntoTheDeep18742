@@ -41,7 +41,7 @@ data class Vec2(var x: Double, var y: Double) {
     }
 
     operator fun plus(vec: Vec2) = Vec2(x + vec.x, y + vec.y)
-    operator fun minus(vec: Vec2) = Vec2(vec.x - x, vec.y - y)
+    operator fun minus(vec: Vec2) = Vec2(x - vec.x, y - vec.y)
     operator fun times(vec: Vec2) = Vec2(x * vec.x, y * vec.y)
-    operator fun div(vec: Vec2) = Vec2(vec.x / x, vec.y / y)
+    operator fun div(vec: Vec2) = Vec2(x / vec.x, y / vec.y)
 }
