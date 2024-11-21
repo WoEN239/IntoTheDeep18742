@@ -77,10 +77,10 @@ class DriveTrain : IRobotModule {
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        _leftForwardDrive.power = direction.x - direction.y - rotate
-        _rightBackDrive.power = direction.x - direction.y + rotate
-        _leftBackDrive.power = direction.x + direction.y - rotate
-        _rightForwardDrive.power = direction.x + direction.y + rotate
+        _leftForwardDrive.power = direction.x + direction.y - rotate
+        _rightBackDrive.power = direction.x + direction.y + rotate
+        _leftBackDrive.power = direction.x - direction.y - rotate
+        _rightForwardDrive.power = direction.x - direction.y + rotate
     }
 
     private var _targetDirectionVelocity = Vec2.ZERO

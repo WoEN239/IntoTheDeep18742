@@ -30,7 +30,7 @@ class OdometersOdometry : IRobotModule {
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
-                -(it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity)
+                it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity
             )
 
             StaticTelemetry.drawRect(_position, Vec2(40.0, 10.0), _rotation.angle, Color.RED)
