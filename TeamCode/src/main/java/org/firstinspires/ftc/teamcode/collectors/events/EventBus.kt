@@ -13,10 +13,22 @@ class EventBus {
     }
 
     fun invoke(event: IEvent){
+        if(_events[Any::class] != null){
+            for(i in _events[Any::class]!!)
+                i.invoke(event)
+        }
+
         if(_events[event::class] == null)
             return
 
         for(i in _events[event::class]!!)
             i.invoke(event)
+    }
+
+    fun anySubscribe(callback: (IEvent) -> Unit){
+        if(_events[Any::class] == null)
+            _events[Any::class] = arrayListOf()
+
+        _events[Any::class]?.add(callback)
     }
 }
