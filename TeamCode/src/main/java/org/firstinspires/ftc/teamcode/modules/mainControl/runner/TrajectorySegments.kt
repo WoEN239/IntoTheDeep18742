@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TurnConstraints
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 interface TrajectorySegment {
@@ -18,15 +19,13 @@ interface TrajectorySegment {
 
     fun turnVelocity(time: Double): Double
 
-    fun targetHeading(time: Double): Angle
+    fun targetOrientation(time: Double): Orientation
 
-    fun targetPosition(time: Double): Vec2
-
-    fun getEndPosition(startHeading: Angle, startPosition: Vec2): Pair<Angle, Vec2>
+    fun getEndOrientation(startOrientation: Orientation): Orientation
 }
 
-class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2): TrajectorySegment{
-    private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentHeading.angle), angle,
+class Turn(val angle: Double, val currentOrientation: Orientation): TrajectorySegment{
+    private val _turn = TimeTurn(Pose2d(currentOrientation.x, currentOrientation.y, currentOrientation.angl.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
     override fun isEnd(time: Double) = time > _turn.duration
@@ -35,11 +34,9 @@ class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2):
 
     override fun turnVelocity(time: Double) = _turn[time].velocity().angVel.value()
 
-    override fun targetHeading(time: Double) = Angle(_turn[time].value().heading.toDouble())
+    override fun targetOrientation(time: Double) = Orientation(currentOrientation.pos, Angle(_turn[time].value().heading.toDouble()))
 
-    override fun targetPosition(time: Double) = currentPosition
-
-    override fun getEndPosition(startHeading: Angle, startPosition: Vec2) = Pair(startHeading + Angle(angle), startPosition)
+    override fun getEndOrientation(startOrientation: Orientation) = startOrientation + Orientation(Angle(angle))
 }
 
 
@@ -65,13 +62,11 @@ open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Traject
 
     override fun turnVelocity(time: Double) = getPoseTime(time).velocity().angVel.value()
 
-    override fun targetHeading(time: Double) = Angle(getPoseTime(time).heading.value().toDouble())
+    override fun targetOrientation(time: Double) = Orientation(Vec2(getPoseTime(time).position.value()), Angle(getPoseTime(time).heading.value().toDouble()))
 
-    override fun targetPosition(time: Double) = Vec2(getPoseTime(time).position.value())
-
-    override fun getEndPosition(startHeading: Angle, startPosition: Vec2): Pair<Angle, Vec2> {
+    override fun getEndOrientation(startOrientation: Orientation): Orientation {
         val duration = _trajectory.sumOf { it.duration }
 
-        return Pair(targetHeading(duration), targetPosition(duration))
+        return targetOrientation(duration)
     }
 }

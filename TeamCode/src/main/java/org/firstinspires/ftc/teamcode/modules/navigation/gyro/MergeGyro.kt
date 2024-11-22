@@ -48,7 +48,7 @@ class MergeGyro : IRobotModule {
     }
 
     class UpdateMergeGyroEvent(val rotation: Angle, val oldRotation: Angle, val velocity: Double): IEvent
-    class RequestMergeRotateEvent(var rotation: Angle?, var velocity: Double?): IEvent
+    class RequestMergeRotateEvent(var rotation: Angle? = null, var velocity: Double? = null): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

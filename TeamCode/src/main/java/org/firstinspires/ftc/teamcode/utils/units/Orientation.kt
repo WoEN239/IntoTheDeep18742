@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.utils.units
 
-data class Orientation(val pos: Vec2, val angl: Angle) {
+data class Orientation(var pos: Vec2, var angl: Angle) {
+    companion object{
+        val ZERO = Orientation(0.0)
+    }
+
     var x
         get() = pos.x
         set(value){
