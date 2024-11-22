@@ -25,6 +25,8 @@ data class Angle(var angle: Double){
         }
 
         val ZERO = Angle(0.0)
+
+        fun ofDeg(angle: Double) = Angle(angle / 180.0 * PI)
     }
 
     init {
