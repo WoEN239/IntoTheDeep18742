@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
-interface Action {
+interface TrajectorySegment {
     fun isEnd(time: Double): Boolean
 
     fun transVelocity(time: Double): Vec2
@@ -25,7 +25,7 @@ interface Action {
     fun getEndPosition(startHeading: Angle, startPosition: Vec2): Pair<Angle, Vec2>
 }
 
-class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2): Action{
+class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2): TrajectorySegment{
     private val _turn = TimeTurn(Pose2d(currentPosition.x, currentPosition.y, currentHeading.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
@@ -43,7 +43,7 @@ class Turn(val angle: Double, currentHeading: Angle, val currentPosition: Vec2):
 }
 
 
-open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Action{
+open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): TrajectorySegment{
     private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
 
     private fun getPoseTime(time: Double): Pose2dDual<Time> {

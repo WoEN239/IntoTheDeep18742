@@ -20,6 +20,9 @@ class MergeGyro : IRobotModule {
 
     private var _oldRotation = Angle(0.0)
 
+    private var _rotation = Angle.ZERO
+    private var _velocity = 0.0
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
             _gyroRotate = it.rotate
@@ -30,13 +33,22 @@ class MergeGyro : IRobotModule {
 
             bus.invoke(UpdateMergeGyroEvent(rotation, _oldRotation, it.velocity))
 
+            _rotation = rotation
+            _velocity = it.velocity
+
             _oldRotation = rotation
 
             StaticTelemetry.addData("robot merge rotate", rotation.toDegree())
         }
+
+        bus.subscribe(RequestMergeRotateEvent::class){
+            it.rotation = _rotation
+            it.velocity = _velocity
+        }
     }
 
     class UpdateMergeGyroEvent(val rotation: Angle, val oldRotation: Angle, val velocity: Double): IEvent
+    class RequestMergeRotateEvent(var rotation: Angle?, var velocity: Double?): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

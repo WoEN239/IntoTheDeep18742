@@ -15,7 +15,10 @@ class MergeOdometry: IRobotModule {
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         bus.subscribe(OdometersOdometry.UpdateOdometersOdometryEvent::class){
-            bus.invoke(UpdateMergeOdometryEvent(it.position, it.velocity))
+            _position = it.position
+            _velocity = it.velocity
+
+            bus.invoke(UpdateMergeOdometryEvent(_position, _velocity))
 
             StaticTelemetry.drawRect(it.position, Vec2(30.0, 30.0), _rotation.angle, Color.BLUE)
             StaticTelemetry.addData("odometerPosition", it.position)
@@ -25,10 +28,16 @@ class MergeOdometry: IRobotModule {
         bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){
             _rotation = it.rotation
         }
+
+        bus.subscribe(RequestMergePositionEvent::class){
+            it.position = _position
+            it.velocity = _velocity
+        }
     }
 
-    var position = Vec2.ZERO
-    var velocity = Vec2.ZERO
+    private var _position = Vec2.ZERO
+    private var _velocity = Vec2.ZERO
 
     class UpdateMergeOdometryEvent(val position: Vec2, val velocity: Vec2): IEvent
+    class RequestMergePositionEvent(var position: Vec2? = null, var velocity: Vec2? = null): IEvent
 }

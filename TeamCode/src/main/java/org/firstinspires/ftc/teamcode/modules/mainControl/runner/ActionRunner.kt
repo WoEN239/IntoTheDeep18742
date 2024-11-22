@@ -37,7 +37,7 @@ class ActionRunner : IRobotModule {
     private var _odometerVelocity = Vec2.ZERO
     private var _gyroVelocity = 0.0
 
-    private var _currentActions = arrayListOf<Action>()
+    private var _currentActions = arrayListOf<TrajectorySegment>()
 
     class RunActionsEvent(val trajectory: ActionsBuilder) : IEvent
     class EndTrajectoryEvent : IEvent
@@ -145,7 +145,7 @@ class ActionRunner : IRobotModule {
     }
 
     class ActionsBuilder(var currentPosition: Vec2, var currentHeading: Angle) {
-        val actions = arrayListOf<Action>()
+        val actions = arrayListOf<TrajectorySegment>()
 
         fun turn(rot: Angle): ActionsBuilder {
             val action = Turn(rot.angle, currentHeading, currentPosition)
