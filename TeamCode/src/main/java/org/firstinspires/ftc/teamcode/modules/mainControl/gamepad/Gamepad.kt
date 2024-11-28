@@ -29,7 +29,7 @@ class Gamepad : IRobotModule {
     private var _rotateOldU = false
 
     override fun lateUpdate() {
-        _eventBus.invoke(SetDrivePowerEvent(Vec2((_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble()), (_gamepad.right_stick_x).toDouble()))
+        _eventBus.invoke(SetDrivePowerEvent(Vec2((-_gamepad.left_stick_y).toDouble(), (_gamepad.left_stick_x).toDouble()), (_gamepad.right_stick_x).toDouble()))
         /*DriveTrain.drivePowerDirection(
             Vec2(
                 (_gamepad.left_stick_y).toDouble(),

@@ -26,13 +26,13 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.0078, 0.0045, 0.015, 0.0, 0.0035, fr = 0.15)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.01, 0.003, 0.04, 0.0, 0.004, fr = 0.12)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.0078, 0.0045, 0.02, 0.0, 0.005, fr = 0.31)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.003, 0.04, 0.0, 0.005, fr = 0.17)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.19, 0.0, 0.0, 0.0, 0.147, fr = 0.21)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135, fr = 0.13)
 
         @JvmField
         var MAX_SPEED_FORWARD = 100.0
@@ -59,22 +59,22 @@ object Configs {
         var ROTATE_ACCEL = 4.8
 
         @JvmField
-        var ROTATE_P = 0.1
+        var ROTATE_P = 0.2
 
         @JvmField
-        var ROTATE_SENS = 0.14
+        var ROTATE_SENS = 0.05
 
         @JvmField
-        var POSITION_P_X = 0.1
+        var POSITION_P_X = 1.0
 
         @JvmField
-        var POSITION_P_Y = 0.1
+        var POSITION_P_Y = 1.0
 
         @JvmField
-        var POSITION_SENS_X = 1.3
+        var POSITION_SENS_X = 1.0
 
         @JvmField
-        var POSITION_SENS_Y = 1.3
+        var POSITION_SENS_Y = 1.0
     }
 
     @Config
@@ -195,13 +195,13 @@ object Configs {
     @Config
     internal object OdometryConfig{
         @JvmField
-        var SIDE_ODOMETER_RADIUS = 17.0 //12
+        var SIDE_ODOMETER_RADIUS = -13.5 //12
 
         @JvmField
-        var FORWARD_ODOMETER_LEFT_RADIUS = 15.5
+        var FORWARD_ODOMETER_LEFT_RADIUS = 9.0
 
         @JvmField
-        var FORWARD_ODOMETER_RIGHT_RADIUS = 15.5
+        var FORWARD_ODOMETER_RIGHT_RADIUS = 9.0
 
         @JvmField
         var ODOMETER_DIAMETER = 4.8
@@ -213,7 +213,7 @@ object Configs {
     @Config
     internal object GyroscopeConfig{
         @JvmField
-        var MERGE_COEF = 0.5
+        var MERGE_COEF = 0.8
 
         @JvmField
         var READ_HZ = 50.0

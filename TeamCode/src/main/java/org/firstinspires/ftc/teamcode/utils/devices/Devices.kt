@@ -45,12 +45,6 @@ class Devices(hardMap: HardwareMap)  {
     val leftBackDrive = MotorOnly(hardMap.get("leftBackDrive") as DcMotorEx)
     val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
-    val liftMotorRight = hardMap.get("liftMotorRight") as DcMotorEx
-    val liftMotorLeft = hardMap.get("liftMotorLeft") as DcMotorEx
-
-    val liftEndingLeft = hardMap.get("liftEndingLeft") as DigitalChannel
-    val liftEndingRight = hardMap.get("liftEndingRigth") as DigitalChannel
-
     val servoClamp = hardMap.get("servoClamp") as Servo
     val servoFlip = hardMap.get("servoFlip") as ServoImplEx
     val servoRotate = hardMap.get("servoRotate") as Servo
@@ -64,7 +58,7 @@ class Devices(hardMap: HardwareMap)  {
     val horizontalServoRight = hardMap.get("horizontalServoRight") as Servo
     val horizontalServoLeft = hardMap.get("horizontalServoLeft") as Servo
 
-    val forwardOdometerLeft = EncoderOnly(hardMap.get("leftBackDrive") as DcMotorEx)
+    val forwardOdometerLeft = EncoderOnly(hardMap.get("leftOdometer") as DcMotorEx)
     val forwardOdometerRight = EncoderOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
-    val sideOdometer = EncoderOnly(hardMap.get("sideOdometer") as DcMotorEx)
+    val sideOdometer = EncoderOnly(hardMap.get("leftForwardDrive") as DcMotorEx)
 }

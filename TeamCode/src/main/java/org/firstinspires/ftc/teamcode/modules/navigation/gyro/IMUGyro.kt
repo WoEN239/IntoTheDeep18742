@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 
 class IMUGyro: IRobotModule {
@@ -21,7 +22,7 @@ class IMUGyro: IRobotModule {
         _imu = collector.devices.imu
 
         _imu.initialize(
-            IMU.Parameters(RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)))
+            IMU.Parameters(RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)))
 
         _eventBus = bus
     }
@@ -34,7 +35,11 @@ class IMUGyro: IRobotModule {
 
     override fun update() {
         if(_oldReadTime.milliseconds() > 1000.0 / Configs.GyroscopeConfig.READ_HZ) {
-            _oldRot = Angle(_imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS))
+            val raw = _imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)
+
+            StaticTelemetry.addData("gyroRaw", raw)
+
+            _oldRot = Angle(raw)
 
             _oldReadTime.reset()
 

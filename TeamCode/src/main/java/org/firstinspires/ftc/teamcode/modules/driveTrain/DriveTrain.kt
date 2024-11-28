@@ -46,8 +46,8 @@ class DriveTrain : IRobotModule {
         _leftBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         _rightBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
-        _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
+        _leftBackDrive.direction = DcMotorSimple.Direction.REVERSE
+        _leftForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(SetDrivePowerEvent::class){
             bus.invoke(SetDriveCmEvent(it.direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), it.rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN))
@@ -63,24 +63,21 @@ class DriveTrain : IRobotModule {
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
-            val velS = _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge
-
             driveSimpleDirection(Vec2(
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
-                velS),
+                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
                 _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity) / collector.devices.battery.charge)
 
-            StaticTelemetry.addData("vel s",  velS)
-            StaticTelemetry.addData("current velocity", it.velocity.y)
-            StaticTelemetry.addData("target velocity", _targetDirectionVelocity.y)
+            StaticTelemetry.addData("current velocity", _rotateVelocity)
+            StaticTelemetry.addData("target velocity", _targetRotateVelocity)
         }
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        _leftForwardDrive.power = direction.x + direction.y - rotate
-        _rightBackDrive.power = direction.x + direction.y + rotate
-        _leftBackDrive.power = direction.x - direction.y - rotate
-        _rightForwardDrive.power = direction.x - direction.y + rotate
+        _leftForwardDrive.power = -direction.x - direction.y + rotate
+        _rightBackDrive.power = -direction.x - direction.y - rotate
+        _leftBackDrive.power = -direction.x + direction.y + rotate
+        _rightForwardDrive.power = -direction.x + direction.y - rotate
     }
 
     private var _targetDirectionVelocity = Vec2.ZERO
