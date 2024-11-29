@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
-interface TrajectorySegment {
+interface ITrajectorySegment {
     fun isEnd(time: Double): Boolean
 
     fun transVelocity(time: Double): Vec2
@@ -20,12 +20,10 @@ interface TrajectorySegment {
     fun turnVelocity(time: Double): Double
 
     fun targetOrientation(time: Double): Orientation
-
-    fun getEndOrientation(startOrientation: Orientation): Orientation
 }
 
-class Turn(val angle: Double, val currentOrientation: Orientation): TrajectorySegment{
-    private val _turn = TimeTurn(Pose2d(currentOrientation.x, currentOrientation.y, currentOrientation.angl.angle), angle,
+class TurnSegment(angle: Double, private val _startOrientation: Orientation): ITrajectorySegment{
+    private val _turn = TimeTurn(Pose2d(_startOrientation.x, _startOrientation.y, _startOrientation.angl.angle), angle,
         TurnConstraints(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROTATE_ACCEL, Configs.RoadRunnerConfig.ROTATE_ACCEL))
 
     override fun isEnd(time: Double) = time > _turn.duration
@@ -34,13 +32,11 @@ class Turn(val angle: Double, val currentOrientation: Orientation): TrajectorySe
 
     override fun turnVelocity(time: Double) = _turn[time].velocity().angVel.value()
 
-    override fun targetOrientation(time: Double) = Orientation(currentOrientation.pos, Angle(_turn[time].value().heading.toDouble()))
-
-    override fun getEndOrientation(startOrientation: Orientation) = startOrientation + Orientation(Angle(angle))
+    override fun targetOrientation(time: Double) = Orientation(_startOrientation.pos, Angle(_turn[time].value().heading.toDouble()))
 }
 
 
-open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): TrajectorySegment{
+open class RRTrajectorySegment(rawBuildedTrajectory: List<Trajectory>): ITrajectorySegment{
     private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
 
     private fun getPoseTime(time: Double): Pose2dDual<Time> {
@@ -63,10 +59,4 @@ open class RunBuildedTrajectory(rawBuildedTrajectory: List<Trajectory>): Traject
     override fun turnVelocity(time: Double) = getPoseTime(time).velocity().angVel.value()
 
     override fun targetOrientation(time: Double) = Orientation(Vec2(getPoseTime(time).position.value()), Angle(getPoseTime(time).heading.value().toDouble()))
-
-    override fun getEndOrientation(startOrientation: Orientation): Orientation {
-        val duration = _trajectory.sumOf { it.duration }
-
-        return targetOrientation(duration)
-    }
 }

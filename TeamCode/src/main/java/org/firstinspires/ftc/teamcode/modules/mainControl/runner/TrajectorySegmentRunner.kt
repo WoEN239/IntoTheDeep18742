@@ -43,9 +43,9 @@ class TrajectorySegmentRunner : IRobotModule {
 
     private lateinit var _eventBus: EventBus
 
-    private var _currentTrajectory = arrayListOf<TrajectorySegment>()
+    private var _currentTrajectory = arrayListOf<ITrajectorySegment>()
 
-    class RunTrajectorySegmentEvent(val trajectory: TrajectorySegment) : IEvent
+    class RunTrajectorySegmentEvent(val trajectory: ITrajectorySegment) : IEvent
     class RequestIsEndTrajectoryEvent(var isEnd: Boolean = false) : IEvent
 
     private val _trajectoryTime = ElapsedTimeExtra()

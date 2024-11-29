@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 
-class ActionsHandler: IRobotModule {
+class ActionsRunner: IRobotModule {
     override fun init(
         collector: BaseCollector,
         bus: EventBus
