@@ -5,11 +5,9 @@ import com.acmerobotics.roadrunner.MinVelConstraint
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.ProfileAccelConstraint
 import com.acmerobotics.roadrunner.ProfileParams
-import com.acmerobotics.roadrunner.Trajectory
 import com.acmerobotics.roadrunner.TrajectoryBuilder
 import com.acmerobotics.roadrunner.TrajectoryBuilderParams
 import com.acmerobotics.roadrunner.TranslationalVelConstraint
-import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
@@ -20,14 +18,12 @@ import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.ElapsedTimeExtra
-import org.firstinspires.ftc.teamcode.utils.timer.Timers
-import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import kotlin.math.abs
 
-class TrajectoryRunner : IRobotModule {
+class TrajectorySegmentRunner : IRobotModule {
     companion object{
         fun newRRTrajectory(startOrientation: Orientation) = TrajectoryBuilder(
             TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
