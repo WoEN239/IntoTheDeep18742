@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class DriveTrain : IRobotModule {
@@ -26,8 +27,6 @@ class DriveTrain : IRobotModule {
     private val _velocityPidfRotate = PIDRegulator(Configs.DriveTrainConfig.VELOCITY_PIDF_ROTATE)
 
     private var _isAuto: Boolean = false
-
-    private var _rotateVelocity = 0.0
 
     private lateinit var _eventBus: EventBus
 
@@ -58,18 +57,19 @@ class DriveTrain : IRobotModule {
             _targetRotateVelocity = it.rotate
         }
 
-        bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){
-            _rotateVelocity = it.velocity
-        }
-
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
+            val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
+
             driveSimpleDirection(Vec2(
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
-                _velocityPidfRotate.update(_targetRotateVelocity - _rotateVelocity, _targetRotateVelocity) / collector.devices.battery.charge)
+                _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity) / collector.devices.battery.charge)
+        }
 
-            StaticTelemetry.addData("current velocity", _rotateVelocity)
-            StaticTelemetry.addData("target velocity", _targetRotateVelocity)
+        bus.subscribe(SetLocalDriveCm::class){
+            val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
+
+            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle), it.rotate))
         }
     }
 
@@ -106,4 +106,5 @@ class DriveTrain : IRobotModule {
 
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
     class SetDriveCmEvent(val direction: Vec2, val rotate: Double): IEvent
+    class SetLocalDriveCm(val direction: Vec2, val rotate: Double): IEvent
 }

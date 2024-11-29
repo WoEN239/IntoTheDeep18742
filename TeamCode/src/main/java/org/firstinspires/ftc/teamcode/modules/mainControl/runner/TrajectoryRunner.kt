@@ -28,14 +28,28 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import kotlin.math.abs
 
 class TrajectoryRunner : IRobotModule {
-    class NewTrajectoryEvent(var builder: TrajectoryActionBuilder? = null): IEvent
-    class NewRRBuilder(val startPosition: Orientation, var builder: TrajectoryBuilder? = null): IEvent
+    companion object{
+        fun newRRTrajectory(startOrientation: Orientation) = TrajectoryBuilder(
+            TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
+            Pose2d(startOrientation.x, startOrientation.y, startOrientation.angl.angle), 0.0,
+            MinVelConstraint(
+                listOf(
+                    TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
+                    AngularVelConstraint(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY)
+                )
+            ),
+            ProfileAccelConstraint(
+                -Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL,
+                Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL
+            )
+        )
+    }
 
     private lateinit var _eventBus: EventBus
 
     private var _currentTrajectory = arrayListOf<TrajectorySegment>()
 
-    class RunTrajectoryEvent(val trajectory: TrajectoryActionBuilder) : IEvent
+    class RunTrajectorySegmentEvent(val trajectory: TrajectorySegment) : IEvent
     class RequestIsEndTrajectoryEvent(var isEnd: Boolean = false) : IEvent
 
     private val _trajectoryTime = ElapsedTimeExtra()
@@ -45,8 +59,6 @@ class TrajectoryRunner : IRobotModule {
 
     private var _targetOrientation = Orientation.ZERO
 
-    private var _currentTrajectoryOrientation = Orientation.ZERO
-
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
@@ -54,73 +66,26 @@ class TrajectoryRunner : IRobotModule {
             it.isEnd = _currentTrajectory.isEmpty
         }
 
-        bus.subscribe(RunTrajectoryEvent::class) {
+        bus.subscribe(RunTrajectorySegmentEvent::class) {
             if (_currentTrajectory.isEmpty)
                 _trajectoryTime.reset()
 
-            _currentTrajectory.addAll(it.trajectory.actions)
-
-            _currentTrajectoryOrientation = it.trajectory.currentOrientation
-        }
-
-        bus.subscribe(NewTrajectoryEvent::class){
-            it.builder = TrajectoryActionBuilder(_currentTrajectoryOrientation)
-        }
-        
-        bus.subscribe(NewRRBuilder::class) {
-            it.builder =
-                TrajectoryBuilder(
-                    TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
-                    Pose2d(it.startPosition.x, it.startPosition.y, it.startPosition.angl.angle), 0.0,
-                    MinVelConstraint(
-                        listOf(
-                            TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
-                            AngularVelConstraint(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY)
-                        )
-                    ),
-                    ProfileAccelConstraint(
-                        -Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL,
-                        Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL
-                    )
-                )
-        }
-    }
-
-    override fun start() {
-        Timers.newTimer().start(8.0) {
-            val trajectory = NewTrajectoryEvent()
-            val rrBuilder = NewRRBuilder(Orientation.ZERO)
-            val rrBuilder2 = NewRRBuilder(Orientation(Vec2(20.0, 20.0), Angle.ofDeg(90.0)))
-
-            _eventBus.invoke(trajectory)
-            _eventBus.invoke(rrBuilder)
-            _eventBus.invoke(rrBuilder2)
-
-            val builder = rrBuilder.builder!!.splineTo(Vector2d(20.0, 20.0), Math.toRadians(-90.0))
-            val builder2 = rrBuilder2.builder!!.strafeTo(Vector2d(0.0, 0.0))
-
-            _eventBus.invoke(RunTrajectoryEvent(trajectory.builder!!
-                .runRRTrajectory(builder)
-                //.turn(Math.toRadians(90.0))
-                /*.runRRTrajectory(builder2)*/))
+            _currentTrajectory.add(it.trajectory)
         }
     }
 
     override fun update() {
-        val gyro = MergeGyro.RequestMergeRotateEvent()
-        _eventBus.invoke(gyro)
-
-        val odometry = MergeOdometry.RequestMergePositionEvent()
-        _eventBus.invoke(odometry)
+        val gyro = _eventBus.invoke(MergeGyro.RequestMergeGyroEvent())
+        val odometry = _eventBus.invoke(MergeOdometry.RequestMergePositionEvent())
 
         val headingErr = (_targetOrientation.angl - gyro.rotation!!).angle
         val posErr = (_targetOrientation.pos - odometry.position!!)
 
         _eventBus.invoke(
-            DriveTrain.SetDriveCmEvent(
-                _targetTransVelocity.turn(gyro.rotation!!.angle) +
-                        (if(abs(posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) Vec2(posErr.x * Configs.RoadRunnerConfig.POSITION_P_X, 0.0) else Vec2.ZERO +
-                        if(abs(posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) Vec2(0.0, posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y) else Vec2.ZERO).turn(gyro.rotation!!.angle),
+            DriveTrain.SetLocalDriveCm(
+                _targetTransVelocity +
+                        if(abs(posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) Vec2(posErr.x * Configs.RoadRunnerConfig.POSITION_P_X, 0.0) else Vec2.ZERO +
+                        if(abs(posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) Vec2(0.0, posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y) else Vec2.ZERO,
                 _targetHeadingVelocity + if(abs(headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0
             )
         )
@@ -148,32 +113,6 @@ class TrajectoryRunner : IRobotModule {
             _targetHeadingVelocity = 0.0
 
             _trajectoryTime.reset()
-        }
-    }
-
-    class TrajectoryActionBuilder(var currentOrientation: Orientation) {
-        val actions = arrayListOf<TrajectorySegment>()
-
-        fun turn(rot: Double): TrajectoryActionBuilder {
-            val action = Turn(rot, currentOrientation)
-
-            actions.add(action)
-
-            currentOrientation = action.getEndOrientation(currentOrientation)
-
-            return this
-        }
-
-        fun runRRTrajectory(trajectory: TrajectoryBuilder) = runRRBuildedTrajectory(trajectory.build())
-
-        fun runRRBuildedTrajectory(build: List<Trajectory>): TrajectoryActionBuilder {
-            val action = RunBuildedTrajectory(build)
-
-            actions.add(action)
-
-            currentOrientation = action.getEndOrientation(currentOrientation)
-
-            return this
         }
     }
 }
