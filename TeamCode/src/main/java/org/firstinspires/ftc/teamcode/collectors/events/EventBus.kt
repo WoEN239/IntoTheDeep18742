@@ -12,17 +12,19 @@ class EventBus {
         _events[event]?.add(callback as (IEvent) -> Unit)
     }
 
-    fun invoke(event: IEvent){
+    fun <T: IEvent> invoke(event: T): T{
         if(_events[Any::class] != null){
             for(i in _events[Any::class]!!)
                 i.invoke(event)
         }
 
         if(_events[event::class] == null)
-            return
+            return event
 
         for(i in _events[event::class]!!)
             i.invoke(event)
+
+        return event
     }
 
     fun anySubscribe(callback: (IEvent) -> Unit){
