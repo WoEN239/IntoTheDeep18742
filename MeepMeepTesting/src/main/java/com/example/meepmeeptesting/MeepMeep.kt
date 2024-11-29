@@ -10,7 +10,7 @@ object MeepMeepTesting {
 
         val myBot =
             DefaultBotBuilder(meepMeep) // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60.0, 60.0, Math.toRadians(180.0), Math.toRadians(180.0), 15.0)
+                .setConstraints(60.0, 60.0, Math.toRadians(180.0), Math.toRadians(180.0), 11.81)
                 .build()
 
         myBot.runAction(
@@ -26,8 +26,8 @@ object MeepMeepTesting {
                 .build()
         )
 
-        meepMeep.setBackground(Background.FIELD_POWERPLAY_OFFICIAL)
-            .setDarkMode(true)
+        meepMeep.setBackground(Background.FIELD_INTO_THE_DEEP_OFFICIAL)
+            .setDarkMode(false)
             .setBackgroundAlpha(0.95f)
             .addEntity(myBot)
             .start()

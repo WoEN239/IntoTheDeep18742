@@ -13,14 +13,14 @@ class ActionsRunner: IRobotModule {
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         bus.subscribe(RunActionsEvent::class){
-            if(_actions.isEmpty)
+            if(_actions.isEmpty())
                 it.actions[0].start()
 
             _actions.addAll(it.actions)
         }
 
         bus.subscribe(RequestIsEndActionsRun::class){
-            it.isEnd = _actions.isEmpty
+            it.isEnd = _actions.isEmpty()
         }
     }
 
@@ -31,7 +31,7 @@ class ActionsRunner: IRobotModule {
             _actions[0].end()
             _actions.removeAt(0)
 
-            if(!_actions.isEmpty)
+            if(!_actions.isEmpty())
                 _actions[0].start()
         }
     }
