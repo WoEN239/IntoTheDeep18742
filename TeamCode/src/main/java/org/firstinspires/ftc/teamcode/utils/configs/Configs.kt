@@ -33,15 +33,6 @@ object Configs {
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135, fr = 0.13)
-
-        @JvmField
-        var MAX_SPEED_FORWARD = 100.0
-
-        @JvmField
-        var MAX_SPEED_SIDE = 100.0
-
-        @JvmField
-        var MAX_SPEED_TURN = 4.0
     }
 
     @Config
@@ -80,21 +71,19 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var LIFT_PID = PIDConfig(1.0, limitU = 1.0)
-        @JvmField
-        var LIFT_PID_SYNC = PIDConfig(1.0, limitU = 1.0)
+        var AIM_PID = PIDConfig(0.0)
 
         @JvmField
-        var DOWN_SPEED = 0.30
+        var PROMOTED_PID = PIDConfig(0.0)
 
         @JvmField
-        var DOWN_SPEEDLOW = 0.0
+        var MOTOR_TICKS = 1
 
         @JvmField
-        var LIFT_MIDDLE_POS = 500
+        var PROMOTED_SENS = 1.0
 
         @JvmField
-        var LIFT_UP_POS = 1500
+        var AIM_SENS = 1.0
     }
 
     @Config

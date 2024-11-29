@@ -49,7 +49,7 @@ class DriveTrain : IRobotModule {
         _leftForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(SetDrivePowerEvent::class){
-            bus.invoke(SetDriveCmEvent(it.direction * Vec2(Configs.DriveTrainConfig.MAX_SPEED_FORWARD, Configs.DriveTrainConfig.MAX_SPEED_SIDE), it.rotate * Configs.DriveTrainConfig.MAX_SPEED_TURN))
+            bus.invoke(SetDriveCmEvent(it.direction * Vec2(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY, Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY), it.rotate * Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){

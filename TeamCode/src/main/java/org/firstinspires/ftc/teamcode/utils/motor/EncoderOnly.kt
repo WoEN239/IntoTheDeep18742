@@ -20,8 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 class EncoderOnly(private val _motor: DcMotorEx): DcMotorEx {
     init {
         _motor.direction = Direction.FORWARD
-        _motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        _motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        _motor.mode = RunMode.STOP_AND_RESET_ENCODER
+        _motor.mode = RunMode.RUN_WITHOUT_ENCODER
     }
 
     private var _direction = Direction.FORWARD
