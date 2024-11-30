@@ -46,8 +46,8 @@ class Devices(hardMap: HardwareMap)  {
     val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
     val servoClamp = hardMap.get("servoClamp") as Servo
-    val servoFlip = hardMap.get("servoFlip") as ServoImplEx
-    val servoRotate = hardMap.get("servoRotate") as Servo
+    val servoDifLeft = hardMap.get("servoDifLeft") as ServoImplEx
+    val servoDifRight = hardMap.get("servoDifRight") as Servo
     val servoClampForv = hardMap.get("servoClampForv") as Servo
     val servoClampUp = hardMap.get("servoClampUp") as Servo
     val servoRotateUp = hardMap.get("servoRotateUp") as Servo

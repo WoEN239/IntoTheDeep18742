@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
-import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
@@ -18,28 +17,30 @@ object Intake : IRobotModule {
     private lateinit var _horizontalServoRight: SoftServo
 
     private lateinit var _servoClamp: Servo
-    private lateinit var _servoRotate: Servo
+    private lateinit var _servoDifleft: Servo
     private lateinit var _servoClampForv: Servo
     private lateinit var _servoClampUp: Servo
     private lateinit var _servoRotateUp: Servo
 
-    private lateinit var _servoFlip: ServoImplEx
+    private lateinit var _servoDifRight: Servo
 
     private lateinit var _endingFlipped: DigitalChannel
     private lateinit var _endingUnflipped: DigitalChannel
 
-    override fun init(collector: BaseCollector, bus: EventBus) {
+    private var _liftTarget = 0.0
+    private var _difTarget = _liftTarget / 270.0
+
+    override fun init(collector: BaseCollector) {
         _horizontalServoLeft = SoftServo(collector.devices.horizontalServoLeft, 0.1)
         _horizontalServoRight = SoftServo(collector.devices.horizontalServoRight, 0.88)
 
         _servoClamp = collector.devices.servoClamp
-        _servoRotate = collector.devices.servoRotate
+        _servoDifleft = collector.devices.servoDifLeft
         _servoClampForv = collector.devices.servoClampForv
         _servoClampUp = collector.devices.servoClampUp
         _servoRotateUp = collector.devices.servoRotateUp
 
-        _servoFlip = collector.devices.servoFlip
-        _servoFlip.pwmRange = PwmRange(500.0, 2500.0)
+        _servoDifRight = collector.devices.servoDifRight
 
         _endingFlipped = collector.devices.endingFlipped
         _endingUnflipped = collector.devices.endingUnflipped
@@ -58,7 +59,11 @@ object Intake : IRobotModule {
             field = value
         }
 
-    var rotateUp = RotatePositionUp.SERVO_UNROTATEUP
+
+
+    
+
+    /*var rotateUp = RotatePositionUp.SERVO_UNROTATEUP
         set(value) {
             if (value == RotatePositionUp.SERVO_ROTATEUP) {
                 _servoRotateUp.position = Configs.IntakeConfig.SERVO_ROTATEUP
@@ -137,7 +142,9 @@ object Intake : IRobotModule {
             _servoRotate.position = 0.5
         }
         _deltaTime.reset()
-    }
+        */
+
+   // }
 
     enum class AdvancedPosition//нижняя
     {
@@ -169,5 +176,10 @@ object Intake : IRobotModule {
     {
         SERVO_ROTATEUP,
         SERVO_UNROTATEUP
+    }
+
+    override fun update() {
+        _servoDifleft.position = _difTarget
+        _servoDifRight.position = -_difTarget
     }
 }
