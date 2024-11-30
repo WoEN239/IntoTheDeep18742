@@ -89,19 +89,7 @@ class DriveTrain : IRobotModule {
     }
 
     override fun start() {
-        /*var action = {}
 
-        action = {
-            _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, -50.0), 0.0))
-
-            Timers.newTimer().start(1.8){
-                _eventBus.invoke(SetDriveCmEvent(Vec2(0.0, 50.0), 0.0))
-
-                Timers.newTimer().start(1.8, action)
-            }
-        }
-
-        action.invoke()*/
     }
 
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent

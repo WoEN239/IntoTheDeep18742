@@ -74,7 +74,7 @@ object Configs {
         var AIM_PID = PIDConfig(0.01, limitU = 0.5)
 
         @JvmField
-        var PROMOTED_PID = PIDConfig(0.01)
+        var EXTENSION_PID = PIDConfig(0.01)
 
         @JvmField
         var PROMOTED_SENS = 1.0
@@ -89,7 +89,22 @@ object Configs {
         var LIFT_ENDING_POS = 700
 
         @JvmField
-        var AIM_PROMOTED_FIX = 0.6
+        var AIM_GAMEPAD_SENS = 300.0
+
+        @JvmField
+        var EXTENSION_GAMEPAD_SENS = 200.0
+
+        @JvmField
+        var MIN_AIM_POS = 0.0
+
+        @JvmField
+        var MAX_AIM_POS = 680.0
+
+        @JvmField
+        var MAX_EXTENSION_POS = 2275.0
+
+        @JvmField
+        var MIN_EXTENSION_POS = 0.0
     }
 
     @Config
