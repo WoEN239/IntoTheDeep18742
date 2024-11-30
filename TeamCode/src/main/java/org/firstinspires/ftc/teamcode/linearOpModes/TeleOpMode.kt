@@ -20,7 +20,7 @@ class TeleOpMode : LinearOpModeBase() {
             )
         )
 
-        collector.addAdditionalModules(arrayOf(/*ся модули для телеопа*//*Gamepad()*/))
+        collector.addAdditionalModules(arrayOf(/*ся модули для телеопа*/Gamepad()))
 
         return collector
     }

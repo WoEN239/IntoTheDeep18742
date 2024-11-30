@@ -53,7 +53,7 @@ object Configs {
         var ROTATE_P = 0.2
 
         @JvmField
-        var ROTATE_SENS = 0.05
+        var ROTATE_SENS = 0.09
 
         @JvmField
         var POSITION_P_X = 1.0
@@ -62,28 +62,34 @@ object Configs {
         var POSITION_P_Y = 1.0
 
         @JvmField
-        var POSITION_SENS_X = 1.0
+        var POSITION_SENS_X = 1.2
 
         @JvmField
-        var POSITION_SENS_Y = 1.0
+        var POSITION_SENS_Y = 1.2
     }
 
     @Config
     internal object LiftConfig {
         @JvmField
-        var AIM_PID = PIDConfig(0.0)
+        var AIM_PID = PIDConfig(0.01, limitU = 0.5)
 
         @JvmField
-        var PROMOTED_PID = PIDConfig(0.0)
-
-        @JvmField
-        var MOTOR_TICKS = 1
+        var PROMOTED_PID = PIDConfig(0.01)
 
         @JvmField
         var PROMOTED_SENS = 1.0
 
         @JvmField
         var AIM_SENS = 1.0
+
+        @JvmField
+        var MAX_SPEED_DOWN = 0.6
+
+        @JvmField
+        var LIFT_ENDING_POS = 700
+
+        @JvmField
+        var AIM_PROMOTED_FIX = 0.6
     }
 
     @Config

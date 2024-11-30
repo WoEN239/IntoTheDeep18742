@@ -9,11 +9,13 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftTargetEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
-object Intake : IRobotModule {
+class Intake() : IRobotModule {
     private lateinit var _horizontalServoLeft: SoftServo
     private lateinit var _horizontalServoRight: SoftServo
 
@@ -29,11 +31,10 @@ object Intake : IRobotModule {
     private lateinit var _endingUnflipped: DigitalChannel
 
     private var _liftTarget = 0.0
-    private var _difTarget = _liftTarget / 270.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _horizontalServoLeft = SoftServo(collector.devices.horizontalServoLeft, 0.1)
-        _horizontalServoRight = SoftServo(collector.devices.horizontalServoRight, 0.88)
+        /*_horizontalServoLeft = SoftServo(collector.devices.horizontalServoLeft, 0.1)
+        _horizontalServoRight = SoftServo(collector.devices.horizontalServoRight, 0.88)*/
 
         _servoClamp = collector.devices.servoClamp
         _servoDifleft = collector.devices.servoDifLeft
@@ -45,9 +46,15 @@ object Intake : IRobotModule {
 
         _endingFlipped = collector.devices.endingFlipped
         _endingUnflipped = collector.devices.endingUnflipped
+
+        bus.subscribe(SetLiftTargetEvent::class){
+            _liftTarget = it.targetAimAngle / 2400.0 * 360
+
+            StaticTelemetry.addLine("liftAngle = " + _liftTarget)
+        }
     }
 
-    var flip = GalaxyFlipPosition.SERVO_FLIP
+    /*var flip = GalaxyFlipPosition.SERVO_FLIP
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
@@ -59,7 +66,7 @@ object Intake : IRobotModule {
 
             field = value
         }
-
+*/
 
 
     
@@ -180,7 +187,7 @@ object Intake : IRobotModule {
     }
 
     override fun update() {
-        _servoDifleft.position = _difTarget
-        _servoDifRight.position = -_difTarget
+        _servoDifleft.position = _liftTarget / 270.0
+        _servoDifRight.position = 1.0 - _liftTarget / 270.0
     }
 }

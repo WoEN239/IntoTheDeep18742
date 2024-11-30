@@ -25,24 +25,6 @@ class ActionsRunner: IRobotModule {
         bus.subscribe(RequestIsEndActionsRun::class){
             it.isEnd = _actions.isEmpty()
         }
-
-        val actions = ArrayList<IAction>()
-
-        when(collector.gameSettings.startPosition){
-            BaseCollector.GameStartPosition.RED_FORWARD -> {
-                actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(Orientation.ZERO)
-                    .strafeTo(Vector2d(20.0, 20.0))
-
-                    .build()))
-            }
-
-            BaseCollector.GameStartPosition.RED_BACK -> TODO()
-            BaseCollector.GameStartPosition.BLUE_FORWARD -> TODO()
-            BaseCollector.GameStartPosition.BLUE_BACK -> TODO()
-            BaseCollector.GameStartPosition.NONE -> TODO()
-        }
-
-        bus.invoke(RunActionsEvent(actions))
     }
 
     override fun update() {
