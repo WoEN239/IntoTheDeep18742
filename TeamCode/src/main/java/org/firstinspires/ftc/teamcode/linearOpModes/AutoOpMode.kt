@@ -16,7 +16,7 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
                 isAuto = true
             ))
 
-        collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner()))
+        collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ /*TrajectorySegmentRunner(), */ActionsRunner()))
 
         return collector
     }

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftTargetEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
@@ -26,14 +27,32 @@ class Intake() : IRobotModule {
         _servoDifleft = collector.devices.servoDifLeft
         _servoDifRight = collector.devices.servoDifRight
 
-        bus.subscribe(SetLiftTargetEvent::class){
+        /*bus.subscribe(SetLiftTargetEvent::class){
             _liftTarget = it.targetAimPos / 2400.0 * 360
 
             StaticTelemetry.addLine("liftAngle = " + _liftTarget)
+        }*/
+
+        bus.subscribe(SetClampPoseEvent::class){
+            clamp = it.pose
+        }
+
+        bus.subscribe(SetDifUpEvent::class){
+            _servoDifleft.position = Configs.IntakeConfig.DIF_UP_POS
+            _servoDifRight.position = 1 - Configs.IntakeConfig.DIF_UP_POS
+        }
+
+        bus.subscribe(SetDifDownEvent::class){
+            _servoDifleft.position = Configs.IntakeConfig.DIF_DOWN_POS
+            _servoDifRight.position = 1 - Configs.IntakeConfig.DIF_DOWN_POS
         }
     }
 
-    /*var flip = GalaxyFlipPosition.SERVO_FLIP
+    class SetClampPoseEvent(var pose: ClampPosition): IEvent
+    class SetDifUpEvent(): IEvent
+    class SetDifDownEvent(): IEvent
+
+    //var flip = GalaxyFlipPosition.SERVO_FLIP
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
@@ -45,7 +64,7 @@ class Intake() : IRobotModule {
 
             field = value
         }
-*/
+
 
 
     
@@ -166,7 +185,7 @@ class Intake() : IRobotModule {
     }
 
     override fun update() {
-        _servoDifleft.position = _liftTarget / 270.0
-        _servoDifRight.position = 1.0 - _liftTarget / 270.0
+        /*_servoDifleft.position = _liftTarget / 270.0
+        _servoDifRight.position = 1.0 - _liftTarget / 270.0*/
     }
 }

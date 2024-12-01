@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.linearOpModes
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.mainControl.gamepad.Gamepad
 
 @TeleOp
@@ -20,7 +21,7 @@ class TeleOpMode : LinearOpModeBase() {
             )
         )
 
-        collector.addAdditionalModules(arrayOf(/*ся модули для телеопа*/Gamepad()))
+        collector.addAdditionalModules(arrayOf(/*ся модули для телеопа*/Gamepad(), Hook()))
 
         return collector
     }

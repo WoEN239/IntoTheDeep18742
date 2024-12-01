@@ -28,7 +28,7 @@ class Lift: IRobotModule {
     private lateinit var _aimEndingUp: DigitalChannel
     private lateinit var _extensionEndingDown: DigitalChannel
 
-    private var _targetAimPos = 0.0
+    private var _targetAimPos = 100.0
     private var _targetExtensionPos = 0.0
 
     private val _aimPID = PIDRegulator(Configs.LiftConfig.AIM_PID)
@@ -49,6 +49,7 @@ class Lift: IRobotModule {
         _extensionMotor = collector.devices.liftExtensionMotor
 
         _extensionMotor.direction = REVERSE
+        //_aimMotor.direction = REVERSE
 
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
@@ -88,20 +89,20 @@ class Lift: IRobotModule {
     fun getCurrentExtensionPos() = (_extensionMotor.currentPosition - _extensionStartPosition).toDouble()
 
     override fun update() {
-        if(_aimEndingUp.state)
+        /*if(_aimEndingUp.state)
             _aimStartPosition = _aimMotor.currentPosition - Configs.LiftConfig.LIFT_ENDING_POS
 
         if(_extensionEndingDown.state)
             _extensionStartPosition = _extensionMotor.currentPosition
-
+*/
         _aimErr = _targetAimPos - getCurrentAimPos()
-        _promotedErr = _targetExtensionPos - getCurrentExtensionPos()
+        _promotedErr = (_targetExtensionPos + getCurrentAimPos() * Configs.LiftConfig.EXTENSION_FIX) - getCurrentExtensionPos()
 
-        val aimPower = _aimPID.update(_aimErr).coerceAtLeast(-abs(Configs.LiftConfig.MAX_SPEED_DOWN)) / _battery.charge
+        val aimPower = _aimPID.update(_aimErr).coerceAtLeast(Configs.LiftConfig.MAX_SPEED_DOWN) / _battery.charge
         val extensionPower = _extensionPID.update(_promotedErr) / _battery.charge
 
         _aimMotor.power = aimPower
-        _extensionMotor.power = -extensionPower
+        _extensionMotor.power = extensionPower
     }
 
     override fun start() {

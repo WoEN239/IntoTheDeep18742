@@ -71,10 +71,10 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var AIM_PID = PIDConfig(0.01, limitU = 0.5)
+        var AIM_PID = PIDConfig(0.015, d = 0.00015, limitU = 1.0)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.01)
+        var EXTENSION_PID = PIDConfig(0.007)
 
         @JvmField
         var PROMOTED_SENS = 1.0
@@ -83,31 +83,34 @@ object Configs {
         var AIM_SENS = 1.0
 
         @JvmField
-        var MAX_SPEED_DOWN = 0.6
+        var MAX_SPEED_DOWN = -1.0
 
         @JvmField
-        var LIFT_ENDING_POS = 700
+        var LIFT_ENDING_POS = 524
 
         @JvmField
         var AIM_GAMEPAD_SENS = 300.0
 
         @JvmField
-        var EXTENSION_GAMEPAD_SENS = 200.0
+        var EXTENSION_GAMEPAD_SENS = 1500.0
 
         @JvmField
         var MIN_AIM_POS = 0.0
 
         @JvmField
-        var MAX_AIM_POS = 680.0
+        var MAX_AIM_POS = 524.0
 
         @JvmField
-        var MAX_EXTENSION_POS = 2275.0
+        var MAX_EXTENSION_POS = 2023.0
 
         @JvmField
         var MIN_EXTENSION_POS = 0.0
 
         @JvmField
-        var INIT_POWER = 0.1
+        var INIT_POWER = 0.2
+
+        @JvmField
+        var EXTENSION_FIX = 0.6
     }
 
     @Config
@@ -154,10 +157,10 @@ object Configs {
         var SERVO_PROMOTED_RIGHT = 0.26
 
         @JvmField
-        var SERVO_CLAMP = 0.45
+        var SERVO_CLAMP = 0.0
 
         @JvmField
-        var SERVO_UNCLAMP = 0.6
+        var SERVO_UNCLAMP = 0.27
 
         @JvmField
         var SERVO_CLAMPUP = 0.45
@@ -185,6 +188,12 @@ object Configs {
 
         @JvmField
         var MAX_ROTATE_VELOCITY = 0.5
+
+        @JvmField
+        var DIF_UP_POS = 0.5
+
+        @JvmField
+        var DIF_DOWN_POS = 0.9
     }
 
     @Config
@@ -230,5 +239,11 @@ object Configs {
 
         @JvmField
         var READ_HZ = 50.0
+    }
+
+    @Config
+    internal object HookConfig{
+        @JvmField
+        var HOOK_SPEED = 0.5
     }
 }
