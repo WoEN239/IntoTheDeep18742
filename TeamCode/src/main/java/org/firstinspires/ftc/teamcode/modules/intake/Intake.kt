@@ -16,39 +16,18 @@ import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
 class Intake() : IRobotModule {
-    private lateinit var _horizontalServoLeft: SoftServo
-    private lateinit var _horizontalServoRight: SoftServo
-
     private lateinit var _servoClamp: Servo
     private lateinit var _servoDifleft: Servo
-    private lateinit var _servoClampForv: Servo
-    private lateinit var _servoClampUp: Servo
-    private lateinit var _servoRotateUp: Servo
-
     private lateinit var _servoDifRight: Servo
-
-    private lateinit var _endingFlipped: DigitalChannel
-    private lateinit var _endingUnflipped: DigitalChannel
-
     private var _liftTarget = 0.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        /*_horizontalServoLeft = SoftServo(collector.devices.horizontalServoLeft, 0.1)
-        _horizontalServoRight = SoftServo(collector.devices.horizontalServoRight, 0.88)*/
-
         _servoClamp = collector.devices.servoClamp
         _servoDifleft = collector.devices.servoDifLeft
-        _servoClampForv = collector.devices.servoClampForv
-        _servoClampUp = collector.devices.servoClampUp
-        _servoRotateUp = collector.devices.servoRotateUp
-
         _servoDifRight = collector.devices.servoDifRight
 
-        _endingFlipped = collector.devices.endingFlipped
-        _endingUnflipped = collector.devices.endingUnflipped
-
         bus.subscribe(SetLiftTargetEvent::class){
-            _liftTarget = it.targetAimAngle / 2400.0 * 360
+            _liftTarget = it.targetAimPos / 2400.0 * 360
 
             StaticTelemetry.addLine("liftAngle = " + _liftTarget)
         }
