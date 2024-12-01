@@ -80,6 +80,8 @@ class Lift: IRobotModule {
             it.aimPos = _targetAimPos
             it.extensionPos = _targetExtensionPos
         }
+
+        _aimMotor.power = abs(Configs.LiftConfig.INIT_POWER)
     }
 
     fun getCurrentAimPos() = (_aimMotor.currentPosition - _aimStartPosition).toDouble()

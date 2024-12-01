@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 
 import com.acmerobotics.roadrunner.Trajectory
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
@@ -39,5 +40,23 @@ class TurnAction(private val _eventBus: EventBus, private val _startOrientation:
 
     override fun start() {
         _eventBus.invoke(TrajectorySegmentRunner.RunTrajectorySegmentEvent(TurnSegment((_startOrientation.angl - _endAngle).angle, _startOrientation)))
+    }
+}
+
+class WaitAction(private val secTime: Double): IAction {
+    private val _timer = ElapsedTime()
+
+    override fun update() {
+
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd() = _timer.seconds() > secTime
+
+    override fun start() {
+        _timer.reset()
     }
 }

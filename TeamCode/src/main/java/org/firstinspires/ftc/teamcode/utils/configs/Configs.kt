@@ -105,6 +105,9 @@ object Configs {
 
         @JvmField
         var MIN_EXTENSION_POS = 0.0
+
+        @JvmField
+        var INIT_POWER = 0.1
     }
 
     @Config
