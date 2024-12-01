@@ -59,11 +59,11 @@ class TrajectorySegmentRunner : IRobotModule {
         _eventBus = bus
 
         bus.subscribe(RequestIsEndTrajectoryEvent::class){
-            it.isEnd = _currentTrajectory.isEmpty
+            it.isEnd = _currentTrajectory.isEmpty()
         }
 
         bus.subscribe(RunTrajectorySegmentEvent::class) {
-            if (_currentTrajectory.isEmpty)
+            if (_currentTrajectory.isEmpty())
                 _trajectoryTime.reset()
 
             _currentTrajectory.add(it.trajectory)
@@ -89,7 +89,7 @@ class TrajectorySegmentRunner : IRobotModule {
         StaticTelemetry.drawRect(_targetOrientation.pos, Vec2(20.0, 20.0), _targetOrientation.angl.angle, Color.ORANGE)
         StaticTelemetry.addData("targetPosition", _targetOrientation.pos)
 
-        if (_currentTrajectory.isEmpty)
+        if (_currentTrajectory.isEmpty())
             return
 
         val trajectory = _currentTrajectory[0]

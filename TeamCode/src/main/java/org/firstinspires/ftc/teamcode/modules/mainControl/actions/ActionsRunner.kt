@@ -28,7 +28,7 @@ class ActionsRunner: IRobotModule {
     }
 
     override fun update() {
-        if(_actions.isEmpty)
+        if(_actions.isEmpty())
             return
 
         _actions[0].update()
