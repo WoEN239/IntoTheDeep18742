@@ -26,33 +26,13 @@ class Intake() : IRobotModule {
         _servoClamp = collector.devices.servoClamp
         _servoDifleft = collector.devices.servoDifLeft
         _servoDifRight = collector.devices.servoDifRight
-
-        /*bus.subscribe(SetLiftTargetEvent::class){
-            _liftTarget = it.targetAimPos / 2400.0 * 360
-
-            StaticTelemetry.addLine("liftAngle = " + _liftTarget)
-        }*/
-
-        bus.subscribe(SetClampPoseEvent::class){
-            clamp = it.pose
-        }
-
-        bus.subscribe(SetDifUpEvent::class){
-            _servoDifleft.position = Configs.IntakeConfig.DIF_UP_POS
-            _servoDifRight.position = 1 - Configs.IntakeConfig.DIF_UP_POS
-        }
-
-        bus.subscribe(SetDifDownEvent::class){
-            _servoDifleft.position = Configs.IntakeConfig.DIF_DOWN_POS
-            _servoDifRight.position = 1 - Configs.IntakeConfig.DIF_DOWN_POS
-        }
     }
 
     class SetClampPoseEvent(var pose: ClampPosition): IEvent
     class SetDifUpEvent(): IEvent
     class SetDifDownEvent(): IEvent
 
-    //var flip = GalaxyFlipPosition.SERVO_FLIP
+
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
@@ -65,127 +45,15 @@ class Intake() : IRobotModule {
             field = value
         }
 
-
-
-    
-
-    /*var rotateUp = RotatePositionUp.SERVO_UNROTATEUP
-        set(value) {
-            if (value == RotatePositionUp.SERVO_ROTATEUP) {
-                _servoRotateUp.position = Configs.IntakeConfig.SERVO_ROTATEUP
-            } else if (value == RotatePositionUp.SERVO_UNROTATEUP) {
-                _servoRotateUp.position = Configs.IntakeConfig.SERVO_UNROTATEUP
-            }
-
-            field = value
-        }
-
-    var position = AdvancedPosition.SERVO_UNPROMOTED
-        set(value) {
-            if (value == AdvancedPosition.SERVO_PROMOTED) {
-                _horizontalServoLeft.targetPosition = Configs.IntakeConfig.SERVO_PROMOTED_LEFT
-                _horizontalServoRight.targetPosition = Configs.IntakeConfig.SERVO_PROMOTED_RIGHT
-            } else if (value == AdvancedPosition.SERVO_UNPROMOTED) {
-                _horizontalServoLeft.targetPosition = Configs.IntakeConfig.SERVO_UNPROMOTED_LEFT
-                _horizontalServoRight.targetPosition = Configs.IntakeConfig.SERVO_UNPROMOTED_RIGHT
-            }
-
-            field = value
-        }
-
-    var clampF = ClampPositionF.SERVO_UNCLAMPF
-        set(value) {
-            if (value == ClampPositionF.SERVO_CLAMPF) {
-                _servoClampForv.position = Configs.IntakeConfig.SERVO_CLAMPF
-        } else if (value == ClampPositionF.SERVO_UNCLAMPF) {
-                _servoClampForv.position = Configs.IntakeConfig.SERVO_UNCLAMPF
-            }
-
-            field = value
-        }
-
-    var clampUp = ClampPositionUp.SERVO_UNCLAMPUP
-        set(value) {
-            if (value == ClampPositionUp.SERVO_CLAMPUP) {
-                _servoClampUp.position = Configs.IntakeConfig.SERVO_CLAMPUP
-            } else if (value == ClampPositionUp.SERVO_UNCLAMPUP) {
-                _servoClampUp.position = Configs.IntakeConfig.SERVO_UNCLAMPUP
-            }
-
-            field = value
-        }
-
-    val servoRotatePosition
-        get() = _servoRotate.position
-
-    var servoRotateVelocity: Double = 0.0
-
-    private val _deltaTime = ElapsedTime()
-
-    override fun start() {
-        _deltaTime.reset()
-    }
-
-    override fun update() {
-        if (flip == GalaxyFlipPosition.SERVO_FLIP) {
-            if (!_endingFlipped.state)
-                _servoFlip.position =
-                    Configs.IntakeConfig.FLIP_STOP_POSITION + Configs.IntakeConfig.FLIP_VELOCITY
-            else
-                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
-        } else {
-            if (!_endingUnflipped.state)
-                _servoFlip.position =
-                    Configs.IntakeConfig.FLIP_STOP_POSITION - Configs.IntakeConfig.FLIP_VELOCITY
-            else
-                _servoFlip.position = Configs.IntakeConfig.FLIP_STOP_POSITION
-        }
-
-        if(position == AdvancedPosition.SERVO_PROMOTED)
-        _servoRotate.position = clamp(_servoRotate.position + servoRotateVelocity * _deltaTime.seconds(), 0.0, 1.0)
-          else {
-            servoRotateVelocity = 0.0
-            _servoRotate.position = 0.5
-        }
-        _deltaTime.reset()
-        */
-
-   // }
-
-    enum class AdvancedPosition//нижняя
+    fun TargetDif(yRot: Double,xRot: Double)
     {
-        SERVO_PROMOTED,
-        SERVO_UNPROMOTED
+        _servoDifRight.position = (yRot + xRot)/Configs.IntakeConfig.MAX
+        _servoDifleft.position = (xRot - yRot)/Configs.IntakeConfig.MAX
     }
 
     enum class ClampPosition// захват
     {
         SERVO_CLAMP,
         SERVO_UNCLAMP
-    }
-    enum class ClampPositionF// захват
-    {
-        SERVO_CLAMPF,
-        SERVO_UNCLAMPF
-    }
-    enum class ClampPositionUp// захват
-    {
-        SERVO_CLAMPUP,
-        SERVO_UNCLAMPUP
-    }
-
-    enum class GalaxyFlipPosition {
-        SERVO_UNFLIP,
-        SERVO_FLIP
-    }
-    enum class RotatePositionUp
-    {
-        SERVO_ROTATEUP,
-        SERVO_UNROTATEUP
-    }
-
-    override fun update() {
-        /*_servoDifleft.position = _liftTarget / 270.0
-        _servoDifRight.position = 1.0 - _liftTarget / 270.0*/
     }
 }

@@ -145,6 +145,9 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var MAX = 180.0
+
+        @JvmField
         var SERVO_PROMOTED_LEFT = 0.72
 
         @JvmField
