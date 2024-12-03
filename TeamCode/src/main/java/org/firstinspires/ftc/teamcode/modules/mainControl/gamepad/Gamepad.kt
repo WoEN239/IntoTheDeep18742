@@ -1,24 +1,13 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.gamepad
 
-import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
-import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
 import org.firstinspires.ftc.teamcode.modules.hook.Hook
-import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampPoseEvent
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetDifDownEvent
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetDifUpEvent
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
-import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftTargetEvent
-import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
-import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class Gamepad : IRobotModule {
