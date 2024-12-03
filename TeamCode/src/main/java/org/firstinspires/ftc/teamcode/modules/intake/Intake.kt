@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftStateEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 class Intake() : IRobotModule {
@@ -16,6 +17,8 @@ class Intake() : IRobotModule {
     private lateinit var _servoDifleft: Servo
     private lateinit var _servoDifRight: Servo
 
+    private var _currentState: Lift.LiftStates = Lift.LiftStates.SETUP
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _servoClamp = collector.devices.servoClamp
         _servoDifleft = collector.devices.servoDifLeft
@@ -26,19 +29,23 @@ class Intake() : IRobotModule {
         }
 
         bus.subscribe(SetDifPosEvent::class){
-            setDifPos(it.yRot, it.xRot)
+            //тут тоже прорверки
+
+            if(_currentState != Lift.LiftStates.SETUP)
+                setDifPos(it.yRot, it.xRot)
         }
 
         bus.subscribe(SetLiftStateEvent::class){
-            val state = it.state
+            _currentState = it.state
 
             //тут проверки
+
+            if(_currentState == Lift.LiftStates.SETUP)
+                setDifPos(90.0, 90.0)
         }
     }
 
     class SetClampPoseEvent(var pose: ClampPosition): IEvent
-    class SetDifUpEvent(): IEvent
-    class SetDifDownEvent(): IEvent
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
