@@ -45,7 +45,7 @@ class Intake() : IRobotModule {
             field = value
         }
 
-    fun TargetDif(yRot: Double,xRot: Double)
+    fun targetDif(yRot: Double,xRot: Double)
     {
         _servoDifRight.position = (yRot + xRot)/Configs.IntakeConfig.MAX
         _servoDifleft.position = (xRot - yRot)/Configs.IntakeConfig.MAX
