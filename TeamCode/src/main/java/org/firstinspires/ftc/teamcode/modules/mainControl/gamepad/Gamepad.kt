@@ -30,17 +30,8 @@ class Gamepad : IRobotModule {
         _eventBus = bus
     }
 
-    override fun start() {
-        _deltaTime.reset()
-    }
-
-    private val _deltaTime = ElapsedTime()
-
     private var _oldClamp = false
     private var _clampPos = false
-
-    private var _oldDif = false
-    private var _difPos = false
 
     override fun lateUpdate() {
         _eventBus.invoke(
@@ -51,21 +42,6 @@ class Gamepad : IRobotModule {
                 ), (-_gamepad.right_stick_x).toDouble()
             )
         )
-
-        val liftTarget = _eventBus.invoke(Lift.RequestCurrentLiftTarget())
-
-        _eventBus.invoke(
-            SetLiftTargetEvent(
-                liftTarget.aimPos +
-                        _deltaTime.seconds() * (if (_gamepad.dpad_up) Configs.LiftConfig.AIM_GAMEPAD_SENS else 0.0) -
-                        _deltaTime.seconds() * (if (_gamepad.dpad_down) Configs.LiftConfig.AIM_GAMEPAD_SENS else 0.0),
-                liftTarget.extensionPos +
-                        _deltaTime.seconds() * (if (_gamepad.dpad_right) Configs.LiftConfig.EXTENSION_GAMEPAD_SENS else 0.0) -
-                        _deltaTime.seconds() * (if (_gamepad.dpad_left) Configs.LiftConfig.EXTENSION_GAMEPAD_SENS else 0.0)
-            )
-        )
-
-        _deltaTime.reset()
 
         if(_gamepad.circle && !_oldClamp)
             _clampPos = !_clampPos
@@ -78,15 +54,5 @@ class Gamepad : IRobotModule {
             _eventBus.invoke(Hook.HookRun())
         else
             _eventBus.invoke(Hook.HookStop())
-
-        if(!_oldDif && _gamepad.square)
-            _difPos = !_difPos
-
-        _oldDif = _gamepad.square
-
-        if(_difPos)
-            _eventBus.invoke(SetDifUpEvent())
-        else
-            _eventBus.invoke(SetDifDownEvent())
     }
 }

@@ -43,7 +43,7 @@ object Configs {
         @JvmField
         var MAX_TRANSLATION_ACCEL = 70.0
 
-        @JvmField   
+        @JvmField
         var MAX_TRANSLATION_VELOCITY = 130.0
 
         @JvmField
@@ -95,22 +95,42 @@ object Configs {
         var EXTENSION_GAMEPAD_SENS = 1500.0
 
         @JvmField
-        var MIN_AIM_POS = 0.0
-
-        @JvmField
-        var MAX_AIM_POS = 524.0
-
-        @JvmField
-        var MAX_EXTENSION_POS = 2023.0
-
-        @JvmField
-        var MIN_EXTENSION_POS = 0.0
-
-        @JvmField
         var INIT_POWER = 0.2
 
         @JvmField
         var EXTENSION_FIX = 0.6
+
+        internal data class LiftPosition(
+            @JvmField var EXTENSION_POSITION: Double,
+            @JvmField var AIM_POSITION: Double
+        )
+
+        @JvmField
+        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_MIDDLE_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_DOWN_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_DOWN_LAYER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_CLAMP_FIELD_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_CLAMP_WALL_LIFT_POSITION = LiftPosition(0.0, 0.0)
+
+        @JvmField
+        var TARGET_SETUP_LIFT_POSITION = LiftPosition(0.0, 0.0)
     }
 
     @Config

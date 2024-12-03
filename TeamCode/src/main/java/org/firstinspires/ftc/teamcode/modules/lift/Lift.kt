@@ -11,16 +11,15 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.configs.Configs.LiftConfig.LiftPosition
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import kotlin.math.PI
 import kotlin.math.abs
 
 class Lift: IRobotModule {
-    class SetLiftTargetEvent(val targetAimPos: Double, val targetExtensionPos: Double): IEvent
     class RequestLiftAtTargetEvent(var atTarget: Boolean): IEvent
-    class RequestCurrentLiftPosition(var aimPos: Double = 0.0, var extensionPos: Double = 0.0): IEvent
-    class RequestCurrentLiftTarget(var aimPos: Double = 0.0, var extensionPos: Double = 0.0): IEvent
+    class SetLiftStateEvent(val state: LiftStates): IEvent
 
     private lateinit var _aimMotor: DcMotorEx
     private lateinit var _extensionMotor: DcMotorEx
@@ -49,7 +48,6 @@ class Lift: IRobotModule {
         _extensionMotor = collector.devices.liftExtensionMotor
 
         _extensionMotor.direction = REVERSE
-        //_aimMotor.direction = REVERSE
 
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
@@ -63,38 +61,48 @@ class Lift: IRobotModule {
         _aimEndingUp = collector.devices.liftAimEndingUp
         _extensionEndingDown = collector.devices.liftExtensionEndingDown
 
-        bus.subscribe(SetLiftTargetEvent::class){
-            _targetAimPos = clamp(it.targetAimPos, Configs.LiftConfig.MIN_AIM_POS, Configs.LiftConfig.MAX_AIM_POS)
-            _targetExtensionPos = clamp(it.targetExtensionPos, Configs.LiftConfig.MIN_EXTENSION_POS, Configs.LiftConfig.MAX_EXTENSION_POS)
-        }
-
         bus.subscribe(RequestLiftAtTargetEvent::class){
             it.atTarget = abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_promotedErr) < Configs.LiftConfig.PROMOTED_SENS
         }
 
-        bus.subscribe(RequestCurrentLiftPosition::class){
-            it.aimPos = getCurrentAimPos()
-            it.extensionPos = getCurrentExtensionPos()
-        }
-
-        bus.subscribe(RequestCurrentLiftTarget::class){
-            it.aimPos = _targetAimPos
-            it.extensionPos = _targetExtensionPos
-        }
-
         _aimMotor.power = abs(Configs.LiftConfig.INIT_POWER)
+
+        bus.subscribe(SetLiftStateEvent::class){
+            updateLiftState(it.state)
+        }
+
+        updateLiftState(LiftStates.SETUP)
+    }
+
+    fun updateLiftState(state: LiftStates){
+        fun setLiftTarget(target: LiftPosition){
+            _targetAimPos = target.AIM_POSITION
+            _targetExtensionPos = target.EXTENSION_POSITION
+        }
+
+        when(state){
+            LiftStates.UP_BASKET -> setLiftTarget(Configs.LiftConfig.TARGET_UP_BASKET_LIFT_POSITION)
+            LiftStates.MIDDLE_BASKET -> setLiftTarget(Configs.LiftConfig.TARGET_MIDDLE_BASKET_LIFT_POSITION)
+            LiftStates.DOWN_BASKET -> setLiftTarget(Configs.LiftConfig.TARGET_DOWN_BASKET_LIFT_POSITION)
+            LiftStates.UP_LAYER -> setLiftTarget(Configs.LiftConfig.TARGET_UP_LAYER_LIFT_POSITION)
+            LiftStates.DOWN_LAYER -> setLiftTarget(Configs.LiftConfig.TARGET_DOWN_LAYER_LIFT_POSITION)
+            LiftStates.CLAMP_FIELD -> setLiftTarget(Configs.LiftConfig.TARGET_CLAMP_FIELD_LIFT_POSITION)
+            LiftStates.CLAMP_CENTER -> setLiftTarget(Configs.LiftConfig.TARGET_CLAMP_CENTER_LIFT_POSITION)
+            LiftStates.CLAMP_WALL -> setLiftTarget(Configs.LiftConfig.TARGET_CLAMP_WALL_LIFT_POSITION)
+            LiftStates.SETUP -> setLiftTarget(Configs.LiftConfig.TARGET_SETUP_LIFT_POSITION)
+        }
     }
 
     fun getCurrentAimPos() = (_aimMotor.currentPosition - _aimStartPosition).toDouble()
     fun getCurrentExtensionPos() = (_extensionMotor.currentPosition - _extensionStartPosition).toDouble()
 
     override fun update() {
-        /*if(_aimEndingUp.state)
+        if(!_aimEndingUp.state)
             _aimStartPosition = _aimMotor.currentPosition - Configs.LiftConfig.LIFT_ENDING_POS
 
-        if(_extensionEndingDown.state)
+        if(!_extensionEndingDown.state)
             _extensionStartPosition = _extensionMotor.currentPosition
-*/
+
         _aimErr = _targetAimPos - getCurrentAimPos()
         _promotedErr = (_targetExtensionPos + getCurrentAimPos() * Configs.LiftConfig.EXTENSION_FIX) - getCurrentExtensionPos()
 
@@ -103,6 +111,18 @@ class Lift: IRobotModule {
 
         _aimMotor.power = aimPower
         _extensionMotor.power = extensionPower
+    }
+
+    enum class LiftStates{
+        UP_BASKET,
+        MIDDLE_BASKET,
+        DOWN_BASKET,
+        UP_LAYER,
+        DOWN_LAYER,
+        CLAMP_FIELD,
+        CLAMP_CENTER,
+        CLAMP_WALL,
+        SETUP
     }
 
     override fun start() {
