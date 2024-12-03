@@ -148,55 +148,10 @@ object Configs {
         var MAX = 180.0
 
         @JvmField
-        var SERVO_PROMOTED_LEFT = 0.72
-
-        @JvmField
-        var SERVO_UNPROMOTED_LEFT = 0.1
-
-        @JvmField
-        var SERVO_UNPROMOTED_RIGHT = 0.88
-
-        @JvmField
-        var SERVO_PROMOTED_RIGHT = 0.26
-
-        @JvmField
         var SERVO_CLAMP = 0.0
 
         @JvmField
         var SERVO_UNCLAMP = 0.27
-
-        @JvmField
-        var SERVO_CLAMPUP = 0.45
-
-        @JvmField
-        var SERVO_UNCLAMPUP = 0.6
-
-        @JvmField
-        var SERVO_CLAMPF = 0.42
-
-        @JvmField
-        var SERVO_UNCLAMPF = 0.87
-
-        @JvmField
-        var SERVO_ROTATEUP = 0.7
-
-        @JvmField
-        var SERVO_UNROTATEUP = 0.3
-
-        @JvmField
-        var FLIP_VELOCITY = 0.25
-
-        @JvmField
-        var FLIP_STOP_POSITION = 0.5
-
-        @JvmField
-        var MAX_ROTATE_VELOCITY = 0.5
-
-        @JvmField
-        var DIF_UP_POS = 0.5
-
-        @JvmField
-        var DIF_DOWN_POS = 0.9
     }
 
     @Config
