@@ -26,11 +26,13 @@ class Intake() : IRobotModule {
         }
 
         bus.subscribe(SetDifPosEvent::class){
-            steDifPos(it.yRot, it.xRot)
+            setDifPos(it.yRot, it.xRot)
         }
 
         bus.subscribe(SetLiftStateEvent::class){
             val state = it.state
+
+            //тут проверки
         }
     }
 
@@ -49,7 +51,7 @@ class Intake() : IRobotModule {
             field = value
         }
 
-    fun steDifPos(yRot: Double,xRot: Double)
+    fun setDifPos(yRot: Double,xRot: Double)
     {
         _servoDifRight.position = (yRot + xRot)/Configs.IntakeConfig.MAX
         _servoDifleft.position = (xRot - yRot)/Configs.IntakeConfig.MAX
