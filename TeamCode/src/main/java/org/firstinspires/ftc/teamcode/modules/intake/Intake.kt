@@ -30,9 +30,29 @@ class Intake() : IRobotModule {
 
         bus.subscribe(SetDifPosEvent::class){
             //тут тоже прорверки
+            if(_currentState == Lift.LiftStates.CLAMP_WALL)
+                setDifPos(it.yRot, 0.0)
 
-            if(_currentState != Lift.LiftStates.SETUP)
-                setDifPos(it.yRot, it.xRot)
+            if(_currentState == Lift.LiftStates.CLAMP_FIELD)
+                setDifPos(0.0, it.xRot)
+
+            if(_currentState == Lift.LiftStates.CLAMP_CENTER)
+                setDifPos(0.0, it.xRot)
+
+            if(_currentState == Lift.LiftStates.MIDDLE_BASKET)
+                setDifPos(it.yRot, 0.0)
+
+            if(_currentState == Lift.LiftStates.DOWN_BASKET)
+                setDifPos(it.yRot, 0.0)
+
+            if(_currentState == Lift.LiftStates.DOWN_LAYER)
+                setDifPos(0.0, it.xRot )
+
+            if(_currentState == Lift.LiftStates.UP_LAYER)
+                setDifPos(0.0, it.xRot)
+
+            if(_currentState == Lift.LiftStates.UP_BASKET)
+                setDifPos(it.yRot, 0.0)
         }
 
         bus.subscribe(SetLiftStateEvent::class){
@@ -42,6 +62,31 @@ class Intake() : IRobotModule {
 
             if(_currentState == Lift.LiftStates.SETUP)
                 setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.UP_BASKET)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.UP_LAYER)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.MIDDLE_BASKET)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.CLAMP_WALL)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.CLAMP_FIELD)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.CLAMP_CENTER)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.DOWN_LAYER)
+                setDifPos(90.0, 90.0)
+
+            if(_currentState == Lift.LiftStates.DOWN_LAYER)
+                setDifPos(90.0, 90.0)
+
         }
     }
 
