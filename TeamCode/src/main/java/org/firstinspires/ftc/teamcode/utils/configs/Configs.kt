@@ -165,7 +165,7 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
-        var MAX = 180.0
+        var MAX = 270.0
 
         @JvmField
         var SERVO_CLAMP = 0.0
