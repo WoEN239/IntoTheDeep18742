@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetDifPosEvent
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
-import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftStateEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
@@ -58,7 +56,7 @@ class Gamepad : IRobotModule {
             _eventBus.invoke(Hook.HookRunRevers())
         else
             _eventBus.invoke(Hook.HookStop())
-
+/*
         if(!_basketOld && _gamepad.dpad_up)
             _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.UP_BASKET))
 
@@ -69,14 +67,12 @@ class Gamepad : IRobotModule {
             _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.UP_LAYER))
 
         if(!_wallOld &&_gamepad.dpad_left)
-            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_WALL))
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_WALL))*/
 
         _basketOld = _gamepad.dpad_up
         _centerOld = _gamepad.dpad_down
         _layerOld = _gamepad.dpad_right
         _wallOld = _gamepad.dpad_left
-
-        _eventBus.invoke(Lift.SetExtensionVelocityEvent((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
 
         _eventBus.invoke(SetDifPosEvent(if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0, 0.0))
     }

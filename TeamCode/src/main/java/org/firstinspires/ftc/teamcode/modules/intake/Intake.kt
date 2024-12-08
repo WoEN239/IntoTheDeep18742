@@ -7,11 +7,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
-import org.firstinspires.ftc.teamcode.modules.lift.Lift.LiftStateSwap
-import org.firstinspires.ftc.teamcode.modules.lift.Lift.RequestLiftAtTargetEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.timer.Timers
 
 class Intake() : IRobotModule {
     class SetClampEvent(val position: ClampPosition): IEvent
@@ -31,8 +27,6 @@ class Intake() : IRobotModule {
 
     private val _deltaTime = ElapsedTime()
 
-    private var _currentState: Lift.LiftStates = Lift.LiftStates.SETUP
-
     override fun init(collector: BaseCollector, bus: EventBus) {
         _servoClamp = collector.devices.servoClamp
         _servoDifleft = collector.devices.servoDifLeft
@@ -42,7 +36,7 @@ class Intake() : IRobotModule {
             clamp = it.position
         }
 
-        bus.subscribe(SetDifPosEvent::class){
+        /*bus.subscribe(SetDifPosEvent::class){
             //тут тоже прорверки
 
             if(_currentState == Lift.LiftStates.CLAMP_CENTER)
@@ -63,24 +57,7 @@ class Intake() : IRobotModule {
                 setDifPos(0.0, 10.0)
             else
                 setDifPos(0.0, 0.0)
-
-            //тут проверки
-
-            /*if(_currentState == Lift.LiftStates.SETUP)
-                setDifPos(90.0, 90.0)
-
-            if(_currentState == Lift.LiftStates.UP_BASKET)
-                setDifPos(90.0, 90.0)
-
-            if(_currentState == Lift.LiftStates.UP_LAYER)
-                setDifPos(90.0, 90.0)
-
-            if(_currentState == Lift.LiftStates.CLAMP_WALL)
-                setDifPos(90.0, 90.0)
-
-            if(_currentState == Lift.LiftStates.CLAMP_CENTER)
-                setDifPos(90.0, 90.0)*/
-        }
+        }*/
 
         bus.subscribe(RequestClampPositionEvent::class){
             it.position = clamp
@@ -118,8 +95,7 @@ class Intake() : IRobotModule {
     }
 
     override fun update() {
-        if(_currentState == Lift.LiftStates.CLAMP_CENTER)
-            setDifPos(clamp(_yPos + _deltaTime.seconds() * _yVelocity, -90.0, 90.0), clamp(_xPos + _deltaTime.seconds() * _xVelocity, -90.0, 90.0))
+        setDifPos(clamp(_yPos + _deltaTime.seconds() * _yVelocity, -90.0, 90.0), clamp(_xPos + _deltaTime.seconds() * _xVelocity, -90.0, 90.0))
 
         _deltaTime.reset()
     }
