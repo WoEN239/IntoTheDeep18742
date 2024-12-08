@@ -47,10 +47,10 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     enum class GameOrientation { FORWARD, BACK }
 
     enum class GameStartPosition(val position: Vec2, val angle: Angle, color: GameColor, orientation: GameOrientation){
-        RED_FORWARD(Vec2(0.0, 0.0), Angle(0.0), GameColor.RED, GameOrientation.FORWARD),
-        RED_BACK(Vec2(0.0, 0.0), Angle(0.0), GameColor.RED, GameOrientation.BACK),
-        BLUE_FORWARD(Vec2(0.0, 0.0), Angle(0.0), GameColor.BLUE, GameOrientation.FORWARD),
-        BLUE_BACK(Vec2(0.0, 0.0), Angle(0.0), GameColor.BLUE, GameOrientation.BACK),
+        RED_FORWARD(Vec2(39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.FORWARD),
+        RED_BACK(Vec2(-39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BACK),
+        BLUE_FORWARD(Vec2(39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.FORWARD),
+        BLUE_BACK(Vec2(-39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BACK),
         NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BACK)
     }
 

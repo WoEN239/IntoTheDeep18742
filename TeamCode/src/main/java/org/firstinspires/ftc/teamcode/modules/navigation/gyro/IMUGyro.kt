@@ -18,7 +18,11 @@ class IMUGyro: IRobotModule {
 
     private lateinit var _eventBus: EventBus
 
+    private var _startAngle = Angle.ZERO
+
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _startAngle = collector.gameSettings.startPosition.angle
+
         _imu = collector.devices.imu
 
         _imu.initialize(
@@ -39,7 +43,7 @@ class IMUGyro: IRobotModule {
 
             StaticTelemetry.addData("gyroRaw", raw)
 
-            _oldRot = Angle(raw)
+            _oldRot = Angle(raw) + _startAngle
 
             _oldReadTime.reset()
 

@@ -12,24 +12,24 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
     override fun getCollector(): BaseCollector {
         val collector = BaseCollector(this,
             BaseCollector.GameSettings(
-                startPosition = GameStartPosition.NONE,
+                startPosition = startPos,
                 isAuto = true
             ))
 
-        collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ /*TrajectorySegmentRunner(), */ActionsRunner()))
+        collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner()))
 
         return collector
     }
 }
 
 @Autonomous
-class AutoOpModeRedBack: AutoOpMode(GameStartPosition.RED_BACK)
+class AutoOpModeRedBack: AutoOpMode(GameStartPosition.NONE)
 
 @Autonomous
-class AutoOpModeRedForward: AutoOpMode(GameStartPosition.RED_FORWARD)
+class AutoOpModeRedForward: AutoOpMode(GameStartPosition.NONE)
 
 @Autonomous
-class AutoOpModeBlueForward: AutoOpMode(GameStartPosition.BLUE_FORWARD)
+class AutoOpModeBlueForward: AutoOpMode(GameStartPosition.NONE)
 
 @Autonomous
-class AutoOpModeBlueBack: AutoOpMode(GameStartPosition.BLUE_BACK)
+class AutoOpModeBlueBack: AutoOpMode(GameStartPosition.NONE)

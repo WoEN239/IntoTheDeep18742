@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.modules.driveTrain
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -49,7 +51,15 @@ class DriveTrain : IRobotModule {
         _leftForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(SetDrivePowerEvent::class){
-            bus.invoke(SetDriveCmEvent(it.direction * Vec2(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY, Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY), it.rotate * Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY))
+            var dir = it.direction
+            var rot = it.rotate
+
+            if(_eventBus.invoke(Lift.RequestLiftState()).state != Lift.LiftStates.SETUP) {
+                dir *= Vec2(Configs.DriveTrainConfig.LIFT_MAX_SPEED)
+                rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
+            }
+
+            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY, Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){
@@ -64,14 +74,18 @@ class DriveTrain : IRobotModule {
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
                 _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity) / collector.devices.battery.charge)
+
+            _deltaTime.reset()
         }
 
         bus.subscribe(SetLocalDriveCm::class){
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
 
-            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle), it.rotate))
+            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle/* + it.rotate * _deltaTime.seconds() * 0.5*/), it.rotate))
         }
     }
+
+    private val _deltaTime = ElapsedTime()
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
         _leftForwardDrive.power = -direction.x - direction.y + rotate
@@ -89,7 +103,7 @@ class DriveTrain : IRobotModule {
     }
 
     override fun start() {
-
+        _deltaTime.reset()
     }
 
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent

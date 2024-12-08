@@ -33,6 +33,9 @@ object Configs {
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135, fr = 0.13)
+
+        @JvmField
+        var LIFT_MAX_SPEED = 0.5
     }
 
     @Config
@@ -50,7 +53,7 @@ object Configs {
         var ROTATE_ACCEL = 4.8
 
         @JvmField
-        var ROTATE_P = 0.2
+        var ROTATE_P = 1.0
 
         @JvmField
         var ROTATE_SENS = 0.09
@@ -62,37 +65,34 @@ object Configs {
         var POSITION_P_Y = 1.0
 
         @JvmField
-        var POSITION_SENS_X = 1.2
+        var POSITION_SENS_X = 5.0
 
         @JvmField
-        var POSITION_SENS_Y = 1.2
+        var POSITION_SENS_Y = 5.0
     }
 
     @Config
     internal object LiftConfig {
         @JvmField
-        var AIM_PID = PIDConfig(0.015, d = 0.00015, limitU = 1.0)
+        var AIM_PID = PIDConfig(0.005, d = 0.0003, limitU = 1.0)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.007)
+        var EXTENSION_PID = PIDConfig(0.002)
 
         @JvmField
-        var PROMOTED_SENS = 1.0
+        var EXTENSION_SENS = 5.0
 
         @JvmField
-        var AIM_SENS = 1.0
+        var AIM_SENS = 5.0
 
         @JvmField
-        var MAX_SPEED_DOWN = -1.0
+        var TRIGET_SLOW_POS = 400.0
 
         @JvmField
-        var LIFT_ENDING_POS = 524
+        var MAX_TRIGGER_SPEED_DOWN = 0.0
 
         @JvmField
-        var AIM_GAMEPAD_SENS = 300.0
-
-        @JvmField
-        var EXTENSION_GAMEPAD_SENS = 1500.0
+        var LIFT_AIM_ENDING_POS = 615
 
         @JvmField
         var INIT_POWER = 0.2
@@ -100,37 +100,55 @@ object Configs {
         @JvmField
         var EXTENSION_FIX = 0.6
 
+        @JvmField
+        var AIM_TURN_TICKS = 24.0 * 60.0
+
+        @JvmField
+        var EXTENSION_TURN_TICKS = 24.0 * 20.0
+
         internal data class LiftPosition(
             @JvmField var EXTENSION_POSITION: Double,
             @JvmField var AIM_POSITION: Double
         )
 
         @JvmField
-        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(3100.0, 600.0)
 
         @JvmField
-        var TARGET_MIDDLE_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(900.0, 650.0)
 
         @JvmField
-        var TARGET_DOWN_BASKET_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(500.0, 120.0)
 
         @JvmField
-        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_CLAMP_WALL_LIFT_POSITION = LiftPosition(1000.0, 205.0)
 
         @JvmField
-        var TARGET_DOWN_LAYER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_SETUP_LIFT_POSITION = LiftPosition(0.0, 180.0)
 
         @JvmField
-        var TARGET_CLAMP_FIELD_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var TARGET_CLAMP_WALL_DOWN_LIFT_POSITION = LiftPosition(1000.0, 450.0)
 
         @JvmField
-        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var GAMEPAD_EXTENSION_SENS = 1500.0
 
         @JvmField
-        var TARGET_CLAMP_WALL_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var MAX_SPEED_DOWN = -0.5
 
         @JvmField
-        var TARGET_SETUP_LIFT_POSITION = LiftPosition(0.0, 0.0)
+        var MIN_SPEED_UP = 0.9
+
+        @JvmField
+        var EXTENSION_ERR_BLOCKER = 400.0
+
+        @JvmField
+        var CLAMP_TIME = 0.5
+
+        @JvmField
+        var MAX_EXTENSION_POS = 1000.0
+
+        @JvmField
+        var MIN_EXTENSION_POS = 0.0
     }
 
     @Config
@@ -143,7 +161,7 @@ object Configs {
             @JvmField var S_MAX: Double,
             @JvmField var V_MAX: Double,
             @JvmField var ERODE_DILATE: Double,
-            @JvmField var DILATE_ERODE: Double,
+            @JvmField var DILATE_ERODE: Double, 
             @JvmField var PRECOMPRESSION: Double
         )
 
@@ -168,10 +186,13 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.0
+        var SERVO_CLAMP = 0.49
 
         @JvmField
-        var SERVO_UNCLAMP = 0.27
+        var SERVO_UNCLAMP = 0.8
+
+        @JvmField
+        var DIX_Y_VELOCITY = 110.0
     }
 
     @Config

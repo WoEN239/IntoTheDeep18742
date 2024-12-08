@@ -7,7 +7,11 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
 import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampPoseEvent
+import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampEvent
+import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetDifPosEvent
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
+import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftStateEvent
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class Gamepad : IRobotModule {
@@ -22,6 +26,11 @@ class Gamepad : IRobotModule {
     private var _oldClamp = false
     private var _clampPos = false
 
+    private var _basketOld = false
+    private var _centerOld = false
+    private var _wallOld = false
+    private var _layerOld = false
+
     override fun lateUpdate() {
         _eventBus.invoke(
             SetDrivePowerEvent(
@@ -32,16 +41,43 @@ class Gamepad : IRobotModule {
             )
         )
 
-        if(_gamepad.circle && !_oldClamp)
+        if(_gamepad.circle && !_oldClamp) {
             _clampPos = !_clampPos
+
+            if(_clampPos)
+                _eventBus.invoke(SetClampEvent(ClampPosition.SERVO_CLAMP))
+            else
+                _eventBus.invoke(SetClampEvent(ClampPosition.SERVO_UNCLAMP))
+        }
 
         _oldClamp = _gamepad.circle
 
-        _eventBus.invoke(SetClampPoseEvent(if(_clampPos)  ClampPosition.SERVO_CLAMP else  ClampPosition.SERVO_UNCLAMP))
-
         if(_gamepad.triangle)
             _eventBus.invoke(Hook.HookRun())
+        else if(_gamepad.square)
+            _eventBus.invoke(Hook.HookRunRevers())
         else
             _eventBus.invoke(Hook.HookStop())
+
+        if(!_basketOld && _gamepad.dpad_up)
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.UP_BASKET))
+
+        if(!_centerOld && _gamepad.dpad_down)
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_CENTER))
+
+        if(!_layerOld && _gamepad.dpad_right)
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.UP_LAYER))
+
+        if(!_wallOld &&_gamepad.dpad_left)
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_WALL))
+
+        _basketOld = _gamepad.dpad_up
+        _centerOld = _gamepad.dpad_down
+        _layerOld = _gamepad.dpad_right
+        _wallOld = _gamepad.dpad_left
+
+        _eventBus.invoke(Lift.SetExtensionVelocityEvent((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
+
+        _eventBus.invoke(SetDifPosEvent(if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0, 0.0))
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.test
 
+import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.PwmControl
@@ -7,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.contServo.ContServo
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
@@ -17,18 +20,37 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
 @TeleOp
 class Test: LinearOpMode() {
+    private lateinit var _servoDifleft: Servo
+    private lateinit var _servoDifRight: Servo
+
+    @Config
+    internal object TestConfigs{
+        @JvmField
+        var X_ROT = 0.0
+
+        @JvmField
+        var Y_ROT = 0.0
+    }
+
+    fun setDifPos(yRot: Double,xRot: Double)
+    {
+        val x = xRot + 150.0
+        val y = yRot + 17.0
+
+        _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+        _servoDifleft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+    }
+
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
         try {
+            _servoDifleft = this.hardwareMap.get("servoDifLeft") as Servo
+            _servoDifRight = this.hardwareMap.get("servoDifRight") as Servo
+
             val handler = UpdateHandler()
 
             val battery = Battery(hardwareMap.get(VoltageSensor::class.java, "Control Hub"))
-
-            val servRight = SoftServo(hardwareMap.get("horizontalServoRight") as ServoImplEx, 0.88)
-            val servLeft = SoftServo(hardwareMap.get("horizontalServoLeft") as ServoImplEx, 0.1)
-
-            val timer = Timer()
 
             handler.init(BaseCollector.InitContext(battery))
 
@@ -37,35 +59,13 @@ class Test: LinearOpMode() {
 
             handler.start()
 
-            var currentRightPos = 0.26
-            var currentLeftPos = 0.72
-
-            var a = {}
-
-            // 0.88 0.26
-            // 0.1 0.72
-
-            a = {
-                currentRightPos = 0.88
-                currentLeftPos = 0.1
-
-                timer.start({!servRight.isEnd || !servLeft.isEnd}, {
-                    currentRightPos = 0.26
-                    currentLeftPos = 0.72
-
-                    timer.start({!servRight.isEnd || !servLeft.isEnd}, a)
-                })
-            }
-
-            timer.start({!servRight.isEnd || !servLeft.isEnd}, a)
 
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
                 handler.update()
 
-                servRight.targetPosition = currentRightPos
-                servLeft.targetPosition = currentLeftPos
+                setDifPos(TestConfigs.Y_ROT, TestConfigs.X_ROT)
             }
 
             handler.stop()

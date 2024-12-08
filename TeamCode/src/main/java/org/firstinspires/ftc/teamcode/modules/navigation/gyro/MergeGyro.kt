@@ -20,6 +20,8 @@ class MergeGyro : IRobotModule {
     private var _velocity = 0.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _rotation = collector.gameSettings.startPosition.angle
+
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
             _rotation = Angle(_mergeFilter.updateRaw(_rotation.angle, (it.rotate - _rotation).angle))
         }

@@ -33,6 +33,17 @@ class ActionsRunner: IRobotModule {
         bus.subscribe(RequestIsEndActionsRun::class){
             it.isEnd = _actions.isEmpty()
         }
+
+        val actions = arrayListOf<IAction>()
+
+        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
+            Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
+            .strafeTo(Vector2d(0.0, 100.0))
+            .strafeToLinearHeading(Vector2d(140.0, 70.0), Math.toRadians(45.0))
+            .build()))
+
+        _eventBus.invoke(RunActionsEvent(actions))
+
     }
 
     override fun update() {
@@ -51,10 +62,10 @@ class ActionsRunner: IRobotModule {
     }
 
     override fun start() {
-        _eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(0.3, 0.0), 0.0))
+        /*_eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(0.3, 0.0), 0.0))
 
         Timers.newTimer().start(5.0){
             _eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(0.0, 0.0), 0.0))
-        }
+        }*/
     }
 }

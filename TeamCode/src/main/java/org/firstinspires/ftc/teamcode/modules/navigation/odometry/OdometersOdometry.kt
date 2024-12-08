@@ -17,6 +17,8 @@ class OdometersOdometry : IRobotModule {
     private var _rotateVelocity = 0.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _position = collector.gameSettings.startPosition.position
+
         bus.subscribe(HardwareOdometers.UpdateHardwareOdometersEvent::class) {
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld

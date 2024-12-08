@@ -52,11 +52,11 @@ object MeepMeepTesting {
 
             //то что раскоменчено для красного альянса
             myBot.drive.actionBuilder(Pose2d(39.0, -165.0, Math.toRadians(90.0)))
-                .splineToConstantHeading(Vector2d(5.0, -77.0), Math.toRadians(90.0))
-                .waitSeconds(2.0)
-                // Здесь повесим блок
-                .splineToConstantHeading(Vector2d(5.0, -100.0), Math.toRadians(90.0))
-                .splineToConstantHeading(Vector2d(75.0, -97.0), Math.toRadians(90.0))
+//                .splineToConstantHeading(Vector2d(5.0, -77.0), Math.toRadians(90.0))
+//                .waitSeconds(2.0)
+//                // Здесь повесим блок
+//                .splineToConstantHeading(Vector2d(5.0, -100.0), Math.toRadians(90.0))
+//                .splineToConstantHeading(Vector2d(75.0, -97.0), Math.toRadians(90.0))
                 .splineTo(Vector2d(120.0, 0.0), Math.toRadians(90.0))
                 .lineToY(-154.0)
                 .lineToY(-60.0)
