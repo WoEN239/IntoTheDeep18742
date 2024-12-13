@@ -74,7 +74,7 @@ class DriveTrain : IRobotModule {
             val dirRot = it.direction.rot()
 
             _targetDirectionVelocity = Vec2(cos(dirRot) * clampedDirLength, sin(dirRot) * clampedDirLength)
-            _targetRotateVelocity = it.rotate
+            _targetRotateVelocity = clamp(it.rotate, -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
@@ -84,18 +84,8 @@ class DriveTrain : IRobotModule {
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
                 _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity))
-
-            _deltaTime.reset()
-        }
-
-        bus.subscribe(SetLocalDriveCm::class){
-            val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
-
-            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle), it.rotate))
         }
     }
-
-    private val _deltaTime = ElapsedTime()
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
         _leftForwardDrive.power = (-direction.x - direction.y + rotate) / _battery.charge
@@ -112,11 +102,6 @@ class DriveTrain : IRobotModule {
         _targetRotateVelocity = 0.0
     }
 
-    override fun start() {
-        _deltaTime.reset()
-    }
-
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
     class SetDriveCmEvent(val direction: Vec2, val rotate: Double): IEvent
-    class SetLocalDriveCm(val direction: Vec2, val rotate: Double): IEvent
 }
