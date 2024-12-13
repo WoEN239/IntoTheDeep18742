@@ -30,13 +30,13 @@ class TrajectorySegmentRunner : IRobotModule {
             Pose2d(startOrientation.x, startOrientation.y, startOrientation.angl.angle), 0.0,
             MinVelConstraint(
                 listOf(
-                    TranslationalVelConstraint(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY),
-                    AngularVelConstraint(Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY)
+                    TranslationalVelConstraint(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY),
+                    AngularVelConstraint(Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
                 )
             ),
             ProfileAccelConstraint(
-                -Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL,
-                Configs.RoadRunnerConfig.MAX_TRANSLATION_ACCEL
+                -Configs.DriveTrainConfig.TRANSLATION_ACCEL,
+                Configs.DriveTrainConfig.TRANSLATION_ACCEL
             )
         )
     }
@@ -75,11 +75,13 @@ class TrajectorySegmentRunner : IRobotModule {
         val odometry = _eventBus.invoke(MergeOdometry.RequestMergePositionEvent())
 
         val headingErr = (_targetOrientation.angl - gyro.rotation!!).angle
-        val posErr = (_targetOrientation.pos - odometry.position!!)
+        val posErr = (_targetOrientation.pos - odometry.position!!).turn(gyro.rotation!!.angle)
+
+        StaticTelemetry.addData("posErr", posErr)
 
         _eventBus.invoke(
-            DriveTrain.SetLocalDriveCm(
-                _targetTransVelocity +
+            DriveTrain.SetDriveCmEvent(
+                _targetTransVelocity.turn(gyro.rotation!!.angle) +
                         if(abs(posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) Vec2(posErr.x * Configs.RoadRunnerConfig.POSITION_P_X, 0.0) else Vec2.ZERO +
                         if(abs(posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) Vec2(0.0, posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y) else Vec2.ZERO,
                 _targetHeadingVelocity + if(abs(headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0

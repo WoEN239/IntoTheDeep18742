@@ -36,15 +36,12 @@ object Configs {
 
         @JvmField
         var LIFT_MAX_SPEED = 0.5
-    }
 
-    @Config
-    internal object RoadRunnerConfig {
         @JvmField
         var MAX_ROTATE_VELOCITY = 7.9
 
         @JvmField
-        var MAX_TRANSLATION_ACCEL = 70.0
+        var TRANSLATION_ACCEL = 70.0
 
         @JvmField
         var MAX_TRANSLATION_VELOCITY = 130.0
@@ -52,6 +49,10 @@ object Configs {
         @JvmField
         var ROTATE_ACCEL = 4.8
 
+    }
+
+    @Config
+    internal object RoadRunnerConfig {
         @JvmField
         var ROTATE_P = 1.0
 
@@ -59,16 +60,16 @@ object Configs {
         var ROTATE_SENS = 0.09
 
         @JvmField
-        var POSITION_P_X = 1.0
+        var POSITION_P_X = 1.9
 
         @JvmField
-        var POSITION_P_Y = 1.0
+        var POSITION_P_Y = 1.9
 
         @JvmField
-        var POSITION_SENS_X = 5.0
+        var POSITION_SENS_X = 6.0
 
         @JvmField
-        var POSITION_SENS_Y = 5.0
+        var POSITION_SENS_Y = 6.0
     }
 
     @Config

@@ -16,7 +16,7 @@ class TeleOpMode : LinearOpModeBase() {
         val collector = BaseCollector(
             this,
             BaseCollector.GameSettings(
-                startPosition = BaseCollector.GameStartPosition.RED_FORWARD,
+                startPosition = BaseCollector.GameStartPosition.NONE,
                 isAuto = false
             )
         )

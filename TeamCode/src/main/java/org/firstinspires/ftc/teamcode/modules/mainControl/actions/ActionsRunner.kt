@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.utils.timer.Timer
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
@@ -38,8 +39,29 @@ class ActionsRunner: IRobotModule {
 
         actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
             Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
-            .strafeTo(Vector2d(0.0, 100.0))
-            .strafeToLinearHeading(Vector2d(140.0, 70.0), Math.toRadians(45.0))
+            .strafeTo(Vector2d(53.0, -17.0))
+            .build()))
+
+        actions.add(WaitAction(5.0))
+
+        actions.add(TurnAction(bus, Orientation(Vec2(53.0, -17.0), collector.gameSettings.startPosition.angle), Angle.ofDeg(180.0)))
+
+        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
+            Orientation(Vec2(53.0, -17.0), Angle.ofDeg(180.0)))
+                .splineToConstantHeading(Vector2d(40.0, 45.0), Math.toRadians(0.0))
+                .splineToConstantHeading(Vector2d(130.0, 45.0), Math.toRadians(0.0))
+
+                .strafeTo(Vector2d(125.0, 65.0))
+                .splineToConstantHeading(Vector2d(50.0, 75.0), Math.toRadians(0.0))
+                .splineToConstantHeading(Vector2d(125.0, 65.0), Math.toRadians(0.0))
+
+                .strafeTo(Vector2d(125.0, 85.0))
+                .splineToConstantHeading(Vector2d(50.0, 95.0), Math.toRadians(0.0))
+                .splineToConstantHeading(Vector2d(125.0, 85.0), Math.toRadians(0.0))
+
+                .strafeTo(Vector2d(125.0, 100.0))
+                .splineToConstantHeading(Vector2d(50.0, 120.0), Math.toRadians(0.0))
+                .splineToConstantHeading(Vector2d(41.0, 100.0), Math.toRadians(0.0))
             .build()))
 
         _eventBus.invoke(RunActionsEvent(actions))

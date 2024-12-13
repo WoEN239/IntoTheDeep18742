@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.driveTrain
 
+import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -12,11 +13,14 @@ import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class DriveTrain : IRobotModule {
     private lateinit var _leftForwardDrive: DcMotorEx
@@ -32,9 +36,12 @@ class DriveTrain : IRobotModule {
 
     private lateinit var _eventBus: EventBus
 
+    private lateinit var _battery: Battery
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
+        _battery = collector.devices.battery
         _isAuto = collector.gameSettings.isAuto
 
         _leftForwardDrive = collector.devices.leftForwardDrive
@@ -59,11 +66,14 @@ class DriveTrain : IRobotModule {
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
             }
 
-            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY, Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY))
+            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){
-            _targetDirectionVelocity = it.direction
+            var clampedDirLength = clamp(it.direction.length(), -Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
+            val dirRot = it.direction.rot()
+
+            _targetDirectionVelocity = Vec2(cos(dirRot) * clampedDirLength, sin(dirRot) * clampedDirLength)
             _targetRotateVelocity = it.rotate
         }
 
@@ -71,9 +81,9 @@ class DriveTrain : IRobotModule {
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
 
             driveSimpleDirection(Vec2(
-                _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
-                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
-                _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity) / collector.devices.battery.charge)
+                _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
+                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
+                _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity))
 
             _deltaTime.reset()
         }
@@ -81,17 +91,17 @@ class DriveTrain : IRobotModule {
         bus.subscribe(SetLocalDriveCm::class){
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
 
-            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle/* + it.rotate * _deltaTime.seconds() * 0.5*/), it.rotate))
+            bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle), it.rotate))
         }
     }
 
     private val _deltaTime = ElapsedTime()
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        _leftForwardDrive.power = -direction.x - direction.y + rotate
-        _rightBackDrive.power = -direction.x - direction.y - rotate
-        _leftBackDrive.power = -direction.x + direction.y + rotate
-        _rightForwardDrive.power = -direction.x + direction.y - rotate
+        _leftForwardDrive.power = (-direction.x - direction.y + rotate) / _battery.charge
+        _rightBackDrive.power = (-direction.x - direction.y - rotate) / _battery.charge
+        _leftBackDrive.power = (-direction.x + direction.y + rotate) / _battery.charge
+        _rightForwardDrive.power = (-direction.x + direction.y - rotate) / _battery.charge
     }
 
     private var _targetDirectionVelocity = Vec2.ZERO

@@ -48,10 +48,13 @@ object MeepMeepTesting {
                 .splineTo(Vector2d(-165.0,0.0), Math.toRadians(-90.0))
                 .lineToY(154.0)
                 .endTrajectory()
-                .build()*/
+                .build()*/myBot.drive.actionBuilder(Pose2d(125.0, 60.0, Math.toRadians(0.0)))
+                .splineToConstantHeading(Vector2d(40.0, 60.0), Math.toRadians(0.0))
+                .splineToConstantHeading(Vector2d(125.0, 60.0), Math.toRadians(0.0))
+                .build()
 
             //то что раскоменчено для красного альянса
-            myBot.drive.actionBuilder(Pose2d(39.0, -165.0, Math.toRadians(90.0)))
+            /*myBot.drive.actionBuilder(Pose2d(39.0, -165.0, Math.toRadians(90.0)))
 //                .splineToConstantHeading(Vector2d(5.0, -77.0), Math.toRadians(90.0))
 //                .waitSeconds(2.0)
 //                // Здесь повесим блок
@@ -65,7 +68,7 @@ object MeepMeepTesting {
                 .lineToY(-60.0)
                 .splineTo(Vector2d(165.0, 0.0), Math.toRadians(90.0))
                 .lineToY(-154.0)
-                .build()
+                .build()*/
         )
 
         meepMeep.setBackground(Background.FIELD_INTO_THE_DEEP_OFFICIAL)
