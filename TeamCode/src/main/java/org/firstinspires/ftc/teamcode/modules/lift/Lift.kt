@@ -52,7 +52,7 @@ class Lift: IRobotModule {
 
             _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        } // обнуление энкодеров в начале автонома
+        } // обнуление энкдеров в начале автонома
 
         _aimEndingUp = collector.devices.liftAimEndingUp
         _extensionEndingDown = collector.devices.liftExtensionEndingDown

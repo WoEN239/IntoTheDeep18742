@@ -97,7 +97,7 @@ object Configs {
         @JvmField
         var Target_CLAMP_WALL_DOWN1_POSITION = LiftPosition(100.0, 100.0)
         @JvmField
-        var Target_CLAMP_WALL_DOWN2_POSITION = LiftPosition(100.0, 100.0)
+        var Target_CLAMP_WALL_DOWN2_POSITION = LiftPosition(100.0, 100.0)//
     }
 
     @Config
