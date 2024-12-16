@@ -54,11 +54,6 @@ class DriveTrain : IRobotModule {
             var dir = it.direction
             var rot = it.rotate
 
-            if(_eventBus.invoke(Lift.RequestLiftState()).state != Lift.LiftStates.SETUP) {
-                dir *= Vec2(Configs.DriveTrainConfig.LIFT_MAX_SPEED)
-                rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
-            }
-
             bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY, Configs.RoadRunnerConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.RoadRunnerConfig.MAX_ROTATE_VELOCITY))
         }
 
@@ -74,8 +69,6 @@ class DriveTrain : IRobotModule {
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x) / collector.devices.battery.charge,
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y) / collector.devices.battery.charge),
                 _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity) / collector.devices.battery.charge)
-
-            _deltaTime.reset()
         }
 
         bus.subscribe(SetLocalDriveCm::class){
@@ -84,8 +77,6 @@ class DriveTrain : IRobotModule {
             bus.invoke(SetDriveCmEvent(it.direction.turn(gyro.rotation!!.angle/* + it.rotate * _deltaTime.seconds() * 0.5*/), it.rotate))
         }
     }
-
-    private val _deltaTime = ElapsedTime()
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
         _leftForwardDrive.power = -direction.x - direction.y + rotate
@@ -100,10 +91,6 @@ class DriveTrain : IRobotModule {
     override fun stop() {
         _targetDirectionVelocity = Vec2.ZERO
         _targetRotateVelocity = 0.0
-    }
-
-    override fun start() {
-        _deltaTime.reset()
     }
 
     class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
