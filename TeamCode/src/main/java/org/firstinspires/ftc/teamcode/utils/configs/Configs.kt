@@ -73,7 +73,31 @@ object Configs {
 
     @Config
     internal object LiftConfig {
-
+        @JvmField
+        var AIM_SENS = 0.1
+        @JvmField
+        var AIM_PID = PIDConfig(0.2)
+        @JvmField
+        var EXTENSION_PID = PIDConfig(0.1)
+        @JvmField
+        var EXTENSION_SENS = 0.1
+        internal class LiftPosition(var AIM_POSITION :Double , var EXTENSION_POSITION : Double)
+        @JvmField
+        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(100.0, 500.0)
+        @JvmField
+        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(100.0, 500.0)
+        @JvmField
+        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(100.0, 500.0)
+        @JvmField
+        var TARGET_CLAMP_DOWN_LIFT_POSITION = LiftPosition(100.0, 500.0)
+        @JvmField
+        var TARGET_SETUP_LIFT_POSITION = LiftPosition(100.0, 500.0)
+        @JvmField
+        var Time_Center = 0.2
+        @JvmField
+        var Target_CLAMP_WALL_DOWN1_POSITION = LiftPosition(100.0, 100.0)
+        @JvmField
+        var Target_CLAMP_WALL_DOWN2_POSITION = LiftPosition(100.0, 100.0)
     }
 
     @Config
