@@ -32,10 +32,10 @@ class Test: LinearOpMode() {
         var Y_ROT = 0.0
     }
 
-    fun setDifPos(yRot: Double,xRot: Double)
+    fun setDifPos(xRot: Double, yRot: Double)
     {
-        val x = xRot + 150.0
-        val y = yRot + 17.0
+        val x = xRot + 135
+        val y = yRot + 10
 
         _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
         _servoDifleft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
@@ -65,7 +65,7 @@ class Test: LinearOpMode() {
                 StaticTelemetry.update()
                 handler.update()
 
-                setDifPos(TestConfigs.Y_ROT, TestConfigs.X_ROT)
+                setDifPos(TestConfigs.X_ROT, TestConfigs.Y_ROT)
             }
 
             handler.stop()

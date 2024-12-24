@@ -66,15 +66,15 @@ class DriveTrain : IRobotModule {
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
             }
 
-            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
+            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){
-            var clampedDirLength = clamp(it.direction.length(), -Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
+            var clampedDirLength = clamp(it.direction.length(), -(if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY), if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY)
             val dirRot = it.direction.rot()
 
             _targetDirectionVelocity = Vec2(cos(dirRot) * clampedDirLength, sin(dirRot) * clampedDirLength)
-            _targetRotateVelocity = clamp(it.rotate, -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
+            _targetRotateVelocity = clamp(it.rotate, -(if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY), if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY)
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){

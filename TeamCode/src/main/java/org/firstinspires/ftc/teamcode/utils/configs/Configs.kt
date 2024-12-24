@@ -26,16 +26,16 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.01, 0.003, 0.04, 0.0, 0.004, fr = 0.12)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.015, 0.006, 0.005, 0.0, 0.004, fr = 0.12)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.01, 0.003, 0.04, 0.0, 0.005, fr = 0.17)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.015, 0.006, 0.005, 0.0, 0.005, fr = 0.17)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135, fr = 0.13)
 
         @JvmField
-        var LIFT_MAX_SPEED = 0.5
+        var LIFT_MAX_SPEED = 0.2
 
         @JvmField
         var MAX_ROTATE_VELOCITY = 7.9
@@ -44,11 +44,16 @@ object Configs {
         var TRANSLATION_ACCEL = 70.0
 
         @JvmField
-        var MAX_TRANSLATION_VELOCITY = 130.0
+        var MAX_TRANSLATION_VELOCITY = 80.0
 
         @JvmField
         var ROTATE_ACCEL = 4.8
 
+        @JvmField
+        var MAX_TELEOP_TRANSLATION_VELOCITY = 100.0
+
+        @JvmField
+        var MAX_TELEOP_ROTATE_VELOCITY = 9.9
     }
 
     @Config
@@ -60,16 +65,16 @@ object Configs {
         var ROTATE_SENS = 0.09
 
         @JvmField
-        var POSITION_P_X = 1.9
+        var POSITION_P_X = 1.0
 
         @JvmField
-        var POSITION_P_Y = 1.9
+        var POSITION_P_Y = 2.0
 
         @JvmField
-        var POSITION_SENS_X = 6.0
+        var POSITION_SENS_X = 15.0
 
         @JvmField
-        var POSITION_SENS_Y = 6.0
+        var POSITION_SENS_Y = 15.0
     }
 
     @Config
@@ -81,19 +86,19 @@ object Configs {
         var EXTENSION_PID = PIDConfig(0.002)
 
         @JvmField
-        var EXTENSION_SENS = 5.0
+        var EXTENSION_SENS = 210.0
 
         @JvmField
-        var AIM_SENS = 5.0
+        var AIM_SENS = 130.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 400.0
+        var TRIGET_SLOW_POS = 350.0
 
         @JvmField
-        var MAX_TRIGGER_SPEED_DOWN = 0.0
+        var MAX_TRIGGER_SPEED_DOWN = 0.03
 
         @JvmField
-        var LIFT_AIM_ENDING_POS = 615
+        var LIFT_AIM_ENDING_POS = 569
 
         @JvmField
         var INIT_POWER = 0.2
@@ -113,22 +118,19 @@ object Configs {
         )
 
         @JvmField
-        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(3100.0, 600.0)
+        var TARGET_UP_BASKET_LIFT_POSITION = LiftPosition(30000.0, 569.0)
 
         @JvmField
-        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(900.0, 650.0)
+        var TARGET_UP_LAYER_LIFT_POSITION = LiftPosition(900.0, 593.0)
 
         @JvmField
-        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(500.0, 120.0)
+        var TARGET_CLAMP_CENTER_LIFT_POSITION = LiftPosition(500.0, 0.0)
 
         @JvmField
         var TARGET_CLAMP_WALL_LIFT_POSITION = LiftPosition(1000.0, 205.0)
 
         @JvmField
-        var TARGET_SETUP_LIFT_POSITION = LiftPosition(0.0, 180.0)
-
-        @JvmField
-        var TARGET_CLAMP_WALL_DOWN_LIFT_POSITION = LiftPosition(1000.0, 450.0)
+        var TARGET_SETUP_LIFT_POSITION = LiftPosition(0.0, 0.0)
 
         @JvmField
         var GAMEPAD_EXTENSION_SENS = 1500.0
@@ -137,19 +139,22 @@ object Configs {
         var MAX_SPEED_DOWN = -0.5
 
         @JvmField
-        var MIN_SPEED_UP = 0.9
+        var MIN_SPEED_UP = 0.85
 
         @JvmField
-        var EXTENSION_ERR_BLOCKER = 400.0
+        var CLAMP_TIME = 0.6
 
         @JvmField
-        var CLAMP_TIME = 0.5
-
-        @JvmField
-        var MAX_EXTENSION_POS = 1000.0
+        var MAX_EXTENSION_POS = 5000.0
 
         @JvmField
         var MIN_EXTENSION_POS = 0.0
+
+        @JvmField
+        var EXTENSION_K = 0.0002
+
+        @JvmField
+        var AIM_FULL_TURN_TICKS = 6.0 * 100.0
     }
 
     @Config
@@ -187,13 +192,16 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.49
+        var SERVO_CLAMP = 0.5
 
         @JvmField
         var SERVO_UNCLAMP = 0.8
 
         @JvmField
         var DIX_Y_VELOCITY = 110.0
+
+        @JvmField
+        var LIFT_TIME = 0.4
     }
 
     @Config

@@ -6,9 +6,9 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
 import org.firstinspires.ftc.teamcode.modules.hook.Hook
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampEvent
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetDifPosEvent
+import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampStateEvent
 import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftStateEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -45,9 +45,9 @@ class Gamepad : IRobotModule {
             _clampPos = !_clampPos
 
             if(_clampPos)
-                _eventBus.invoke(SetClampEvent(ClampPosition.SERVO_CLAMP))
+                _eventBus.invoke(SetClampStateEvent(ClampPosition.SERVO_CLAMP))
             else
-                _eventBus.invoke(SetClampEvent(ClampPosition.SERVO_UNCLAMP))
+                _eventBus.invoke(SetClampStateEvent(ClampPosition.SERVO_UNCLAMP))
         }
 
         _oldClamp = _gamepad.circle
@@ -65,11 +65,11 @@ class Gamepad : IRobotModule {
         if(!_centerOld && _gamepad.dpad_down)
             _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_CENTER))
 
-        if(!_layerOld && _gamepad.dpad_right)
+        /*if(!_layerOld && _gamepad.dpad_right)
             _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.UP_LAYER))
 
         if(!_wallOld &&_gamepad.dpad_left)
-            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_WALL))
+            _eventBus.invoke(SetLiftStateEvent(Lift.LiftStates.CLAMP_WALL))*/
 
         _basketOld = _gamepad.dpad_up
         _centerOld = _gamepad.dpad_down
@@ -78,6 +78,6 @@ class Gamepad : IRobotModule {
 
         _eventBus.invoke(Lift.SetExtensionVelocityEvent((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
 
-        _eventBus.invoke(SetDifPosEvent(if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0, 0.0))
+        _eventBus.invoke(Intake.SetDifVelocityEvent(0.0, if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0))
     }
 }

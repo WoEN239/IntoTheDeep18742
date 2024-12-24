@@ -57,6 +57,7 @@ class Devices(hardMap: HardwareMap)  {
     val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
 
     val liftAimEndingUp = hardMap.get("liftAimEndingUp") as DigitalChannel
+    val liftAimEndingDown = hardMap.get("liftAimEndingDown") as DigitalChannel
     val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
 
     val servoHookLeft = hardMap.get("servoHookLeft") as Servo

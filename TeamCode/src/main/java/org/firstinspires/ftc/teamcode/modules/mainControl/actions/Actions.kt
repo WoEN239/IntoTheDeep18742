@@ -3,9 +3,12 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 import com.acmerobotics.roadrunner.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TurnSegment
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
@@ -43,7 +46,7 @@ class TurnAction(private val _eventBus: EventBus, private val _startOrientation:
     }
 }
 
-class WaitAction(private val secTime: Double): IAction {
+class WaitAction(private val _secTime: Double): IAction {
     private val _timer = ElapsedTime()
 
     override fun update() {
@@ -54,9 +57,45 @@ class WaitAction(private val secTime: Double): IAction {
 
     }
 
-    override fun isEnd() = _timer.seconds() > secTime
+    override fun isEnd() = _timer.seconds() > _secTime
 
     override fun start() {
+        _timer.reset()
+    }
+}
+
+class LiftAction(private val _eventBus: EventBus, private val _liftState: Lift.LiftStates): IAction{
+    override fun update() {
+
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd() = _eventBus.invoke(Lift.RequestLiftAtTargetEvent(false)).atTarget
+
+    override fun start() {
+        _eventBus.invoke(Lift.SetLiftStateEvent(_liftState))
+    }
+}
+
+class OpenClampAction(private val _eventBus: EventBus): IAction{
+    private val _timer = ElapsedTime()
+
+    override fun update() {
+
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd() = _timer.seconds() > Configs.IntakeConfig.LIFT_TIME
+
+    override fun start() {
+        _eventBus.invoke(Intake.SetClampStateEvent(Intake.ClampPosition.SERVO_UNCLAMP))
+
         _timer.reset()
     }
 }

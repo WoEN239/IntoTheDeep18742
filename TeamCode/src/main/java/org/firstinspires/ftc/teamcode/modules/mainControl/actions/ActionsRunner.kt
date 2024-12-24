@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.utils.timer.Timer
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
@@ -37,35 +38,63 @@ class ActionsRunner: IRobotModule {
 
         val actions = arrayListOf<IAction>()
 
+
         actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
             Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
-            .strafeTo(Vector2d(53.0, -17.0))
+            .strafeTo(Vector2d(35.0, -70.0))
             .build()))
 
-        actions.add(WaitAction(5.0))
+        actions.add(TurnAction(bus, Orientation(Vec2(20.0, -55.0), collector.gameSettings.startPosition.angle),
+            Angle.ofDeg(45.0)))
 
-        actions.add(TurnAction(bus, Orientation(Vec2(53.0, -17.0), collector.gameSettings.startPosition.angle), Angle.ofDeg(180.0)))
+        actions.add(LiftAction(bus, Lift.LiftStates.UP_BASKET))
 
         actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
-            Orientation(Vec2(53.0, -17.0), Angle.ofDeg(180.0)))
-                .splineToConstantHeading(Vector2d(40.0, 45.0), Math.toRadians(0.0))
-                .splineToConstantHeading(Vector2d(130.0, 45.0), Math.toRadians(0.0))
+            Orientation(Vec2(20.0, -55.0), Angle.ofDeg(45.0)))
+            .strafeTo(Vector2d(30.0, -65.0))
+            .build()))
 
-                .strafeTo(Vector2d(125.0, 65.0))
-                .splineToConstantHeading(Vector2d(50.0, 75.0), Math.toRadians(0.0))
-                .splineToConstantHeading(Vector2d(125.0, 65.0), Math.toRadians(0.0))
+        actions.add(OpenClampAction(_eventBus))
 
-                .strafeTo(Vector2d(125.0, 85.0))
-                .splineToConstantHeading(Vector2d(50.0, 95.0), Math.toRadians(0.0))
-                .splineToConstantHeading(Vector2d(125.0, 85.0), Math.toRadians(0.0))
+        actions.add(TurnAction(_eventBus, Orientation(Vec2(30.0, -65.0), Angle.ofDeg(45.0)), Angle.ofDeg(-90.0)))
 
-                .strafeTo(Vector2d(125.0, 100.0))
-                .splineToConstantHeading(Vector2d(50.0, 120.0), Math.toRadians(0.0))
-                .splineToConstantHeading(Vector2d(41.0, 100.0), Math.toRadians(0.0))
+        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
+            Orientation(Vec2(30.0, -65.0), Angle.ofDeg(-90.0)))
+            .strafeTo(Vector2d(20.0, 150.0))
             .build()))
 
         _eventBus.invoke(RunActionsEvent(actions))
 
+//        val actions = arrayListOf<IAction>()
+//
+//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
+//            Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
+//            .strafeTo(Vector2d(55.0, -10.0))
+//            .build()))
+//
+//        actions.add(WaitAction(1.0))
+//
+//        actions.add(TurnAction(bus, Orientation(Vec2(55.0, -40.0), collector.gameSettings.startPosition.angle), Angle.ofDeg(180.0)))
+//
+//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(
+//            Orientation(Vec2(55.0, -40.0), Angle.ofDeg(180.0)))                                                                                                                   //== gay
+//                .strafeTo(Vector2d(60.0, 43.0))
+//                .strafeTo(Vector2d(132.0, 52.0))
+//
+//                .strafeTo(Vector2d(125.0, 65.0))
+//                .strafeTo(Vector2d(60.0, 70.0))
+//                .strafeTo(Vector2d(110.0, 62.0))
+//
+//                .strafeTo(Vector2d(120.0, 80.0))
+//                .strafeTo(Vector2d(60.0, 90.0))
+//                .strafeTo(Vector2d(121.0, 90.0))
+//
+//                .strafeTo(Vector2d(127.0, 120.0))
+//                .strafeTo(Vector2d(60.0, 120.0))
+//                .strafeTo(Vector2d(20.0, 100.0))
+//            .build()))
+//
+//        _eventBus.invoke(RunActionsEvent(actions))
     }
 
     override fun update() {
