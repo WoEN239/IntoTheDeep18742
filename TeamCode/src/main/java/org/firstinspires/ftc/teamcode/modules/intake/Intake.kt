@@ -18,7 +18,6 @@ class Intake{
 
     private var _xPos = 0.0
     private var _yPos = 0.0
-
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {

@@ -79,6 +79,32 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
+        var CLAMP_CENTER_AIM = 0.00
+
+        @JvmField
+        var  UP_BASKED_AIM = 0.00
+        @JvmField
+        var UP_LAYER_AIM = 0.00
+
+        @JvmField
+        var TRANSPORT_AIM = 0.00
+
+        @JvmField
+        var TRANSPORT_EXTENSION = 0.00
+
+
+        @JvmField
+        var CLAMP_CENTER_EXTENSION = 0.00
+
+        @JvmField
+        var UP_BASKED_EXTENSION = 0.00
+
+        @JvmField
+        var UP_LAYER_EXTENSION = 0.00
+
+
+
+        @JvmField
         var AIM_PID = PIDConfig(0.005, d = 0.0003, limitU = 1.0)
 
         @JvmField
@@ -166,6 +192,13 @@ object Configs {
 
         @JvmField
         var LIFT_TIME = 0.4
+
+
+        @JvmField
+        var CLAMP_TIME = 1.0
+
+        @JvmField
+        var DOWN_TIME = 1.0
     }
 
     @Config
