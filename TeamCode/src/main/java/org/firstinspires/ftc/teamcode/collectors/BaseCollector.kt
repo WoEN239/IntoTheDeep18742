@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
-import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.IMUGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.OdometerGyro
@@ -31,7 +29,7 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(), Lift(), Intake())
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain())
 
     private val _updateHandler = UpdateHandler()
     private val _bulkAdapter = Bulk(devices)

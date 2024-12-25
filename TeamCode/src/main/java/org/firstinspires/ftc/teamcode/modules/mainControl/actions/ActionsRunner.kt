@@ -5,11 +5,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
-import org.firstinspires.ftc.teamcode.utils.timer.Timer
-import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2

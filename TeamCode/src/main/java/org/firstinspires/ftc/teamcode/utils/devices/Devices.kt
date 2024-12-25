@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
 import com.qualcomm.hardware.lynx.LynxModule
+import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -56,10 +57,10 @@ class Devices(hardMap: HardwareMap)  {
     val liftAimMotor = hardMap.get("liftAimMotor") as DcMotorEx
     val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
 
-    val liftAimEndingUp = hardMap.get("liftAimEndingUp") as DigitalChannel
-    val liftAimEndingDown = hardMap.get("liftAimEndingDown") as DigitalChannel
     val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
 
     val servoHookLeft = hardMap.get("servoHookLeft") as Servo
     val servoHookRight = hardMap.get("servoHookRight") as Servo
+
+    val aimPotentiometer = hardMap.get("aimPotentiometer") as AnalogInput
 }

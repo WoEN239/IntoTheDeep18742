@@ -5,13 +5,6 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowerEvent
-import org.firstinspires.ftc.teamcode.modules.hook.Hook
-import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
-import org.firstinspires.ftc.teamcode.modules.intake.Intake.SetClampStateEvent
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
-import org.firstinspires.ftc.teamcode.modules.lift.Lift.SetLiftStateEvent
-import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class Gamepad : IRobotModule {
@@ -41,7 +34,7 @@ class Gamepad : IRobotModule {
             )
         )
 
-        if(_gamepad.circle && !_oldClamp) {
+        /*if(_gamepad.circle && !_oldClamp) {
             _clampPos = !_clampPos
 
             if(_clampPos)
@@ -78,6 +71,6 @@ class Gamepad : IRobotModule {
 
         _eventBus.invoke(Lift.SetExtensionVelocityEvent((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
 
-        _eventBus.invoke(Intake.SetDifVelocityEvent(0.0, if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0))
+        _eventBus.invoke(Intake.SetDifVelocityEvent(0.0, if(_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if(_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0))*/
     }
 }

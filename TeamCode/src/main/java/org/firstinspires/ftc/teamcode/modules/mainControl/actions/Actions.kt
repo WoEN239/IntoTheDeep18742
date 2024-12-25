@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.lift.Lift
+import org.firstinspires.ftc.teamcode.modules.intake.Lift
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TurnSegment
@@ -64,7 +64,7 @@ class WaitAction(private val _secTime: Double): IAction {
     }
 }
 
-class LiftAction(private val _eventBus: EventBus, private val _liftState: Lift.LiftStates): IAction{
+class LiftAction(private val _eventBus: EventBus): IAction{
     override fun update() {
 
     }
@@ -73,10 +73,10 @@ class LiftAction(private val _eventBus: EventBus, private val _liftState: Lift.L
 
     }
 
-    override fun isEnd() = _eventBus.invoke(Lift.RequestLiftAtTargetEvent(false)).atTarget
+    override fun isEnd() = true//_eventBus.invoke(Lift.RequestLiftAtTargetEvent(false)).atTarget
 
     override fun start() {
-        _eventBus.invoke(Lift.SetLiftStateEvent(_liftState))
+       // _eventBus.invoke(Lift.SetLiftStateEvent(_liftState))
     }
 }
 
@@ -94,7 +94,7 @@ class OpenClampAction(private val _eventBus: EventBus): IAction{
     override fun isEnd() = _timer.seconds() > Configs.IntakeConfig.LIFT_TIME
 
     override fun start() {
-        _eventBus.invoke(Intake.SetClampStateEvent(Intake.ClampPosition.SERVO_UNCLAMP))
+        //_eventBus.invoke(Intake.SetClampStateEvent(Intake.ClampPosition.SERVO_UNCLAMP))
 
         _timer.reset()
     }
