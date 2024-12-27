@@ -11,6 +11,10 @@ import org.firstinspires.ftc.teamcode.utils.timer.Timers
 class IntakeManager : IRobotModule {
     class EventSetClampPose(val pos: Intake.ClampPosition) : IEvent
     class EventSetLiftPose(val pos: IntakeManager.LiftPosition) : IEvent
+    class EventSetExtensionVel(val vel: Double) : IEvent
+    class EventSetDifVel(val vel: Double) : IEvent
+    class RequestLiftPosEvent(var pos: IntakeManager.LiftPosition? = null) : IEvent
+    class RequestClampPosEvent(var pos: Intake.ClampPosition? = null) : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -18,6 +22,7 @@ class IntakeManager : IRobotModule {
         UP_LAYER,
         TRANSPORT
     }
+
 
     private val _intake = Intake()
     private val _lift = Lift()
@@ -45,7 +50,30 @@ class IntakeManager : IRobotModule {
                 }
             }
         }
+        bus.subscribe(RequestClampPosEvent::class) {
+            it.pos = _intake.clamp
+        }
+        bus.subscribe(EventSetExtensionVel::class)
+        {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+                _lift.extensionVelocity = it.vel
+            } else {
+                _lift.extensionVelocity = 0.0
+            }
+        }
+        bus.subscribe(RequestLiftPosEvent::class)
+        {
+            it.pos = _liftPosition
 
+        }
+        bus.subscribe(EventSetDifVel::class)
+        {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+                _intake.xVelocity = it.vel
+            } else {
+                _intake.xVelocity = 0.0
+            }
+        }
         bus.subscribe(EventSetLiftPose::class) {
             _liftPosition = it.pos
 
