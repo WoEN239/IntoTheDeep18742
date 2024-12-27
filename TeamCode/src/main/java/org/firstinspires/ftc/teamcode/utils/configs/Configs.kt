@@ -25,10 +25,10 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.015, 0.006, 0.005, 0.0, 0.004)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(0.015, 0.01, 0.01, 0.0, 0.01)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.015, 0.006, 0.005, 0.0, 0.005)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.02, 0.01, 0.01, 0.0, 0.04)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135)
