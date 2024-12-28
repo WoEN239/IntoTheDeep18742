@@ -65,18 +65,15 @@ class DriveTrain : IRobotModule {
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
             }
 
-            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
+            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){
-            val maxLength = if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY
-            val maxRot = if(collector.gameSettings.isAuto) Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY else Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY
-
-            var clampedDirLength = clamp(it.direction.length(), -maxLength, maxLength)
+            var clampedDirLength = clamp(it.direction.length(), -Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
             val dirRot = it.direction.rot()
 
             _targetDirectionVelocity = Vec2(cos(dirRot) * clampedDirLength, sin(dirRot) * clampedDirLength)
-            _targetRotateVelocity = clamp(it.rotate, -maxRot, maxRot)
+            _targetRotateVelocity = clamp(it.rotate, -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
@@ -86,22 +83,14 @@ class DriveTrain : IRobotModule {
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
                 _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity))
-
-            StaticTelemetry.addData("sideVelocity", it.velocity.y)
-            StaticTelemetry.addData("forwardVelocity", it.velocity.x)
-            StaticTelemetry.addData("gyroVelocity", gyro.velocity!!)
-
-            StaticTelemetry.addData("targetSideVelocity", _targetDirectionVelocity.y)
-            StaticTelemetry.addData("targetForwardVelocity", _targetDirectionVelocity.x)
-            StaticTelemetry.addData("targetGyroVelocity", _targetDirectionVelocity)
         }
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        var leftFrontPower = (-direction.x - direction.y + rotate) / _battery.charge
-        var rightBackPower = (-direction.x - direction.y - rotate) / _battery.charge
-        var leftBackPower = (-direction.x + direction.y + rotate) / _battery.charge
-        var rightForwardPower = (-direction.x + direction.y - rotate) / _battery.charge
+        var leftFrontPower = (direction.x - direction.y + rotate) / _battery.charge
+        var rightBackPower = (direction.x - direction.y - rotate) / _battery.charge
+        var leftBackPower = (direction.x + direction.y + rotate) / _battery.charge
+        var rightForwardPower = (direction.x + direction.y - rotate) / _battery.charge
 
         val max = max(abs(leftFrontPower), max(abs(rightBackPower), max(abs(leftBackPower), abs(rightForwardPower))))
 

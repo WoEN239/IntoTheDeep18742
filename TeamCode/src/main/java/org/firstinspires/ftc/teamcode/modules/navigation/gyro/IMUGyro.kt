@@ -41,8 +41,6 @@ class IMUGyro: IRobotModule {
         if(_oldReadTime.milliseconds() > 1000.0 / Configs.GyroscopeConfig.READ_HZ) {
             val raw = _imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)
 
-            StaticTelemetry.addData("gyroRaw", raw)
-
             _oldRot = Angle(raw) + _startAngle
 
             _oldReadTime.reset()

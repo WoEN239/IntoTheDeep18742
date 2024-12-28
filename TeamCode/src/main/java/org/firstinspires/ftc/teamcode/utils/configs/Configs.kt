@@ -37,61 +37,55 @@ object Configs {
         var LIFT_MAX_SPEED = 0.2
 
         @JvmField
-        var MAX_ROTATE_VELOCITY = 7.9
+        var MAX_ROTATE_VELOCITY = 9.9
 
         @JvmField
         var TRANSLATION_ACCEL = 70.0
 
         @JvmField
-        var MAX_TRANSLATION_VELOCITY = 80.0
+        var MAX_TRANSLATION_VELOCITY = 90.0
 
         @JvmField
         var ROTATE_ACCEL = 4.8
-
-        @JvmField
-        var MAX_TELEOP_TRANSLATION_VELOCITY = 100.0
-
-        @JvmField
-        var MAX_TELEOP_ROTATE_VELOCITY = 9.9
     }
 
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var ROTATE_P = 1.0
+        var ROTATE_P = 5.0
 
         @JvmField
-        var ROTATE_SENS = 0.09
+        var ROTATE_SENS = 0.01
 
         @JvmField
-        var POSITION_P_X = 1.0
+        var POSITION_P_X = 0.5
 
         @JvmField
-        var POSITION_P_Y = 2.0
+        var POSITION_P_Y = 0.4
 
         @JvmField
-        var POSITION_SENS_X = 15.0
+        var POSITION_SENS_X = 19.0
 
         @JvmField
-        var POSITION_SENS_Y = 15.0
+        var POSITION_SENS_Y = 19.0
 
         @JvmField
-        var POS_VELOCITY_SENS_X = 1.0
+        var POS_VELOCITY_SENS_X = 20.0
 
         @JvmField
-        var POS_VELOCITY_SENS_Y = 1.0
+        var POS_VELOCITY_SENS_Y = 20.0
 
         @JvmField
-        var POS_VELOCITY_P_X = 1.0
+        var POS_VELOCITY_P_X = 0.1
 
         @JvmField
-        var POS_VELOCITY_P_Y = 1.0
+        var POS_VELOCITY_P_Y = 0.1
 
         @JvmField
-        var HEADING_VEL_SENS = 1.0
+        var HEADING_VEL_SENS = 0.3
 
         @JvmField
-        var HEADING_VEL_P = 1.0
+        var HEADING_VEL_P = 0.0
     }
 
     @Config

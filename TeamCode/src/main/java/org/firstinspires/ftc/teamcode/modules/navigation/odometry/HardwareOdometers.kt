@@ -27,9 +27,6 @@ class HardwareOdometers : IRobotModule {
 
         collector.devices.sideOdometer.direction = DcMotorSimple.Direction.REVERSE
 
-        collector.devices.forwardOdometerRight.direction = DcMotorSimple.Direction.REVERSE
-        collector.devices.forwardOdometerLeft.direction = DcMotorSimple.Direction.REVERSE
-
         _eventBus = bus
     }
 
