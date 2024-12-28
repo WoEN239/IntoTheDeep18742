@@ -4,7 +4,6 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 
@@ -32,6 +31,7 @@ class IntakeManager : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _lift.init(collector)
         _intake.init(collector)
+
         bus.subscribe(EventSetClampPose::class) {
             fun setPos() {
                 _intake.clamp = it.pos
@@ -50,9 +50,11 @@ class IntakeManager : IRobotModule {
                 }
             }
         }
+
         bus.subscribe(RequestClampPosEvent::class) {
             it.pos = _intake.clamp
         }
+
         bus.subscribe(EventSetExtensionVel::class)
         {
             if (_liftPosition == LiftPosition.CLAMP_CENTER) {
@@ -61,11 +63,12 @@ class IntakeManager : IRobotModule {
                 _lift.extensionVelocity = 0.0
             }
         }
+
         bus.subscribe(RequestLiftPosEvent::class)
         {
             it.pos = _liftPosition
-
         }
+
         bus.subscribe(EventSetDifVel::class)
         {
             if (_liftPosition == LiftPosition.CLAMP_CENTER) {
@@ -74,12 +77,13 @@ class IntakeManager : IRobotModule {
                 _intake.xVelocity = 0.0
             }
         }
+
         bus.subscribe(EventSetLiftPose::class) {
             _liftPosition = it.pos
 
             if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
-                _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
+                _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
                 _intake.setDifPos(xRot = 0.0, yRot = 0.0)
             } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
@@ -95,9 +99,7 @@ class IntakeManager : IRobotModule {
                 _intake.setDifPos(xRot = 0.0, yRot = 0.0)
             }
         }
-
     }
-
 
     override fun update() {
         _intake.update()
@@ -106,6 +108,7 @@ class IntakeManager : IRobotModule {
 
     override fun start() {
         _intake.start()
+        _lift.start()
     }
 
 }

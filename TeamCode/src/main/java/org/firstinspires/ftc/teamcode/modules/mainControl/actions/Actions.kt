@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 import com.acmerobotics.roadrunner.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TurnSegment
@@ -88,23 +90,7 @@ class WaitAction(private val _secTime: Double) : IAction {
     }
 }
 
-class LiftAction(private val _eventBus: EventBus) : IAction {
-    override fun update() {
-
-    }
-
-    override fun end() {
-
-    }
-
-    override fun isEnd() = true//_eventBus.invoke(Lift.RequestLiftAtTargetEvent(false)).atTarget
-
-    override fun start() {
-        // _eventBus.invoke(Lift.SetLiftStateEvent(_liftState))
-    }
-}
-
-class OpenClampAction(private val _eventBus: EventBus) : IAction {
+class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPosition) : IAction {
     private val _timer = ElapsedTime()
 
     override fun update() {
@@ -115,10 +101,28 @@ class OpenClampAction(private val _eventBus: EventBus) : IAction {
 
     }
 
-    override fun isEnd() = _timer.seconds() > Configs.IntakeConfig.LIFT_TIME
+    override fun isEnd() = _timer.seconds() > Configs.LiftConfig.LIFT_TIMER
 
     override fun start() {
-        //_eventBus.invoke(Intake.SetClampStateEvent(Intake.ClampPosition.SERVO_UNCLAMP))
+        _eventBus.invoke(IntakeManager.EventSetLiftPose(pos))
+    }
+}
+
+class ClampAction(private val _eventBus: EventBus, val pos: Intake.ClampPosition) : IAction {
+    private val _timer = ElapsedTime()
+
+    override fun update() {
+
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd() = _timer.seconds() > Configs.IntakeConfig.CLAMP_TIME
+
+    override fun start() {
+        _eventBus.invoke(IntakeManager.EventSetClampPose(pos))
 
         _timer.reset()
     }

@@ -92,7 +92,6 @@ object Configs {
         @JvmField
         var TRANSPORT_EXTENSION = 0.00
 
-
         @JvmField
         var CLAMP_CENTER_EXTENSION = 0.00
 
@@ -101,8 +100,6 @@ object Configs {
 
         @JvmField
         var UP_LAYER_EXTENSION = 0.00
-
-
 
         @JvmField
         var AIM_PID = PIDConfig(0.005, d = 0.0003, limitU = 1.0)
@@ -145,6 +142,9 @@ object Configs {
 
         @JvmField
         var MAX_POTENTIOMETER_VOLTAGE = 3.0
+
+        @JvmField
+        var LIFT_TIMER = 1.0
     }
 
     @Config
@@ -189,10 +189,6 @@ object Configs {
 
         @JvmField
         var DIX_Y_VELOCITY = 110.0
-
-        @JvmField
-        var LIFT_TIME = 0.4
-
 
         @JvmField
         var CLAMP_TIME = 1.0

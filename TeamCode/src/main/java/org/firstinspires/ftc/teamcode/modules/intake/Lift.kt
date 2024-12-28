@@ -117,4 +117,8 @@ class Lift {
     }
 
     fun atTarget() = abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_extensionErr) < Configs.LiftConfig.EXTENSION_SENS
+
+    fun start(){
+        _deltaTime.reset()
+    }
 }

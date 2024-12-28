@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.intake.Lift
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
@@ -62,10 +63,10 @@ class DriveTrain : IRobotModule {
             var dir = it.direction
             var rot = it.rotate
 
-            /*if(_eventBus.invoke(Lift.RequestLiftState()).state != Lift.LiftStates.SETUP) {
+            if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT) {
                 dir *= Vec2(Configs.DriveTrainConfig.LIFT_MAX_SPEED)
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
-            }*/
+            }
 
             bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TELEOP_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TELEOP_ROTATE_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
         }
