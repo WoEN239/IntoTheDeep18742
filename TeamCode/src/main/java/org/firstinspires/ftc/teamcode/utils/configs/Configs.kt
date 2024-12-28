@@ -74,6 +74,24 @@ object Configs {
 
         @JvmField
         var POSITION_SENS_Y = 15.0
+
+        @JvmField
+        var POS_VELOCITY_SENS_X = 1.0
+
+        @JvmField
+        var POS_VELOCITY_SENS_Y = 1.0
+
+        @JvmField
+        var POS_VELOCITY_P_X = 1.0
+
+        @JvmField
+        var POS_VELOCITY_P_Y = 1.0
+
+        @JvmField
+        var HEADING_VEL_SENS = 1.0
+
+        @JvmField
+        var HEADING_VEL_P = 1.0
     }
 
     @Config
