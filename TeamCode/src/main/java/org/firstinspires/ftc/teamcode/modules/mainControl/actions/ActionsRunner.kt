@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 
-import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ITransportAction.Companion.getEndOrientation
-import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
-import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BlueBaskedTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BlueHumanTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.RedBaskedTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.RedHumanTrajectory
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
 class ActionsRunner: IRobotModule {
@@ -32,34 +32,42 @@ class ActionsRunner: IRobotModule {
             it.isEnd = _actions.isEmpty()
         }
 
-        val actions = arrayListOf<IAction>()
+//        val actions = arrayListOf<IAction>()
+//
+//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
+//            .strafeTo(Vector2d(55.0, -10.0))
+//            .build()))
+//
+//        actions.add(WaitAction(1.0))
+//
+//        actions.add(TurnAction(bus, getEndOrientation(actions), Angle.ofDeg(180.0)))
+//
+//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(getEndOrientation(actions))
+//                .strafeTo(Vector2d(60.0, 43.0))
+//                .strafeTo(Vector2d(132.0, 52.0))
+//
+//                .strafeTo(Vector2d(125.0, 65.0))
+//                .strafeTo(Vector2d(60.0, 70.0))
+//                .strafeTo(Vector2d(110.0, 62.0))
+//
+//                .strafeTo(Vector2d(120.0, 80.0))
+//                .strafeTo(Vector2d(60.0, 90.0))
+//                .strafeTo(Vector2d(121.0, 90.0))
+//
+//                .strafeTo(Vector2d(127.0, 120.0))
+//                .strafeTo(Vector2d(60.0, 120.0))
+//                .strafeTo(Vector2d(20.0, 100.0))
+//            .build()))
+//
+//        _eventBus.invoke(RunActionsEvent(actions))
 
-        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
-            .strafeTo(Vector2d(55.0, -10.0))
-            .build()))
-
-        actions.add(WaitAction(1.0))
-
-        actions.add(TurnAction(bus, getEndOrientation(actions), Angle.ofDeg(180.0)))
-
-        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(getEndOrientation(actions))
-                .strafeTo(Vector2d(60.0, 43.0))
-                .strafeTo(Vector2d(132.0, 52.0))
-
-                .strafeTo(Vector2d(125.0, 65.0))
-                .strafeTo(Vector2d(60.0, 70.0))
-                .strafeTo(Vector2d(110.0, 62.0))
-
-                .strafeTo(Vector2d(120.0, 80.0))
-                .strafeTo(Vector2d(60.0, 90.0))
-                .strafeTo(Vector2d(121.0, 90.0))
-
-                .strafeTo(Vector2d(127.0, 120.0))
-                .strafeTo(Vector2d(60.0, 120.0))
-                .strafeTo(Vector2d(20.0, 100.0))
-            .build()))
-
-        _eventBus.invoke(RunActionsEvent(actions))
+        when(collector.gameSettings.startPosition){
+            BaseCollector.GameStartPosition.RED_HUMAN -> RedHumanTrajectory()
+            BaseCollector.GameStartPosition.RED_BASKET -> RedBaskedTrajectory()
+            BaseCollector.GameStartPosition.BLUE_HUMAN -> BlueHumanTrajectory()
+            BaseCollector.GameStartPosition.BLUE_BASKET -> BlueBaskedTrajectory()
+            BaseCollector.GameStartPosition.NONE -> throw Exception("none is not start auto pos")
+        }.runTrajectory(bus, Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
     }
 
     override fun update() {

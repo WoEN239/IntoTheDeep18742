@@ -23,13 +23,13 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
 }
 
 @Autonomous
-class AutoOpModeRedBack: AutoOpMode(GameStartPosition.NONE)
+class AutoOpModeRedBasket: AutoOpMode(GameStartPosition.RED_BASKET)
 
 @Autonomous
-class AutoOpModeRedForward: AutoOpMode(GameStartPosition.NONE)
+class AutoOpModeRedHuman: AutoOpMode(GameStartPosition.RED_HUMAN)
 
 @Autonomous
-class AutoOpModeBlueForward: AutoOpMode(GameStartPosition.NONE)
+class AutoOpModeBlueHuman: AutoOpMode(GameStartPosition.BLUE_HUMAN)
 
 @Autonomous
-class AutoOpModeBlueBack: AutoOpMode(GameStartPosition.NONE)
+class AutoOpModeBlueBasket: AutoOpMode(GameStartPosition.BLUE_BASKET)
