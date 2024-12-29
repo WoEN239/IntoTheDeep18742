@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.modules.intake
 
 import com.acmerobotics.roadrunner.clamp
+import com.qualcomm.robotcore.hardware.PwmControl
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
@@ -10,8 +12,8 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 class Intake{
     private lateinit var _servoClamp: Servo
 
-    private lateinit var _servoDifleft: Servo
-    private lateinit var _servoDifRight: Servo
+    private lateinit var _servoDifLeft: ServoImplEx
+    private lateinit var _servoDifRight: ServoImplEx
 
     var xVelocity = 0.0
     var yVelocity = 0.0
@@ -22,17 +24,20 @@ class Intake{
 
     fun init(collector: BaseCollector) {
         _servoClamp = collector.devices.servoClamp
-        _servoDifleft = collector.devices.servoDifLeft
+
+        _servoDifLeft = collector.devices.servoDifLeft
         _servoDifRight = collector.devices.servoDifRight
+
+        _servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+        _servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
     }
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
-            if (value == ClampPosition.SERVO_CLAMP) {
+            if (value == ClampPosition.SERVO_CLAMP)
                 _servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
-            } else if (value == ClampPosition.SERVO_UNCLAMP) {
+            else
                 _servoClamp.position = Configs.IntakeConfig.SERVO_UNCLAMP
-            }
 
             field = value
         }
@@ -47,7 +52,7 @@ class Intake{
         val y = yRot + 10.0
 
         _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
-        _servoDifleft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+        _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
     }
 
     enum class ClampPosition

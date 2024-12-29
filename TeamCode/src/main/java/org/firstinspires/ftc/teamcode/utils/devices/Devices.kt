@@ -37,7 +37,7 @@ class Devices(hardMap: HardwareMap)  {
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
 
-    //val camera = hardMap.get("Webcam 1") as WebcamName
+    val camera = hardMap.get("Webcam 1") as WebcamName
 
     val hubs = hardMap.getAll(LynxModule::class.java)
 
@@ -47,8 +47,8 @@ class Devices(hardMap: HardwareMap)  {
     val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
     val servoClamp = hardMap.get("servoClamp") as Servo
-    val servoDifLeft = hardMap.get("servoDifLeft") as Servo
-    val servoDifRight = hardMap.get("servoDifRight") as Servo
+    val servoDifLeft = hardMap.get("servoDifLeft") as ServoImplEx
+    val servoDifRight = hardMap.get("servoDifRight") as ServoImplEx
 
     val forwardOdometerLeft = EncoderOnly(hardMap.get("leftOdometer") as DcMotorEx)
     val forwardOdometerRight = EncoderOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
