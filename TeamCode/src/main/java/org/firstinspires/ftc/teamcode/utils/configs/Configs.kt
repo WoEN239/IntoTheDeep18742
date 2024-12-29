@@ -175,17 +175,20 @@ object Configs {
 
         @JvmField
         var BLUE_STICK_DETECT =
-            StickDetectConfig(101.0, 165.0, 0.0, 110.0, 255.0, 255.0, 20.0, 35.0, 37.0)
+            StickDetectConfig(101.0, 165.0, 0.0, 120.0, 255.0, 255.0, 20.0, 35.0, 37.0)
 
         @JvmField
         var RED_STICK_DETECT =
             StickDetectConfig(0.0, 0.0, 0.0, 255.0, 255.0, 255.0, 20.0, 35.0, 37.0)
 
         @JvmField
-        var DETECT_THREADS_COUNT = 5
+        var DETECT_THREADS_COUNT = 3
 
         @JvmField
-        var MIN_STICK_AREA = 5000.0
+        var MIN_STICK_AREA = 1000.0
+
+        @JvmField
+        var COMPRESSION_COEF = 0.65
     }
 
     @Config

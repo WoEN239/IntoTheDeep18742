@@ -7,6 +7,10 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Color
+import org.firstinspires.ftc.teamcode.utils.units.Orientation
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core.inRange
@@ -31,6 +35,7 @@ import org.opencv.imgproc.Imgproc.getStructuringElement
 import org.opencv.imgproc.Imgproc.line
 import org.opencv.imgproc.Imgproc.minAreaRect
 import org.opencv.imgproc.Imgproc.putText
+import org.opencv.imgproc.Imgproc.resize
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -38,6 +43,11 @@ import java.util.concurrent.atomic.AtomicReference
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
+    var blueSticks = AtomicReference<Array<Orientation>>(arrayOf())
+    var redSticks = AtomicReference<Array<Orientation>>(arrayOf())
+
+    var enableDetect = AtomicReference<Boolean>(false)
+
     private var lastFrame: AtomicReference<Bitmap> =
         AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
 
@@ -48,21 +58,60 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
     }
 
-    private val _drawFrame = Mat()
-    private val _hsvFrame = Mat()
+    private var _drawFrame = Mat()
+    private var _hsvFrame = Mat()
+    private var _resizedFrame = Mat()
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
-        frame.copyTo(_drawFrame)
-        frame.copyTo(_hsvFrame)
+        if(!enableDetect.get()) {
+            redSticks.set(arrayOf())
+            blueSticks.set(arrayOf())
 
-        blur(_hsvFrame, _hsvFrame, Size(10.0, 10.0))
+            return frame
+        }
+
+        resize(
+            frame,
+            _resizedFrame,
+            Size(
+                frame.width() * Configs.CameraConfig.COMPRESSION_COEF,
+                frame.height() * Configs.CameraConfig.COMPRESSION_COEF
+            )
+        )
+
+        _resizedFrame.copyTo(_drawFrame)
+        _hsvFrame = _resizedFrame
+
+        blur(_hsvFrame, _hsvFrame, Size(5.0, 5.0))
         cvtColor(_hsvFrame, _hsvFrame, COLOR_RGB2HSV)
 
         val blueRects = detect(Configs.CameraConfig.BLUE_STICK_DETECT, _hsvFrame.clone())
 
-        drawRotatedRects(_drawFrame, blueRects, Scalar(0.0, 0.0, 255.0), Scalar(0.0, 255.0, 0.0))
+        val blueRectsList = blueRects.toList()
+
+        blueSticks.set(Array(blueRects.size) {
+            val pos = blueRectsList[it].center
+
+            Orientation(Vec2(pos.x, pos.y), Angle.ofDeg(blueRectsList[it].angle))
+        })
+
+        drawRotatedRects(
+            _drawFrame,
+            blueRects,
+            Scalar(0.0, 0.0, 255.0),
+            Scalar(0.0, 255.0, 0.0)
+        )
+
 
         val redRects = detect(Configs.CameraConfig.RED_STICK_DETECT, _hsvFrame.clone())
+
+        val redRectsList = redRects.toList()
+
+        redSticks.set(Array(redRects.size) {
+            val pos = redRectsList[it].center
+
+            Orientation(Vec2(pos.x, pos.y), Angle.ofDeg(redRectsList[it].angle))
+        })
 
         drawRotatedRects(_drawFrame, redRects, Scalar(255.0, 0.0, 0.0), Scalar(0.0, 255.0, 0.0))
 
@@ -124,7 +173,12 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         return result.mapNotNull { it.get() }
     }
 
-    fun drawRotatedRects(mat: Mat, rects: Collection<RotatedRect>, rectColor: Scalar, textColor: Scalar) {
+    fun drawRotatedRects(
+        mat: Mat,
+        rects: Collection<RotatedRect>,
+        rectColor: Scalar,
+        textColor: Scalar
+    ) {
         for (i in rects) {
             val points = Array<Point?>(4) { null }
 

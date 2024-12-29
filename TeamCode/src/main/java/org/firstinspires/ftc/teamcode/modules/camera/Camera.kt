@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.vision.VisionPortal
 
 
-object Camera : IRobotModule {
+class Camera : IRobotModule {
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
 
