@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils.configs
 
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDConfig
+import org.firstinspires.ftc.teamcode.utils.units.Color
 
 object Configs {
     @Config
@@ -94,7 +95,8 @@ object Configs {
         var CLAMP_CENTER_AIM = 0.00
 
         @JvmField
-        var  UP_BASKED_AIM = 0.00
+        var UP_BASKED_AIM = 0.00
+
         @JvmField
         var UP_LAYER_AIM = 0.00
 
@@ -169,17 +171,23 @@ object Configs {
             @JvmField var S_MAX: Double,
             @JvmField var V_MAX: Double,
             @JvmField var ERODE_DILATE: Double,
-            @JvmField var DILATE_ERODE: Double, 
-            @JvmField var PRECOMPRESSION: Double
+            @JvmField var DILATE_ERODE: Double,
+            @JvmField var PRECOMPRESSION: Double,
+            @JvmField var CONTOUR_COLOR: Color,
+            @JvmField var TEXT_COLOR: Color
         )
 
         @JvmField
         var BLUE_STICK_DETECT =
-            StickDetectConfig(101.0, 165.0, 0.0, 120.0, 255.0, 255.0, 20.0, 35.0, 37.0)
+            StickDetectConfig(101.0, 165.0, 0.0, 120.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.BLUE, Color.GREEN)
 
         @JvmField
         var RED_STICK_DETECT =
-            StickDetectConfig(0.0, 0.0, 0.0, 255.0, 255.0, 255.0, 20.0, 35.0, 37.0)
+            StickDetectConfig(0.0, 0.0, 0.0, 255.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.RED, Color.GREEN)
+
+        @JvmField
+        var YELLOW_STICK_DETECT =
+            StickDetectConfig(0.0, 0.0, 0.0, 255.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.YELLOW, Color.GREEN)
 
         @JvmField
         var DETECT_THREADS_COUNT = 3
@@ -231,7 +239,7 @@ object Configs {
     }
 
     @Config
-    internal object OdometryConfig{
+    internal object OdometryConfig {
         @JvmField
         var SIDE_ODOMETER_RADIUS = -13.5 //12
 
@@ -249,7 +257,7 @@ object Configs {
     }
 
     @Config
-    internal object GyroscopeConfig{
+    internal object GyroscopeConfig {
         @JvmField
         var MERGE_COEF = 0.8
 
@@ -258,7 +266,7 @@ object Configs {
     }
 
     @Config
-    internal object HookConfig{
+    internal object HookConfig {
         @JvmField
         var HOOK_SPEED = 0.5
     }

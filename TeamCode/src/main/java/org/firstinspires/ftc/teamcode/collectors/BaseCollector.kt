@@ -42,14 +42,14 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     data class GameSettings(val startPosition: GameStartPosition = GameStartPosition.NONE, val isAuto: Boolean)
 
     enum class GameColor{ RED, BLUE }
-    enum class GameOrientation { FORWARD, BACK }
+    enum class GameOrientation { HUMAN, BASKET }
 
-    enum class GameStartPosition(val position: Vec2, val angle: Angle, color: GameColor, orientation: GameOrientation){
-        RED_HUMAN(Vec2(-39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.FORWARD),
-        RED_BASKET(Vec2(39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BACK),
-        BLUE_HUMAN(Vec2(-39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.FORWARD),
-        BLUE_BASKET(Vec2(39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BACK),
-        NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BACK)
+    enum class GameStartPosition(val position: Vec2, val angle: Angle, val color: GameColor, val orientation: GameOrientation){
+        RED_HUMAN(Vec2(-39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.HUMAN),
+        RED_BASKET(Vec2(39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
+        BLUE_HUMAN(Vec2(-39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
+        BLUE_BASKET(Vec2(39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
+        NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BASKET)
     }
 
     fun init() {

@@ -10,20 +10,22 @@ import org.firstinspires.ftc.vision.VisionPortal
 
 
 class Camera : IRobotModule {
-    class RequestRedDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
-    class RequestBlueDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
+    class RequestAllianceDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
+    class RequestYellowDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
     class SetStickDetectEnable(val enable: Boolean): IEvent
 
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        bus.subscribe(RequestRedDetectedSticks::class){
-            it.sticks = _processor.redSticks.get()
+        _processor.gameColor.set(collector.gameSettings.startPosition.color)
+
+        bus.subscribe(RequestAllianceDetectedSticks::class){
+            it.sticks = _processor.allianceSticks.get()
         }
 
-        bus.subscribe(RequestBlueDetectedSticks::class){
-            it.sticks = _processor.blueSticks.get()
+        bus.subscribe(RequestYellowDetectedSticks::class){
+            it.sticks = _processor.yellowSticks.get()
         }
 
         bus.subscribe(SetStickDetectEnable::class){

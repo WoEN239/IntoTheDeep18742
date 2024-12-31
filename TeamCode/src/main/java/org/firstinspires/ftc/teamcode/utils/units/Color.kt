@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.units
 
+import org.opencv.core.Scalar
 import java.util.Locale
 
 /**
@@ -40,4 +41,6 @@ data class Color(var r: Int, var g: Int, var b: Int) {
 
         return "#$rString$gString$bString"
     }
+
+    fun getScalarColor() = Scalar(r.toDouble(), g.toDouble(), b.toDouble())
 }
