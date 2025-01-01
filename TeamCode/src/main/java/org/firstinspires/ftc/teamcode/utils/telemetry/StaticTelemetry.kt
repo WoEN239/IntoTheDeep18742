@@ -39,10 +39,12 @@ object StaticTelemetry {
     fun update() {
         if(Configs.TelemetryConfig.ENABLE && _deltaTime.seconds() > 1.0 / Configs.TelemetryConfig.SEND_HZ) {
             _deltaTime.reset()
-
             _phoneTelemetry.update()
+
             FtcDashboard.getInstance().sendTelemetryPacket(_telemetryPacket)
         }
+
+        _phoneTelemetry.clearAll()
 
         _telemetryPacket = TelemetryPacket()
     }
