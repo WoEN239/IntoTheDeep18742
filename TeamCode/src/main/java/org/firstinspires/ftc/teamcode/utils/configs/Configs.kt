@@ -270,4 +270,13 @@ object Configs {
         @JvmField
         var HOOK_SPEED = 0.5
     }
+
+    @Config
+    internal object TelemetryConfig{
+        @JvmField
+        var ENABLE = true
+
+        @JvmField
+        var SEND_HZ = 30.0
+    }
 }

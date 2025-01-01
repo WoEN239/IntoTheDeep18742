@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.utils.telemetry
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.canvas.Canvas
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
@@ -32,9 +34,15 @@ object StaticTelemetry {
         _telemetryPacket.put(name, obj)
     }
 
+    private var _deltaTime = ElapsedTime()
+
     fun update() {
-        _phoneTelemetry.update()
-        FtcDashboard.getInstance().sendTelemetryPacket(_telemetryPacket)
+        if(Configs.TelemetryConfig.ENABLE && _deltaTime.seconds() > 1.0 / Configs.TelemetryConfig.SEND_HZ) {
+            _deltaTime.reset()
+
+            _phoneTelemetry.update()
+            FtcDashboard.getInstance().sendTelemetryPacket(_telemetryPacket)
+        }
 
         _telemetryPacket = TelemetryPacket()
     }
