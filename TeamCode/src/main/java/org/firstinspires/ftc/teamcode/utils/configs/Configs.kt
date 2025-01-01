@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utils.configs
 import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDConfig
 import org.firstinspires.ftc.teamcode.utils.units.Color
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object Configs {
     @Config
@@ -239,9 +240,18 @@ object Configs {
     }
 
     @Config
+    internal object CVOdometryConfig{
+        @JvmField
+        var CAMERA_POSITION = Vec2(0.0, 0.0)
+
+        @JvmField
+        var MERGE_COEF = 0.8
+    }
+
+    @Config
     internal object OdometryConfig {
         @JvmField
-        var SIDE_ODOMETER_RADIUS = -13.5 //12
+        var SIDE_ODOMETER_RADIUS = -13.5
 
         @JvmField
         var FORWARD_ODOMETER_LEFT_RADIUS = 9.0
@@ -278,5 +288,8 @@ object Configs {
 
         @JvmField
         var SEND_HZ = 30.0
+
+        @JvmField
+        var ROBOT_SIZE = Vec2(41.5, 38.8)
     }
 }

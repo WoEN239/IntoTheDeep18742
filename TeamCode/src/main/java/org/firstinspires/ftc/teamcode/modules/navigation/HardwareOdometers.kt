@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.navigation.odometry
+package org.firstinspires.ftc.teamcode.modules.navigation
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector

@@ -49,9 +49,8 @@ object StaticTelemetry {
         _telemetryPacket = TelemetryPacket()
     }
 
-    var canvas: Canvas
+    val canvas: Canvas
         get() = _telemetryPacket.fieldOverlay()
-        private set(v) {}
 
     fun drawCircle(pos: Vec2, radius: Double, color: String) {
         canvas.setFill(color)

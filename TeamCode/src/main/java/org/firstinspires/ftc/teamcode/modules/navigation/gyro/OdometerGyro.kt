@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.navigation.odometry.HardwareOdometers
+import org.firstinspires.ftc.teamcode.modules.navigation.HardwareOdometers
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 
