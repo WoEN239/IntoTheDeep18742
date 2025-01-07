@@ -9,9 +9,6 @@ object Configs {
     @Config
     internal object ChargeConfig {
         @JvmField
-        var NOMINAL_VOLTAGE = 13.0
-
-        @JvmField
         var BATTERY_UPDATE_SEC = 0.05
     }
 

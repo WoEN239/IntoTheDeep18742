@@ -106,11 +106,10 @@ class Lift {
         val triggerMinPower = if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS) Configs.LiftConfig.MAX_SPEED_DOWN
         else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
-        val aimPower = (_aimPID.update(_aimErr)
-            .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP)) /
-                _battery.charge
+        val aimPower = _battery.voltageToPower(_aimPID.update(_aimErr)
+            .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
 
-        val extensionPower = _extensionPID.update(_extensionErr) / _battery.charge
+        val extensionPower = _battery.voltageToPower(_extensionPID.update(_extensionErr))
 
         _aimMotor.power = aimPower
         _extensionMotor.power = extensionPower

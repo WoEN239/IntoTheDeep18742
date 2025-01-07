@@ -29,6 +29,6 @@ class ExponentialFilter(var coef: Double) : IHandler {
     }
 
     fun update(val1: Double, val2: Double): Double {
-        return updateRaw(val1, val1 - val2)
+        return updateRaw(val1, val2 - val1)
     }
 }

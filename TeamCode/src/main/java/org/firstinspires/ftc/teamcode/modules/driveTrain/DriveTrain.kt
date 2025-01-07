@@ -87,10 +87,10 @@ class DriveTrain : IRobotModule {
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        var leftFrontPower = (direction.x - direction.y + rotate) / _battery.charge
-        var rightBackPower = (direction.x - direction.y - rotate) / _battery.charge
-        var leftBackPower = (direction.x + direction.y + rotate) / _battery.charge
-        var rightForwardPower = (direction.x + direction.y - rotate) / _battery.charge
+        var leftFrontPower = _battery.voltageToPower(direction.x - direction.y + rotate)
+        var rightBackPower = _battery.voltageToPower(direction.x - direction.y - rotate)
+        var leftBackPower = _battery.voltageToPower(direction.x + direction.y + rotate)
+        var rightForwardPower = _battery.voltageToPower(direction.x + direction.y - rotate)
 
         val max = max(abs(leftFrontPower), max(abs(rightBackPower), max(abs(leftBackPower), abs(rightForwardPower))))
 

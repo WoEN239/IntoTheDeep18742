@@ -63,7 +63,7 @@ class Test: LinearOpMode() {
 
                 StaticTelemetry.addData("camera fps", visionPortal.fps)
 
-                val sticks = processor.blueSticks.get()
+                val sticks = processor.allianceSticks.get()
 
                 if (sticks.size > 0) {
                     var targetStick = sticks[0]

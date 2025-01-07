@@ -25,8 +25,8 @@ class MergeOdometry: IRobotModule {
         _oldOdometrPos = collector.gameSettings.startPosition.position
 
         bus.subscribe(CVOdometry.UpdateCVOdometryEvent::class){
-            _position.x = _mergeFilterX.updateRaw(_position.x, it.pos.x - _position.x)
-            _position.y = _mergeFilterY.updateRaw(_position.y, it.pos.y - _position.y)
+            _position.x = _mergeFilterX.update(_position.x, it.pos.x)
+            _position.y = _mergeFilterY.update(_position.y, it.pos.y)
         }
 
         bus.subscribe(OdometersOdometry.UpdateOdometersOdometryEvent::class){

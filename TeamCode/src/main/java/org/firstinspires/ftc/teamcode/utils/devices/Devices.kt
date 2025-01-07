@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
+import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -16,16 +17,15 @@ import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
 import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
 
 class Battery (private val _voltageSensor: VoltageSensor){
-    var charge = 1.0
-    var voltage = 1.0
+    var currentVoltage = 1.0
 
     val _oldUpdateTime = ElapsedTime()
 
+    fun voltageToPower(voltage: Double) = clamp(voltage / currentVoltage, -1.0, 1.0)
+
     fun update(){
         if(_oldUpdateTime.seconds() > Configs.ChargeConfig.BATTERY_UPDATE_SEC) {
-            voltage = _voltageSensor.voltage
-
-            charge = voltage / Configs.ChargeConfig.NOMINAL_VOLTAGE
+            currentVoltage = _voltageSensor.voltage
 
             _oldUpdateTime.reset()
         }

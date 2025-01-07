@@ -43,6 +43,6 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
         }
  
     override fun update() {
-        motor.power = _velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity.toDouble()) / _battery.charge
+        motor.power = _battery.voltageToPower(_velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity.toDouble()))
     }
 }
