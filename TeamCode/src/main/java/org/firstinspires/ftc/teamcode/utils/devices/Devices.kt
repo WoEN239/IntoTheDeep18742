@@ -21,7 +21,7 @@ class Battery (private val _voltageSensor: VoltageSensor){
 
     val _oldUpdateTime = ElapsedTime()
 
-    fun voltageToPower(voltage: Double) = clamp(voltage / currentVoltage, -1.0, 1.0)
+    fun voltageToPower(voltage: Double) = voltage / currentVoltage
 
     fun update(){
         if(_oldUpdateTime.seconds() > Configs.ChargeConfig.BATTERY_UPDATE_SEC) {
