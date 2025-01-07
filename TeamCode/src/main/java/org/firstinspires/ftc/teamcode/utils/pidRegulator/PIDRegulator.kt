@@ -19,7 +19,7 @@ data class PIDConfig(
     @JvmField var d: Double = 0.0,
     @JvmField var f: Double = 0.0,
     @JvmField var g: Double = 0.0,
-    @JvmField var limitU: Double = 1.0,
+    @JvmField var limitU: Double = -1.0,
     @JvmField var fr: Double = 0.0
 )
 
@@ -50,7 +50,9 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         _errOld = err
 
         var u = uP + uI + uD + target * config.f + config.g + sign(target) * config.fr
-        u = clamp(u, -config.limitU, config.limitU)
+
+        if(config.limitU > 0.0)
+            u = clamp(u, -config.limitU, config.limitU)
 
         _deltaTime.reset()
 

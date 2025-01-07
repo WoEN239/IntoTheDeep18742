@@ -114,7 +114,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.005, d = 0.0003, limitU = 1.0)
+        var AIM_PID = PIDConfig(0.005, d = 0.0003)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.002)
