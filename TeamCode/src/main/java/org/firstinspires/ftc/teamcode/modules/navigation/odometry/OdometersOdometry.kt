@@ -29,7 +29,7 @@ class OdometersOdometry : IRobotModule {
             _position += Vec2(
                 (deltaRightPosition + deltaLeftPosition) / 2.0,
                 deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
-            ).turn(-_rotation.angle)
+            ).turn(_rotation.angle)
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
