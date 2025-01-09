@@ -219,6 +219,12 @@ object Configs {
 
         @JvmField
         var DOWN_TIME = 1.0
+
+        @JvmField
+        var CAMERA_CLAMP_POS_Y = 0.0
+
+        @JvmField
+        var CAMERA_CLAMP_POS_X = 0.0
     }
 
     @Config

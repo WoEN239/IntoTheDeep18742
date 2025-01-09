@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.camera.Camera.RequestAllianceDetectedSticks
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import kotlin.math.PI
+import kotlin.math.sqrt
 
 class IntakeManager : IRobotModule {
     class EventSetClampPose(val pos: Intake.ClampPosition) : IEvent
@@ -113,9 +115,21 @@ class IntakeManager : IRobotModule {
         if(_liftPosition == LiftPosition.CLAMP_CENTER){
             _eventBus.invoke(Camera.SetStickDetectEnable(true))
 
-            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks
-            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks
+            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
+            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+            var closesdStick = allianceSticks[0]
+            var closesdStickL = Double.MAX_VALUE
 
+           for(i in allianceSticks){
+               val catetX = i.x-Configs.IntakeConfig.CAMERA_CLAMP_POS_X
+               val catetY = i.y-Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
+               val l = sqrt(catetX*catetX+catetY*catetY)
+               if(l<closesdStickL){
+                   closesdStick=i
+                   closesdStickL=l
+               }
+           }
+            _intake.setDifPos(90.0,closesdStick.angl.angle/ PI*180.0)
 
         }
         else
