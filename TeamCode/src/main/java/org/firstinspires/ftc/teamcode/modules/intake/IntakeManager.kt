@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.modules.camera.Camera
+import org.firstinspires.ftc.teamcode.modules.camera.Camera.RequestAllianceDetectedSticks
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 
@@ -22,6 +24,7 @@ class IntakeManager : IRobotModule {
         TRANSPORT
     }
 
+    private lateinit var _eventBus: EventBus
 
     private val _intake = Intake()
     private val _lift = Lift()
@@ -29,6 +32,8 @@ class IntakeManager : IRobotModule {
     private var _liftPosition = LiftPosition.TRANSPORT
 
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _eventBus = bus
+
         _lift.init(collector)
         _intake.init(collector)
 
@@ -68,15 +73,15 @@ class IntakeManager : IRobotModule {
         {
             it.pos = _liftPosition
         }
-
-        bus.subscribe(EventSetDifVel::class)
-        {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
-                _intake.xVelocity = it.vel
-            } else {
-                _intake.xVelocity = 0.0
-            }
-        }
+//
+//        bus.subscribe(EventSetDifVel::class)
+//        {
+//            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+//                _intake.xVelocity = it.vel
+//            } else {
+//                _intake.xVelocity = 0.0
+//            }
+//        }
 
         bus.subscribe(EventSetLiftPose::class) {
             _liftPosition = it.pos
@@ -104,6 +109,17 @@ class IntakeManager : IRobotModule {
     override fun update() {
         _intake.update()
         _lift.update()
+
+        if(_liftPosition == LiftPosition.CLAMP_CENTER){
+            _eventBus.invoke(Camera.SetStickDetectEnable(true))
+
+            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks
+            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks
+
+
+        }
+        else
+            _eventBus.invoke(Camera.SetStickDetectEnable(false))
     }
 
     override fun start() {

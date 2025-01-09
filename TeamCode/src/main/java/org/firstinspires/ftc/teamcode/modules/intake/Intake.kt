@@ -18,8 +18,8 @@ class Intake{
     var xVelocity = 0.0
     var yVelocity = 0.0
 
-    private var _xPos = 0.0
-    private var _yPos = 0.0
+    var xPos = 0.0
+    var yPos = 0.0
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
@@ -45,8 +45,8 @@ class Intake{
 
     fun setDifPos(xRot: Double, yRot: Double)
     {
-        _xPos = xRot
-        _yPos = yRot
+        xPos = xRot
+        yPos = yRot
 
         val x = xRot + 135.0
         val y = yRot + 10.0
@@ -62,7 +62,7 @@ class Intake{
     }
 
     fun update() {
-        setDifPos(clamp(_xPos + _deltaTime.seconds() * xVelocity, -90.0, 90.0), clamp(_yPos + _deltaTime.seconds() * yVelocity, -90.0, 90.0))
+        setDifPos(clamp(xPos + _deltaTime.seconds() * xVelocity, -90.0, 90.0), clamp(yPos + _deltaTime.seconds() * yVelocity, -90.0, 90.0))
 
         _deltaTime.reset()
     }
