@@ -35,8 +35,6 @@ class Test: LinearOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
         try {
-            val testServo = hardwareMap.get("testServo") as Servo
-
             val handler = UpdateHandler()
             val timers = Timers()
 
@@ -55,6 +53,9 @@ class Test: LinearOpMode() {
 
             handler.start()
 
+            processor.gameColor.set(BaseCollector.GameColor.BLUE)
+            processor.enableDetect.set(true)
+
             while (opModeIsActive()) {
                 battery.update()
                 StaticTelemetry.update()
@@ -65,15 +66,7 @@ class Test: LinearOpMode() {
 
                 val sticks = processor.allianceSticks.get()
 
-                if (sticks.size > 0) {
-                    var targetStick = sticks[0]
-                    
-                    StaticTelemetry.addData("targetStickPos", targetStick.pos)
-
-                    testServo.position = targetStick.angl.angle / PI
-                }
-                else
-                    testServo.position = 0.0
+                StaticTelemetry.addData("sticks", sticks.size)
             }
 
             handler.stop()
