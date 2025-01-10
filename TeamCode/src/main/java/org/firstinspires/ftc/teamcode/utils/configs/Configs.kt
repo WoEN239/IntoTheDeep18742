@@ -24,10 +24,10 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(2.0, f = 2.0)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 10.0, i = 2.0, f = 2.0)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.0)
+        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 10.0, i = 2.0, f = 4.0)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
@@ -45,7 +45,7 @@ object Configs {
         var TRANSLATION_ACCEL = 70.0
 
         @JvmField
-        var MAX_TRANSLATION_VELOCITY = 90.0
+        var MAX_TRANSLATION_VELOCITY = 120.0
 
         @JvmField
         var ROTATE_ACCEL = 4.8
@@ -160,6 +160,9 @@ object Configs {
 
         @JvmField
         var LIFT_TIMER = 1.0
+
+        @JvmField
+        var AIM_POTENTIOMETER_DIFFERENCE = 10.0
     }
 
     @Config

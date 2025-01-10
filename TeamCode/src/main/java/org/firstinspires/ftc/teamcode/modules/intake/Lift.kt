@@ -65,7 +65,7 @@ class Lift {
     private var _deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
-    fun getAimPos() = _aimPotentiometer.voltage / Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE
+    fun getAimPos() = _aimPotentiometer.voltage / Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE + Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
         _deltaExtension += _deltaTime.seconds() * extensionVelocity

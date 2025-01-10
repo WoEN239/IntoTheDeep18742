@@ -65,7 +65,7 @@ class DriveTrain : IRobotModule {
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
             }
 
-            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
+            bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
         }
 
         bus.subscribe(SetDriveCmEvent::class){
