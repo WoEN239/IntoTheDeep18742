@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.modules.camera.StickProcessor
+import org.firstinspires.ftc.teamcode.modules.intake.Lift
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.contServo.ContServo
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
@@ -42,19 +43,13 @@ class Test: LinearOpMode() {
 
             handler.init(BaseCollector.InitContext(battery))
 
-            val processor = StickProcessor()
-
-            val visionPortal = VisionPortal.Builder().addProcessors(processor).setCamera(hardwareMap.get("Webcam 1") as WebcamName).build()
-
-            FtcDashboard.getInstance().startCameraStream(processor, 60.0)
+            val lift = Lift()
 
             waitForStart()
             resetRuntime()
 
             handler.start()
-
-            processor.gameColor.set(BaseCollector.GameColor.BLUE)
-            processor.enableDetect.set(true)
+            lift.start()
 
             while (opModeIsActive()) {
                 battery.update()
@@ -62,17 +57,10 @@ class Test: LinearOpMode() {
                 handler.update()
                 timers.update()
 
-                StaticTelemetry.addData("camera fps", visionPortal.fps)
-
-                val sticks = processor.allianceSticks.get()
-
-                StaticTelemetry.addData("sticks", sticks.size)
+                lift.update()
             }
 
             handler.stop()
-
-            visionPortal.stopStreaming()
-            FtcDashboard.getInstance().stopCameraStream()
         }
         catch (e: Exception){
             StaticTelemetry.addLine(e.message!!)

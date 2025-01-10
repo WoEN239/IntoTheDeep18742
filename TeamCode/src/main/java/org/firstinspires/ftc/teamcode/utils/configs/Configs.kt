@@ -30,7 +30,7 @@ object Configs {
         var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 10.0, i = 2.0, f = 4.0)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(10.0, limitI = 4.0, i = 4.0, f = 50.0)
 
         @JvmField
         var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь
@@ -96,7 +96,7 @@ object Configs {
         var CLAMP_CENTER_AIM = 0.00
 
         @JvmField
-        var UP_BASKED_AIM = 0.00
+        var UP_BASKED_AIM = 55.00
 
         @JvmField
         var UP_LAYER_AIM = 0.00
@@ -111,40 +111,40 @@ object Configs {
         var CLAMP_CENTER_EXTENSION = 0.00
 
         @JvmField
-        var UP_BASKED_EXTENSION = 0.00
+        var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.005, d = 0.0003)
+        var AIM_PID = PIDConfig(0.8)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.002)
+        var EXTENSION_PID = PIDConfig(0.2)
 
         @JvmField
         var EXTENSION_SENS = 100.0
 
         @JvmField
-        var AIM_SENS = 100.0
+        var AIM_SENS = 10.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 350.0
+        var TRIGET_SLOW_POS = 20.0
 
         @JvmField
-        var MAX_TRIGGER_SPEED_DOWN = 0.03
+        var MAX_TRIGGER_SPEED_DOWN = -0.1
 
         @JvmField
-        var INIT_POWER = 0.2
+        var INIT_POWER = 0.1
 
         @JvmField
         var GAMEPAD_EXTENSION_SENS = 1500.0
 
         @JvmField
-        var MAX_SPEED_DOWN = -0.5
+        var MAX_SPEED_DOWN = -10.0
 
         @JvmField
-        var MIN_SPEED_UP = 0.85
+        var MIN_SPEED_UP = 6.0
 
         @JvmField
         var MAX_EXTENSION_POS = 5000.0
@@ -162,7 +162,7 @@ object Configs {
         var LIFT_TIMER = 1.0
 
         @JvmField
-        var AIM_POTENTIOMETER_DIFFERENCE = 10.0
+        var AIM_POTENTIOMETER_DIFFERENCE = -22.8
     }
 
     @Config

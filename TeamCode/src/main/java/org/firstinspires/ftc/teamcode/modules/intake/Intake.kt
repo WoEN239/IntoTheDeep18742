@@ -23,16 +23,17 @@ class Intake{
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
-        /*_servoClamp = collector.devices.servoClamp
+        _servoClamp = collector.devices.servoClamp
 
         _servoDifLeft = collector.devices.servoDifLeft
-        _servoDifRight = collector.devices.servoDifRight*/
+        _servoDifRight = collector.devices.servoDifRight
 
         _servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
         _servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
     }
 
     var clamp = ClampPosition.SERVO_UNCLAMP
+        get() = field
         set(value) {
             if (value == ClampPosition.SERVO_CLAMP)
                 _servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP

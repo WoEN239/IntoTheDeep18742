@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import kotlin.math.abs
 
 class Lift {
@@ -40,11 +41,11 @@ class Lift {
     fun init(collector: BaseCollector) {
         _battery = collector.devices.battery
 
-        /*_aimPotentiometer = collector.devices.aimPotentiometer
+        _aimPotentiometer = collector.devices.aimPotentiometer
         _aimMotor = collector.devices.liftAimMotor
-        _extensionMotor = collector.devices.liftExtensionMotor*/
+        _extensionMotor = collector.devices.liftExtensionMotor
 
-        _extensionMotor.direction = REVERSE
+        _aimMotor.direction = REVERSE
 
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
@@ -81,8 +82,8 @@ class Lift {
         val targetExtensionPos = extensionTargetPosition + _deltaExtension
         val targetAimPos = aimTargetPosition
 
-        if(_extensionEndingDown.state)
-            _extensionStartPosition = _extensionMotor.currentPosition
+        /*if(_extensionEndingDown.state)
+            _extensionStartPosition = _extensionMotor.currentPosition*/
 
         val targetDefencedAimPos: Double
 
@@ -94,6 +95,8 @@ class Lift {
             targetDefencedAimPos = _oldTargetAimPos
 
         val targetDefencedExtensionPos: Double
+
+        StaticTelemetry.addData("lift angle", getAimPos())
 
         if(abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
