@@ -42,7 +42,7 @@ class Camera : IRobotModule {
 
         _processor = StickProcessor()
 
-        _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
+        //_visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
     }
 
     override fun start() {

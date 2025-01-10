@@ -53,8 +53,8 @@ class DriveTrain : IRobotModule {
         _leftBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         _rightBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        _leftBackDrive.direction = DcMotorSimple.Direction.REVERSE
-        _leftForwardDrive.direction = DcMotorSimple.Direction.REVERSE
+        _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
+        _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(SetDrivePowerEvent::class){
             var dir = it.direction
@@ -83,6 +83,15 @@ class DriveTrain : IRobotModule {
                 _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
                 _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
                 _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity))
+
+            StaticTelemetry.addData("targetXVel", _targetDirectionVelocity.x)
+            StaticTelemetry.addData("currentXVel", it.velocity.x)
+
+            StaticTelemetry.addData("targetYVel", _targetDirectionVelocity.y)
+            StaticTelemetry.addData("currentYVel", it.velocity.y)
+
+            StaticTelemetry.addData("targetRotVel", _targetRotateVelocity)
+            StaticTelemetry.addData("currentRotVel", gyro.velocity!!)
         }
     }
 

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.modules.navigation
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE
+import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
@@ -25,7 +27,8 @@ class HardwareOdometers : IRobotModule {
 
         _sideOdometer = EncoderFix(collector.devices.sideOdometer, calc)
 
-        collector.devices.sideOdometer.direction = DcMotorSimple.Direction.REVERSE
+        collector.devices.forwardOdometerLeft.direction = REVERSE
+        collector.devices.forwardOdometerRight.direction = REVERSE
 
         _eventBus = bus
     }

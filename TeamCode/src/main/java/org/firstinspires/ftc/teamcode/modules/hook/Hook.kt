@@ -19,8 +19,8 @@ class Hook: IRobotModule {
     private val _gameTimer = ElapsedTime()
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _leftHook = collector.devices.servoHookLeft
-        _rightHook = collector.devices.servoHookRight
+        //_leftHook = collector.devices.servoHookLeft
+        //_rightHook = collector.devices.servoHookRight
 
         bus.subscribe(HookRun::class){
             if(_gameTimer.seconds() > 90.0) {

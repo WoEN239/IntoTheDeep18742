@@ -24,13 +24,13 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(0.015, 0.01, 0.01, 0.0, 0.01)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(2.0, f = 2.0)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(0.02, 0.01, 0.01, 0.0, 0.04)
+        var VELOCITY_PIDF_SIDE = PIDConfig(0.0)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(0.09, 0.005, 0.005, 0.0, 0.135)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(0.0)
 
         @JvmField
         var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь
@@ -225,6 +225,9 @@ object Configs {
 
         @JvmField
         var CAMERA_CLAMP_POS_X = 0.0
+
+        @JvmField
+        var USE_CAMERA = false
     }
 
     @Config
@@ -252,18 +255,21 @@ object Configs {
 
         @JvmField
         var MERGE_COEF = 0.8
+
+        @JvmField
+        var USE_CAMERA = false
     }
 
     @Config
     internal object OdometryConfig {
         @JvmField
-        var SIDE_ODOMETER_RADIUS = -13.5
+        var SIDE_ODOMETER_RADIUS = 6.0
 
         @JvmField
-        var FORWARD_ODOMETER_LEFT_RADIUS = 9.0
+        var FORWARD_ODOMETER_LEFT_RADIUS = 8.0
 
         @JvmField
-        var FORWARD_ODOMETER_RIGHT_RADIUS = 9.0
+        var FORWARD_ODOMETER_RIGHT_RADIUS = 8.0
 
         @JvmField
         var ODOMETER_DIAMETER = 4.8

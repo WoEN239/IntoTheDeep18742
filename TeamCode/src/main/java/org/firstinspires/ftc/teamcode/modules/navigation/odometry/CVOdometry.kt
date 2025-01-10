@@ -23,13 +23,17 @@ class CVOdometry: IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
-        _aprilTagProcessor = AprilTagProcessor.Builder().setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS).build()
+        if(Configs.IntakeConfig.USE_CAMERA) {
+            _aprilTagProcessor =
+                AprilTagProcessor.Builder().setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS)
+                    .build()
 
-        bus.invoke(AddCameraProcessor(_aprilTagProcessor))
+            bus.invoke(AddCameraProcessor(_aprilTagProcessor))
+        }
     }
 
     override fun update() {
-        if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT)
+        if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT || !Configs.IntakeConfig.USE_CAMERA)
             return
 
         val detections = _aprilTagProcessor.detections

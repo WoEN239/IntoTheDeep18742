@@ -37,7 +37,7 @@ class Devices(hardMap: HardwareMap)  {
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
 
-    val camera = hardMap.get("Webcam 1") as WebcamName
+    //val camera = hardMap.get("Webcam 1") as WebcamName
 
     val hubs = hardMap.getAll(LynxModule::class.java)
 
@@ -46,21 +46,21 @@ class Devices(hardMap: HardwareMap)  {
     val leftBackDrive = MotorOnly(hardMap.get("leftBackDrive") as DcMotorEx)
     val rightBackDrive = MotorOnly(hardMap.get("rightBackDrive") as DcMotorEx)
 
-    val servoClamp = hardMap.get("servoClamp") as Servo
-    val servoDifLeft = hardMap.get("servoDifLeft") as ServoImplEx
-    val servoDifRight = hardMap.get("servoDifRight") as ServoImplEx
+    //val servoClamp = hardMap.get("servoClamp") as Servo
+    //val servoDifLeft = hardMap.get("servoDifLeft") as ServoImplEx
+    //val servoDifRight = hardMap.get("servoDifRight") as ServoImplEx
 
-    val forwardOdometerLeft = EncoderOnly(hardMap.get("leftOdometer") as DcMotorEx)
-    val forwardOdometerRight = EncoderOnly(hardMap.get("rightForwardDrive") as DcMotorEx)
+    val forwardOdometerLeft = EncoderOnly(hardMap.get("rightBackDrive") as DcMotorEx)
+    val forwardOdometerRight = EncoderOnly(hardMap.get("rightOdometer") as DcMotorEx)
     val sideOdometer = EncoderOnly(hardMap.get("leftForwardDrive") as DcMotorEx)
 
-    val liftAimMotor = hardMap.get("liftAimMotor") as DcMotorEx
-    val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
+    //val liftAimMotor = hardMap.get("liftAimMotor") as DcMotorEx
+    //val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
 
-    val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
+    //val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
 
-    val servoHookLeft = hardMap.get("servoHookLeft") as Servo
-    val servoHookRight = hardMap.get("servoHookRight") as Servo
+    //val servoHookLeft = hardMap.get("servoHookLeft") as Servo
+    //val servoHookRight = hardMap.get("servoHookRight") as Servo
 
-    val aimPotentiometer = hardMap.get("aimPotentiometer") as AnalogInput
+    //val aimPotentiometer = hardMap.get("aimPotentiometer") as AnalogInput
 }

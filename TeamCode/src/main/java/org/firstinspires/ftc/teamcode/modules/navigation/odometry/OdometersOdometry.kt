@@ -36,7 +36,6 @@ class OdometersOdometry : IRobotModule {
                 it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity
             )
 
-            StaticTelemetry.drawRect(_position, Vec2(40.0, 10.0), _rotation.angle, Color.RED)
             bus.invoke(UpdateOdometersOdometryEvent(_position, velocity))
         }
 

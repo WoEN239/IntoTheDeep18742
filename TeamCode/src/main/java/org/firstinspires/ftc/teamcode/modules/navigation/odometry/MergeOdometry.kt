@@ -23,6 +23,7 @@ class MergeOdometry: IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
         _oldOdometrPos = collector.gameSettings.startPosition.position
+        _position = collector.gameSettings.startPosition.position
 
         bus.subscribe(CVOdometry.UpdateCVOdometryEvent::class){
             _position.x = _mergeFilterX.update(_position.x, it.pos.x)
@@ -34,6 +35,7 @@ class MergeOdometry: IRobotModule {
             _oldOdometrPos = it.position
 
             _position += deltaPos
+            _velocity = it.velocity
 
             bus.invoke(UpdateMergeOdometryEvent(_position, _velocity))
             StaticTelemetry.addData("odometerPosition", it.position)

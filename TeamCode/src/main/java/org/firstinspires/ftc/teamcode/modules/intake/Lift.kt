@@ -40,9 +40,9 @@ class Lift {
     fun init(collector: BaseCollector) {
         _battery = collector.devices.battery
 
-        _aimPotentiometer = collector.devices.aimPotentiometer
+        /*_aimPotentiometer = collector.devices.aimPotentiometer
         _aimMotor = collector.devices.liftAimMotor
-        _extensionMotor = collector.devices.liftExtensionMotor
+        _extensionMotor = collector.devices.liftExtensionMotor*/
 
         _extensionMotor.direction = REVERSE
 
@@ -54,7 +54,7 @@ class Lift {
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
 
-        _extensionEndingDown = collector.devices.liftExtensionEndingDown
+        //_extensionEndingDown = collector.devices.liftExtensionEndingDown
 
         _aimMotor.power = Configs.LiftConfig.INIT_POWER
     }

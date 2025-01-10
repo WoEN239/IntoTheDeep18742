@@ -75,15 +75,15 @@ class IntakeManager : IRobotModule {
         {
             it.pos = _liftPosition
         }
-//
-//        bus.subscribe(EventSetDifVel::class)
-//        {
-//            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
-//                _intake.xVelocity = it.vel
-//            } else {
-//                _intake.xVelocity = 0.0
-//            }
-//        }
+
+        bus.subscribe(EventSetDifVel::class)
+        {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA) {
+                _intake.xVelocity = it.vel
+            } else {
+                _intake.xVelocity = 0.0
+            }
+        }
 
         bus.subscribe(EventSetLiftPose::class) {
             _liftPosition = it.pos
@@ -112,11 +112,15 @@ class IntakeManager : IRobotModule {
         _intake.update()
         _lift.update()
 
-        if(_liftPosition == LiftPosition.CLAMP_CENTER){
+        if(_liftPosition == LiftPosition.CLAMP_CENTER && Configs.IntakeConfig.USE_CAMERA){
             _eventBus.invoke(Camera.SetStickDetectEnable(true))
 
             val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
             val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+
+            if(allianceSticks.isEmpty() && yellowSticks.isEmpty())
+                return
+
             var closesdStick = allianceSticks[0]
             var closesdStickL = Double.MAX_VALUE
 
