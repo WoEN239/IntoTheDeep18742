@@ -16,9 +16,7 @@ class RedBaskedTrajectory: ITrajectoryBuilder {
     override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation){
         val actions = arrayListOf<IAction>()
 
-        actions.add(FollowRRTrajectory(eventBus, newRRTrajectory(startOrientation)
-            .strafeTo(Vector2d(0.0, 0.0))
-            .build()))
+        extracted(actions, eventBus, startOrientation)
 
         actions.add(WaitAction(5.0))
 
@@ -29,5 +27,19 @@ class RedBaskedTrajectory: ITrajectoryBuilder {
             .build()))
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
+    }
+
+    private fun extracted(
+        actions: ArrayList<IAction>,
+        eventBus: EventBus,
+        startOrientation: Orientation
+    ) {
+        actions.add(
+            FollowRRTrajectory(
+                eventBus, newRRTrajectory(startOrientation)
+                    .strafeTo(Vector2d(0.0, 0.0))
+                    .build()
+            )
+        )
     }
 }

@@ -19,16 +19,17 @@ object MeepMeepTesting {
 
         val myBot = RoadRunnerBotEntity(meepMeep,
              Constraints(130.0, 70.0, 7.9, 4.8, 30.0),
-        38.0, 41.0,
+            38.8, 41.5,
          Pose2d(-1650.0, 1710.0, 0.0),
         meepMeep.colorManager.theme, 1.0, DriveTrainType.MECANUM, false
         );
 
         myBot.runAction(
-myBot.drive.actionBuilder(Pose2d(45.0, 15.0, Math.toRadians(0.0)))
-                .splineToConstantHeading(Vector2d(60.0, 50.0), Math.toRadians(0.0))
-
-                .build())
+myBot.drive.actionBuilder(Pose2d(42.0, -165.0, Math.toRadians(90.0)))
+        .strafeTo(Vector2d(20.0, -85.0))
+    .waitSeconds(5.0)
+    .strafeTo(Vector2d(150.0,-159.0))
+            .build())
 
 
 
