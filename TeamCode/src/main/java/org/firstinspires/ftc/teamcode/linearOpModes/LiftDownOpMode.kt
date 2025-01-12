@@ -16,7 +16,7 @@ class LiftDownOpMode: LinearOpMode() {
         waitForStart()
         resetRuntime()
 
-        motor.power = -0.3
+        motor.power = -0.4
 
         while (opModeIsActive());
     }

@@ -25,11 +25,14 @@ object MeepMeepTesting {
         );
 
         myBot.runAction(
-myBot.drive.actionBuilder(Pose2d(42.0, -165.0, Math.toRadians(90.0)))
+myBot.drive.actionBuilder(Pose2d(-32.0, -165.0, Math.toRadians(0.0)))
+    .strafeTo(Vector2d(165.0, -165.0))
+                .build())
+/*myBot.drive.actionBuilder(Pose2d(42.0, -165.0, Math.toRadians(90.0)))
         .strafeTo(Vector2d(20.0, -85.0))
     .waitSeconds(5.0)
     .strafeTo(Vector2d(150.0,-159.0))
-            .build())
+            .build())*/
 
 
 

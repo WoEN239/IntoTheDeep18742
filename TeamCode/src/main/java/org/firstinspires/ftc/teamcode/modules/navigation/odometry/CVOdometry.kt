@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 
-class CVOdometry: IRobotModule {
-    class UpdateCVOdometryEvent(val pos: Vec2): IEvent
+class CVOdometry : IRobotModule {
+    class UpdateCVOdometryEvent(val pos: Vec2) : IEvent
 
     private lateinit var _aprilTagProcessor: AprilTagProcessor
 
@@ -23,7 +23,7 @@ class CVOdometry: IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
-        if(Configs.IntakeConfig.USE_CAMERA) {
+        if (Configs.IntakeConfig.USE_CAMERA) {
             _aprilTagProcessor =
                 AprilTagProcessor.Builder().setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS)
                     .build()
@@ -33,20 +33,25 @@ class CVOdometry: IRobotModule {
     }
 
     override fun update() {
-        if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT || !Configs.IntakeConfig.USE_CAMERA)
+        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT ||
+            !Configs.IntakeConfig.USE_CAMERA ||
+            !_eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!)
             return
 
         val detections = _aprilTagProcessor.detections
 
-        if(detections.isEmpty())
+        if (detections.isEmpty())
             return
 
         var sum = Vec2.ZERO
 
-        for(i in detections){
+        for (i in detections) {
             val pos = i.robotPose.position
 
-            sum += Vec2(pos.x, pos.y) - Configs.CVOdometryConfig.CAMERA_POSITION.turn(-_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)
+            sum += Vec2(
+                pos.x,
+                pos.y
+            ) - Configs.CVOdometryConfig.CAMERA_POSITION.turn(-_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)
         }
 
         _eventBus.invoke(UpdateCVOdometryEvent(sum / Vec2(detections.size.toDouble())))

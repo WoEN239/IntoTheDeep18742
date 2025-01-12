@@ -29,7 +29,11 @@ import kotlin.math.PI
 class Test: LinearOpMode() {
     @Config
     internal object TestConfigs{
+        @JvmField
+        var X_POS = 0.0
 
+        @JvmField
+        var Y_POS = 0.0
     }
 
     override fun runOpMode() {
@@ -40,16 +44,27 @@ class Test: LinearOpMode() {
             val timers = Timers()
 
             val battery = Battery(hardwareMap.get(VoltageSensor::class.java, "Control Hub"))
+            val _servoDifRight = hardwareMap.get("servoDifRight") as ServoImplEx
+            val _servoDifLeft = hardwareMap.get("servoDifLeft") as ServoImplEx
+
+            _servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+            _servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+
+            fun setDifPos(xRot: Double, yRot: Double)
+            {
+                val x = xRot + 135.0
+                val y = yRot * Configs.IntakeConfig.GEAR_RATIO
+
+                _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+                _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+            }
 
             handler.init(BaseCollector.InitContext(battery))
-
-            val lift = Lift()
 
             waitForStart()
             resetRuntime()
 
             handler.start()
-            lift.start()
 
             while (opModeIsActive()) {
                 battery.update()
@@ -57,7 +72,7 @@ class Test: LinearOpMode() {
                 handler.update()
                 timers.update()
 
-                lift.update()
+                setDifPos(TestConfigs.X_POS, TestConfigs.Y_POS)
             }
 
             handler.stop()

@@ -36,7 +36,10 @@ object Configs {
         var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь
 
         @JvmField
-        var LIFT_MAX_SPEED = 0.2
+        var LIFT_MAX_SPEED = 0.09
+
+        @JvmField
+        var LIFT_MAX_ROTATE_SPEED = 0.5
 
         @JvmField
         var MAX_ROTATE_VELOCITY = 9.9
@@ -60,16 +63,16 @@ object Configs {
         var ROTATE_SENS = 0.01
 
         @JvmField
-        var POSITION_P_X = 0.5
+        var POSITION_P_X = 0.8
 
         @JvmField
-        var POSITION_P_Y = 0.4
+        var POSITION_P_Y = 0.8
 
         @JvmField
-        var POSITION_SENS_X = 19.0
+        var POSITION_SENS_X = 20.0
 
         @JvmField
-        var POSITION_SENS_Y = 19.0
+        var POSITION_SENS_Y = 20.0
 
         @JvmField
         var POS_VELOCITY_SENS_X = 20.0
@@ -93,13 +96,19 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
+        var UP_LAYER_UNCLAMP_AIM = 55.0
+
+        @JvmField
+        var UP_LAYER_UNCLAMP_EXTENSION = 0.0
+
+        @JvmField
         var CLAMP_CENTER_AIM = 0.00
 
         @JvmField
-        var UP_BASKED_AIM = 55.00
+        var UP_BASKED_AIM = 62.5
 
         @JvmField
-        var UP_LAYER_AIM = 0.00
+        var UP_LAYER_AIM = 55.0
 
         @JvmField
         var TRANSPORT_AIM = 0.00
@@ -117,10 +126,10 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.8)
+        var AIM_PID = PIDConfig(0.75)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.2)
+        var EXTENSION_PID = PIDConfig(0.05)
 
         @JvmField
         var EXTENSION_SENS = 100.0
@@ -132,13 +141,13 @@ object Configs {
         var TRIGET_SLOW_POS = 20.0
 
         @JvmField
-        var MAX_TRIGGER_SPEED_DOWN = -0.1
+        var MAX_TRIGGER_SPEED_DOWN = 0.0
 
         @JvmField
-        var INIT_POWER = 0.1
+        var INIT_POWER = 0.14
 
         @JvmField
-        var GAMEPAD_EXTENSION_SENS = 1500.0
+        var GAMEPAD_EXTENSION_SENS = 1000.0
 
         @JvmField
         var MAX_SPEED_DOWN = -10.0
@@ -147,7 +156,7 @@ object Configs {
         var MIN_SPEED_UP = 6.0
 
         @JvmField
-        var MAX_EXTENSION_POS = 5000.0
+        var MAX_EXTENSION_POS = 1000.0
 
         @JvmField
         var MIN_EXTENSION_POS = 0.0
@@ -206,19 +215,19 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var GEAR_RATIO = 16.0 / 28.0
+
+        @JvmField
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.5
+        var SERVO_CLAMP = 0.01
 
         @JvmField
-        var SERVO_UNCLAMP = 0.8
+        var SERVO_UNCLAMP = 0.3
 
         @JvmField
-        var DIX_Y_VELOCITY = 110.0
-
-        @JvmField
-        var CLAMP_TIME = 1.0
+        var CLAMP_TIME = 0.5
 
         @JvmField
         var DOWN_TIME = 1.0

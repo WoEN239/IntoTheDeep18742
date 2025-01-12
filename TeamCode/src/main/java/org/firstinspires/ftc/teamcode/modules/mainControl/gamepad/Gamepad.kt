@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain.SetDrivePowe
 import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
-import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager.EventSetDifVel
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
@@ -28,12 +27,15 @@ class Gamepad : IRobotModule {
     private var _centerOld = false
     private var _layerOld = false
 
+    private var _oldNextDifPos = false
+    private var _oldPreviousDifPos = false
+
     override fun lateUpdate() {
         _eventBus.invoke(
             SetDrivePowerEvent(
                 Vec2(
-                    (_gamepad.left_stick_y).toDouble(),
-                    (_gamepad.left_stick_x).toDouble()
+                    (-_gamepad.left_stick_y).toDouble(),
+                    (-_gamepad.left_stick_x).toDouble()
                 ), (-_gamepad.right_stick_x).toDouble()
             )
         )
@@ -71,10 +73,13 @@ class Gamepad : IRobotModule {
 
         _eventBus.invoke(IntakeManager.EventSetExtensionVel((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
 
-        _eventBus.invoke(
-            EventSetDifVel(
-                if (_gamepad.right_bumper) Configs.IntakeConfig.DIX_Y_VELOCITY else if (_gamepad.left_bumper) -Configs.IntakeConfig.DIX_Y_VELOCITY else 0.0
-            )
-        )
+        if(_gamepad.right_bumper && !_oldNextDifPos)
+            _eventBus.invoke(IntakeManager.NextDifPos())
+
+        if(_gamepad.left_bumper && !_oldPreviousDifPos)
+            _eventBus.invoke(IntakeManager.PreviousDifPos())
+
+        _oldNextDifPos = _gamepad.right_bumper
+        _oldPreviousDifPos = _gamepad.left_bumper
     }
 }

@@ -53,8 +53,8 @@ class DriveTrain : IRobotModule {
         _leftBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         _rightBackDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
-        _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
+        _leftBackDrive.direction = DcMotorSimple.Direction.REVERSE
+        _leftForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(SetDrivePowerEvent::class){
             var dir = it.direction
@@ -62,7 +62,7 @@ class DriveTrain : IRobotModule {
 
             if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT) {
                 dir *= Vec2(Configs.DriveTrainConfig.LIFT_MAX_SPEED)
-                rot *= Configs.DriveTrainConfig.LIFT_MAX_SPEED
+                rot *= Configs.DriveTrainConfig.LIFT_MAX_ROTATE_SPEED
             }
 
             bus.invoke(SetDriveCmEvent(dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY), rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY))
@@ -72,7 +72,7 @@ class DriveTrain : IRobotModule {
             var clampedDirLength = clamp(it.direction.length(), -Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
             val dirRot = it.direction.rot()
 
-            _targetDirectionVelocity = Vec2(cos(dirRot) * clampedDirLength, sin(dirRot) * clampedDirLength)
+            _targetDirectionVelocity = Vec2(clampedDirLength, 0.0).setRot(dirRot)
             _targetRotateVelocity = clamp(it.rotate, -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
         }
 
@@ -96,10 +96,10 @@ class DriveTrain : IRobotModule {
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        var leftFrontPower = _battery.voltageToPower((direction.x - direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO)
-        var rightBackPower = _battery.voltageToPower((direction.x - direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO)
-        var leftBackPower = _battery.voltageToPower((direction.x + direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO)
-        var rightForwardPower = _battery.voltageToPower((direction.x + direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO)
+        var leftFrontPower = _battery.voltageToPower((-direction.x + direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO)
+        var rightBackPower = _battery.voltageToPower((-direction.x + direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO)
+        var leftBackPower = _battery.voltageToPower((-direction.x - direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO)
+        var rightForwardPower = _battery.voltageToPower((-direction.x - direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO)
 
         val max = max(abs(leftFrontPower), max(abs(rightBackPower), max(abs(leftBackPower), abs(rightForwardPower))))
 

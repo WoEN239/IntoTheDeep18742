@@ -90,7 +90,7 @@ class WaitAction(private val _secTime: Double) : IAction {
     }
 }
 
-class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPosition) : IAction {
+class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPosition, val extensionPos: Double = 0.0) : IAction {
     private val _timer = ElapsedTime()
 
     override fun update() {
@@ -105,6 +105,7 @@ class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPos
 
     override fun start() {
         _eventBus.invoke(IntakeManager.EventSetLiftPose(pos))
+        _eventBus.invoke(IntakeManager.EventSetExtensionPosition(extensionPos))
     }
 }
 

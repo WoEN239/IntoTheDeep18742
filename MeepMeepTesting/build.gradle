@@ -4,8 +4,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17 //кто изменит версию лицо снесу иначе мип мип не робит
-    targetCompatibility = JavaVersion.VERSION_17 // понял
+    sourceCompatibility = JavaVersion.VERSION_21 //кто изменит версию лицо снесу иначе мип мип не робит
+    targetCompatibility = JavaVersion.VERSION_21 // понял
                                                  //судя по всему нет, тк они изменена, найду убью
 }
 repositories {

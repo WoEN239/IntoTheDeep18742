@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
+import kotlin.math.roundToInt
 
 /**
  * Класс позволяющий исправить проблему скорости в реве.
@@ -52,7 +53,7 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
             _oldPosition = position
         }
 
-        velocity = hardwareSpeed + Math.round((_lastMathSpeed - hardwareSpeed) / (1 shl 16).toDouble()) * (1 shl 16).toDouble()
+        velocity = hardwareSpeed + ((_lastMathSpeed - hardwareSpeed) / (1 shl 16).toDouble()).roundToInt() * (1 shl 16).toDouble()
     }
 
     override fun start() {

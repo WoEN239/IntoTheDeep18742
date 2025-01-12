@@ -75,7 +75,8 @@ class TrajectorySegmentRunner : IRobotModule {
         val gyro = _eventBus.invoke(MergeGyro.RequestMergeGyroEvent())
         val odometry = _eventBus.invoke(MergeOdometry.RequestMergePositionEvent())
 
-        val localizedTransVelocity = _targetTransVelocity.turn(-gyro.rotation!!.angle)
+        val localizedTransVelocity = _targetTransVelocity.turn(
+            -gyro.rotation!!.angle)
 
         val headingErr = (_targetOrientation.angl - gyro.rotation!!).angle
         val posErr = (_targetOrientation.pos - odometry.position!!).turn(-gyro.rotation!!.angle)

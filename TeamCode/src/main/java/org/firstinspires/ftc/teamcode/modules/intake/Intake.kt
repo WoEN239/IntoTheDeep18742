@@ -50,7 +50,7 @@ class Intake{
         yPos = yRot
 
         val x = xRot + 135.0
-        val y = yRot + 10.0
+        val y = yRot * Configs.IntakeConfig.GEAR_RATIO
 
         _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
         _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
@@ -70,7 +70,6 @@ class Intake{
 
     fun start() {
         _deltaTime.reset()
-        setDifPos(-90.0, 0.0)
-        clamp = ClampPosition.SERVO_CLAMP
+        setDifPos(-70.0, 0.0)
     }
 }

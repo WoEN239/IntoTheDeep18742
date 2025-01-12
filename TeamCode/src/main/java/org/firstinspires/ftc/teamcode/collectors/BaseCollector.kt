@@ -47,10 +47,10 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     enum class GameOrientation { HUMAN, BASKET }
 
     enum class GameStartPosition(val position: Vec2, val angle: Angle, val color: GameColor, val orientation: GameOrientation){
-        RED_HUMAN(Vec2(42.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.HUMAN),
-        RED_BASKET(Vec2(39.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
-        BLUE_HUMAN(Vec2(-39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
-        BLUE_BASKET(Vec2(39.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
+        RED_HUMAN(Vec2(-32.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.HUMAN),
+        RED_BASKET(Vec2(-32.0, -165.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
+        BLUE_HUMAN(Vec2(32.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
+        BLUE_BASKET(Vec2(32.0, 165.0), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
         NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BASKET)
     }
 
