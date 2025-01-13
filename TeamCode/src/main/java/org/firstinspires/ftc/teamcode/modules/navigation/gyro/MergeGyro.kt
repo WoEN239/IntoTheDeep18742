@@ -14,39 +14,37 @@ class MergeGyro : IRobotModule {
 
     private var _oldOdometerRotate = Angle.ZERO
 
-    private var _oldRotation = Angle.ZERO
+    private var _oldMergeRotation = Angle.ZERO
 
-    private var _rotation = Angle.ZERO
+    private var _mergeRotate = Angle.ZERO
     private var _velocity = 0.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _rotation = collector.gameSettings.startPosition.angle
+        _mergeRotate = collector.gameSettings.startPosition.angle
+        _oldMergeRotation = collector.gameSettings.startPosition.angle
 
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
-            _rotation = Angle(_mergeFilter.updateRaw(_rotation.angle, (it.rotate - _rotation).angle))
+            _mergeRotate = Angle(_mergeFilter.updateRaw(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
         }
 
         bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
-            _rotation += it.rotate - _oldOdometerRotate
+            _oldMergeRotation = _mergeRotate
+            _mergeRotate += it.rotate - _oldOdometerRotate
 
             _oldOdometerRotate = it.rotate
 
-            bus.invoke(UpdateMergeGyroEvent(_rotation, _oldRotation, it.velocity))
-
             _velocity = it.velocity
-            _oldRotation = _rotation
 
-            StaticTelemetry.addData("robot merge rotate", _rotation.toDegree())
+            StaticTelemetry.addData("robot merge rotate", _mergeRotate.toDegree())
         }
 
         bus.subscribe(RequestMergeGyroEvent::class){
-            it.rotation = _rotation
+            it.rotation = _mergeRotate
             it.velocity = _velocity
         }
     }
 
-    class UpdateMergeGyroEvent(val rotation: Angle, val oldRotation: Angle, val velocity: Double): IEvent
-    class RequestMergeGyroEvent(var rotation: Angle? = null, var velocity: Double? = null): IEvent
+    class RequestMergeGyroEvent(var rotation: Angle? = null, var oldRotation: Angle? = null, var velocity: Double? = null): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

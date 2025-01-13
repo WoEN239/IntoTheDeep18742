@@ -13,36 +13,28 @@ import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class OdometersOdometry : IRobotModule {
-    private var _rotation = Angle(0.0)
-    private var _oldRotation = Angle(0.0)
-    private var _rotateVelocity = 0.0
-
     override fun init(collector: BaseCollector, bus: EventBus) {
         _position = collector.gameSettings.startPosition.position
 
         bus.subscribe(HardwareOdometers.UpdateHardwareOdometersEvent::class) {
+            val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
+
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld
             val deltaSidePosition = it.sidePosition - it.sidePositionOld
-            val deltaRotate = _rotation - _oldRotation
+            val deltaRotate = gyro.rotation!! - gyro.oldRotation!!
 
             _position += Vec2(
                 (deltaRightPosition + deltaLeftPosition) / 2.0,
                 deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
-            ).turn(_rotation.angle)
+            ).turn(gyro.rotation!!.angle)
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
-                it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * _rotateVelocity
+                it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * gyro.velocity!!
             )
 
             bus.invoke(UpdateOdometersOdometryEvent(_position, velocity))
-        }
-
-        bus.subscribe(MergeGyro.UpdateMergeGyroEvent::class){
-            _rotation = it.rotation
-            _oldRotation = it.oldRotation
-            _rotateVelocity = it.velocity
         }
     }
 

@@ -10,11 +10,12 @@ import org.firstinspires.ftc.teamcode.modules.camera.Camera.AddCameraProcessor
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 
 class CVOdometry : IRobotModule {
-    class UpdateCVOdometryEvent(val pos: Vec2) : IEvent
+    class UpdateCVOdometryEvent(val pos: Vec2, val angle: Angle) : IEvent
 
     private lateinit var _aprilTagProcessor: AprilTagProcessor
 
@@ -43,17 +44,19 @@ class CVOdometry : IRobotModule {
         if (detections.isEmpty())
             return
 
-        var sum = Vec2.ZERO
+        var posSum = Vec2.ZERO
+        var angleSum = 0.0
 
         for (i in detections) {
             val pos = i.robotPose.position
 
-            sum += Vec2(
+            angleSum += i.robotPose.orientation.getYaw(AngleUnit.RADIANS).toDouble()
+            posSum += Vec2(
                 pos.x,
                 pos.y
-            ) - Configs.CVOdometryConfig.CAMERA_POSITION.turn(-_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)
+            ) - Configs.CVOdometryConfig.CAMERA_POSITION.turn(_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)
         }
 
-        _eventBus.invoke(UpdateCVOdometryEvent(sum / Vec2(detections.size.toDouble())))
+        _eventBus.invoke(UpdateCVOdometryEvent(posSum / Vec2(detections.size.toDouble()), Angle(angleSum / detections.size.toDouble())))
     }
 }
