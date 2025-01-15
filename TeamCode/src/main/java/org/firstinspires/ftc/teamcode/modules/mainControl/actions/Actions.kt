@@ -56,7 +56,7 @@ class FollowRRTrajectory(private val _eventBus: EventBus, trajectory: List<Traje
 
 class TurnAction(private val _eventBus: EventBus, startOrientation: Orientation, endAngle: Angle) : ITransportAction {
     private val _segment =
-        TurnSegment((startOrientation.angl - endAngle).angle, startOrientation)
+        TurnSegment((endAngle - startOrientation.angl).angle, startOrientation)
 
     override fun update() {}
 
@@ -104,6 +104,8 @@ class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPos
     override fun isEnd() = _timer.seconds() > Configs.LiftConfig.LIFT_TIMER
 
     override fun start() {
+        _timer.reset()
+
         _eventBus.invoke(IntakeManager.EventSetLiftPose(pos))
         _eventBus.invoke(IntakeManager.EventSetExtensionPosition(extensionPos))
     }

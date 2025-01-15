@@ -55,13 +55,6 @@ open class LinearOpModeBase : LinearOpMode() {
             if(settings.isPreInit)
                 OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).initOpMode(settings.preInitOpModeName)
         } catch (e: Exception) {
-            StaticTelemetry.addLine(e.message!!)
-
-            for (i in e.stackTrace)
-                StaticTelemetry.addLine(i.fileName)
-
-            StaticTelemetry.update()
-
             throw e
         }
     }

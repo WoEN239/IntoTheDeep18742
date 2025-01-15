@@ -57,22 +57,22 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var ROTATE_P = 5.0
+        var ROTATE_P = 6.4
 
         @JvmField
-        var ROTATE_SENS = 0.01
+        var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 0.8
+        var POSITION_P_X = 1.0
 
         @JvmField
-        var POSITION_P_Y = 0.8
+        var POSITION_P_Y = 1.0
 
         @JvmField
-        var POSITION_SENS_X = 20.0
+        var POSITION_SENS_X = 15.0
 
         @JvmField
-        var POSITION_SENS_Y = 20.0
+        var POSITION_SENS_Y = 15.0
 
         @JvmField
         var POS_VELOCITY_SENS_X = 20.0
@@ -90,7 +90,7 @@ object Configs {
         var HEADING_VEL_SENS = 0.3
 
         @JvmField
-        var HEADING_VEL_P = 0.0
+        var HEADING_VEL_P = 0.1
     }
 
     @Config
@@ -147,7 +147,7 @@ object Configs {
         var INIT_POWER = 0.14
 
         @JvmField
-        var GAMEPAD_EXTENSION_SENS = 1000.0
+        var GAMEPAD_EXTENSION_SENS = 1900.0
 
         @JvmField
         var MAX_SPEED_DOWN = -10.0
@@ -168,7 +168,7 @@ object Configs {
         var MAX_POTENTIOMETER_VOLTAGE = 3.0
 
         @JvmField
-        var LIFT_TIMER = 1.0
+        var LIFT_TIMER = 2.2
 
         @JvmField
         var AIM_POTENTIOMETER_DIFFERENCE = -22.8
@@ -221,10 +221,10 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.01
+        var SERVO_CLAMP = 0.2
 
         @JvmField
-        var SERVO_UNCLAMP = 0.3
+        var SERVO_UNCLAMP = 0.75
 
         @JvmField
         var CLAMP_TIME = 0.5

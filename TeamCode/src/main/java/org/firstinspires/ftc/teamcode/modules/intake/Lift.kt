@@ -50,10 +50,10 @@ class Lift {
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
-        //if(collector.gameSettings.isAuto) {
+        if(collector.gameSettings.isAuto) {
             _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        //}
+        }
 
         //_extensionEndingDown = collector.devices.liftExtensionEndingDown
 
@@ -63,23 +63,25 @@ class Lift {
 
     private val _deltaTime = ElapsedTime()
 
-    private var _deltaExtension = 0.0
+    var deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
     fun getAimPos() = _aimPotentiometer.voltage / Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE + Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        _deltaExtension += _deltaTime.seconds() * extensionVelocity
+        StaticTelemetry.addData("liftExtensionVel",  extensionVelocity)
 
-        _deltaExtension = clamp(
-            _deltaExtension,
+        deltaExtension += _deltaTime.seconds() * extensionVelocity
+
+        deltaExtension = clamp(
+            deltaExtension,
             Configs.LiftConfig.MIN_EXTENSION_POS,
             Configs.LiftConfig.MAX_EXTENSION_POS
         )
 
         _deltaTime.reset()
 
-        val targetExtensionPos = extensionTargetPosition + _deltaExtension
+        val targetExtensionPos = extensionTargetPosition
         val targetAimPos = aimTargetPosition
 
         /*if(_extensionEndingDown.state)
@@ -104,7 +106,7 @@ class Lift {
             targetDefencedExtensionPos = targetExtensionPos
 
         _aimErr = targetDefencedAimPos - getAimPos()
-        _extensionErr = targetDefencedExtensionPos - getCurrentExtensionPos()
+        _extensionErr = (targetDefencedExtensionPos + deltaExtension) - getCurrentExtensionPos()
 
         val triggerMinPower = if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS) Configs.LiftConfig.MAX_SPEED_DOWN
         else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN

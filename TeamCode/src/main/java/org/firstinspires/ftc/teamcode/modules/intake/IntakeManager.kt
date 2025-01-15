@@ -18,10 +18,10 @@ class IntakeManager : IRobotModule {
     class EventSetExtensionVel(val vel: Double) : IEvent
     class RequestLiftPosEvent(var pos: LiftPosition? = null) : IEvent
     class RequestClampPosEvent(var pos: Intake.ClampPosition? = null) : IEvent
-    class NextDifPos: IEvent
-    class PreviousDifPos: IEvent
-    class EventSetExtensionPosition(val pos: Double): IEvent
-    class RequestLiftAtTargetEvent(var target: Boolean? = null): IEvent
+    class NextDifPos : IEvent
+    class PreviousDifPos : IEvent
+    class EventSetExtensionPosition(val pos: Double) : IEvent
+    class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -80,8 +80,8 @@ class IntakeManager : IRobotModule {
             }
         }
 
-        bus.subscribe(EventSetExtensionPosition::class){
-            if(_liftPosition == LiftPosition.CLAMP_CENTER)
+        bus.subscribe(EventSetExtensionPosition::class) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
                 _lift.extensionTargetPosition = it.pos
         }
 
@@ -90,19 +90,21 @@ class IntakeManager : IRobotModule {
             it.pos = _liftPosition
         }
 
-        bus.subscribe(NextDifPos::class){
-            _intake.setDifPos(_intake.xPos, clamp(_intake.yPos + 20.0, -80.0, 80.0))
+        bus.subscribe(NextDifPos::class) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
+                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos + 20.0, -80.0, 80.0))
         }
 
-        bus.subscribe(PreviousDifPos::class){
-            _intake.setDifPos(_intake.xPos, clamp(_intake.yPos - 20.0, -80.0, 80.0))
+        bus.subscribe(PreviousDifPos::class) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
+                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos - 20.0, -80.0, 80.0))
         }
 
         bus.subscribe(EventSetLiftPose::class) {
             if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
-                _intake.setDifPos(xRot = -10.0, yRot = 0.0)
+                _intake.setDifPos(xRot = -10.0, yRot = -180.0)
                 _liftPosition = it.pos
             } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
@@ -112,17 +114,26 @@ class IntakeManager : IRobotModule {
             } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
-                _intake.setDifPos(xRot = 85.0, yRot = 0.0)
+                _intake.setDifPos(xRot = 90.0, yRot = 0.0)
                 _liftPosition = it.pos
             } else if (it.pos == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
-                _intake.setDifPos(xRot = -70.0, yRot = 0.0)
+
+                if (_liftPosition == LiftPosition.UP_BASKED) {
+                    Timers.newTimer().start({ !_lift.atTarget() }) {
+                        _intake.setDifPos(xRot = -80.0, yRot = 0.0)
+                    }
+                } else
+                    _intake.setDifPos(xRot = -80.0, yRot = 0.0)
+
                 _liftPosition = it.pos
             }
+
+            _lift.deltaExtension = 0.0
         }
 
-        bus.subscribe(RequestLiftAtTargetEvent::class){
+        bus.subscribe(RequestLiftAtTargetEvent::class) {
             it.target = _lift.atTarget()
         }
     }
@@ -131,37 +142,40 @@ class IntakeManager : IRobotModule {
         _intake.update()
         _lift.update()
 
-        if (_liftPosition == LiftPosition.CLAMP_CENTER && Configs.IntakeConfig.USE_CAMERA) {
-            _eventBus.invoke(Camera.SetStickDetectEnable(true))
+        if (Configs.IntakeConfig.USE_CAMERA) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+                _eventBus.invoke(Camera.SetStickDetectEnable(true))
 
-            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
-            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+                val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
+                val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
 
-            if (allianceSticks.isEmpty() && yellowSticks.isEmpty())
-                return
+                if (allianceSticks.isEmpty() && yellowSticks.isEmpty())
+                    return
 
-            var closesdStick = allianceSticks[0]
-            var closesdStickL = Double.MAX_VALUE
+                var closesdStick = allianceSticks[0]
+                var closesdStickL = Double.MAX_VALUE
 
-            for (i in allianceSticks) {
-                val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
-                val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
-                val l = sqrt(catetX * catetX + catetY * catetY)
-                if (l < closesdStickL) {
-                    closesdStick = i
-                    closesdStickL = l
+                for (i in allianceSticks) {
+                    val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
+                    val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
+                    val l = sqrt(catetX * catetX + catetY * catetY)
+                    if (l < closesdStickL) {
+                        closesdStick = i
+                        closesdStickL = l
+                    }
                 }
-            }
-            _intake.setDifPos(90.0, closesdStick.angl.angle / PI * 180.0)
+                _intake.setDifPos(90.0, closesdStick.angl.angle / PI * 180.0)
 
-        } else
-            _eventBus.invoke(Camera.SetStickDetectEnable(false))
+            } else
+                _eventBus.invoke(Camera.SetStickDetectEnable(false))
+        }
     }
 
     override fun start() {
         _intake.start()
-        _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
         _lift.start()
-    }
 
+        _eventBus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
+        _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+    }
 }

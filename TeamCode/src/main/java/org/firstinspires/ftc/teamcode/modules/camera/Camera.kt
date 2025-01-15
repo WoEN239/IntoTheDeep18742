@@ -19,11 +19,9 @@ class Camera : IRobotModule {
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
 
-    private val _visionPortalBuilder = VisionPortal.Builder()
+    private var _visionPortalBuilder = VisionPortal.Builder()
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _processor.gameColor.set(collector.gameSettings.startPosition.color)
-
         bus.subscribe(RequestAllianceDetectedSticks::class){
             it.sticks = _processor.allianceSticks.get()
         }
@@ -40,18 +38,21 @@ class Camera : IRobotModule {
             _visionPortalBuilder.addProcessor(it.processor)
         }
 
-        _processor = StickProcessor()
+        //_processor = StickProcessor()
 
-        //_visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
+        //_processor.gameColor.set(collector.gameSettings.startPosition.color)
+
+        //_visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
     }
 
     override fun start() {
-        FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
-        _visionPortal = _visionPortalBuilder.build()
+        //_visionPortal = _visionPortalBuilder.build()
+        //FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
+        //_processor.enableDetect.set(true)
     }
 
     override fun stop() {
-        _visionPortal.stopStreaming()
+        //_visionPortal.stopStreaming()
         FtcDashboard.getInstance().stopCameraStream()
     }
 }

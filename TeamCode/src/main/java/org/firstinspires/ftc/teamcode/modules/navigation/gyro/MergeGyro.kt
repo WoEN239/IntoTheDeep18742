@@ -41,6 +41,7 @@ class MergeGyro : IRobotModule {
         bus.subscribe(RequestMergeGyroEvent::class){
             it.rotation = _mergeRotate
             it.velocity = _velocity
+            it.oldRotation = _oldMergeRotation
         }
     }
 
