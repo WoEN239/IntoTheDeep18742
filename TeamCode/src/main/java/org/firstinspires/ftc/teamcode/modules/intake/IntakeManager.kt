@@ -22,6 +22,7 @@ class IntakeManager : IRobotModule {
     class PreviousDifPos : IEvent
     class EventSetExtensionPosition(val pos: Double) : IEvent
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
+    class RequestIntakeAtTarget(var target: Boolean? = null): IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -104,7 +105,7 @@ class IntakeManager : IRobotModule {
             if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
-                _intake.setDifPos(xRot = -10.0, yRot = -180.0)
+                _intake.setDifPos(xRot = -40.0, yRot = -180.0)
                 _liftPosition = it.pos
             } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
@@ -135,6 +136,10 @@ class IntakeManager : IRobotModule {
 
         bus.subscribe(RequestLiftAtTargetEvent::class) {
             it.target = _lift.atTarget()
+        }
+
+        bus.subscribe(RequestIntakeAtTarget::class){
+            it.target = _intake.atTarget()
         }
     }
 

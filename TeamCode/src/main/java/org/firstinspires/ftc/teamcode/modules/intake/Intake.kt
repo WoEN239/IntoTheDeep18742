@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 
 class Intake{
-    private lateinit var _servoClamp: Servo
+    private lateinit var _servoClamp: SoftServo
 
-    private lateinit var _servoDifLeft: ServoImplEx
-    private lateinit var _servoDifRight: ServoImplEx
+    private lateinit var _servoDifLeft: SoftServo
+    private lateinit var _servoDifRight: SoftServo
+
+    fun atTarget() = _servoClamp.isEnd && _servoDifLeft.isEnd && _servoDifRight.isEnd
 
     var xVelocity = 0.0
     var yVelocity = 0.0
@@ -23,25 +26,24 @@ class Intake{
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
-        _servoClamp = collector.devices.servoClamp
+        _servoClamp = SoftServo(collector.devices.servoClamp)
 
-        _servoDifLeft = collector.devices.servoDifLeft
-        _servoDifRight = collector.devices.servoDifRight
+        _servoDifLeft = SoftServo(collector.devices.servoDifLeft)
+        _servoDifRight = SoftServo(collector.devices.servoDifRight)
 
-        _servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
-        _servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+        collector.devices.servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+        collector.devices.servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
     }
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
             if (value == ClampPosition.SERVO_CLAMP)
-                _servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
+                _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_CLAMP
             else
-                _servoClamp.position = Configs.IntakeConfig.SERVO_UNCLAMP
+                _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_UNCLAMP
 
             field = value
         }
-
 
     fun setDifPos(xRot: Double, yRot: Double)
     {
@@ -51,8 +53,8 @@ class Intake{
         val x = xRot + 135.0
         val y = yRot * Configs.IntakeConfig.GEAR_RATIO
 
-        _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
-        _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+        _servoDifRight.targetPosition = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+        _servoDifLeft.targetPosition = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
     }
 
     enum class ClampPosition
@@ -69,6 +71,5 @@ class Intake{
 
     fun start() {
         _deltaTime.reset()
-        setDifPos(-70.0, 0.0)
     }
 }

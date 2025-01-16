@@ -56,15 +56,21 @@ class TrajectorySegmentRunner : IRobotModule {
 
     private var _targetOrientation = Orientation.ZERO
 
+    private var _posErr = Vec2.ZERO
+    private var _headingErr = 0.0
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
         bus.subscribe(RequestIsEndTrajectoryEvent::class) {
-            it.isEnd = _currentTrajectory.isEmpty
+            it.isEnd = _currentTrajectory.isEmpty() &&
+                    abs(_posErr.x) < Configs.RoadRunnerConfig.POSITION_SENS_X + Configs.RoadRunnerConfig.STEP_X &&
+                    abs(_posErr.y) < Configs.RoadRunnerConfig.POSITION_SENS_Y + Configs.RoadRunnerConfig.STEP_Y &&
+                    abs(_headingErr) < Configs.RoadRunnerConfig.ROTATE_SENS + Configs.RoadRunnerConfig.STEP_H
         }
 
         bus.subscribe(RunTrajectorySegmentEvent::class) {
-            if (_currentTrajectory.isEmpty)
+            if (_currentTrajectory.isEmpty())
                 _trajectoryTime.reset()
 
             _currentTrajectory.add(it.trajectory)
@@ -76,18 +82,19 @@ class TrajectorySegmentRunner : IRobotModule {
         val odometry = _eventBus.invoke(MergeOdometry.RequestMergePositionEvent())
 
         val localizedTransVelocity = _targetTransVelocity.turn(
-            -gyro.rotation!!.angle)
+            -gyro.rotation!!.angle
+        )
 
-        val headingErr = (_targetOrientation.angl - gyro.rotation!!).angle
-        val posErr = (_targetOrientation.pos - odometry.position!!).turn(-gyro.rotation!!.angle)
+        _headingErr = (_targetOrientation.angl - gyro.rotation!!).angle
+        _posErr = (_targetOrientation.pos - odometry.position!!).turn(-gyro.rotation!!.angle)
 
         val velPosErr = localizedTransVelocity - odometry.velocity!!
         val velHeadingErr = _targetHeadingVelocity - gyro.velocity!!
 
         val uPos =
             Vec2(
-                if (abs(posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) posErr.x * Configs.RoadRunnerConfig.POSITION_P_X else 0.0,
-                if (abs(posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y else 0.0
+                if (abs(_posErr.x) > Configs.RoadRunnerConfig.POSITION_SENS_X) _posErr.x * Configs.RoadRunnerConfig.POSITION_P_X else 0.0,
+                if (abs(_posErr.y) > Configs.RoadRunnerConfig.POSITION_SENS_Y) _posErr.y * Configs.RoadRunnerConfig.POSITION_P_Y else 0.0
             )
 
         val uPosVel = Vec2(
@@ -96,7 +103,7 @@ class TrajectorySegmentRunner : IRobotModule {
         )
 
         val headingU =
-            if (abs(headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0
+            if (abs(_headingErr) > Configs.RoadRunnerConfig.ROTATE_SENS) _headingErr * Configs.RoadRunnerConfig.ROTATE_P else 0.0
 
         val headingVelU =
             if (abs(velHeadingErr) > Configs.RoadRunnerConfig.HEADING_VEL_SENS) velHeadingErr * Configs.RoadRunnerConfig.HEADING_VEL_P else 0.0
@@ -116,7 +123,7 @@ class TrajectorySegmentRunner : IRobotModule {
         )
         StaticTelemetry.addData("targetPosition", _targetOrientation.pos)
 
-        if (_currentTrajectory.isEmpty)
+        if (_currentTrajectory.isEmpty())
             return
 
         val trajectory = _currentTrajectory[0]

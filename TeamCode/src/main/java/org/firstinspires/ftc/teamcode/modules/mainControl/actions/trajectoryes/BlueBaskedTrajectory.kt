@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ITransportActi
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.LiftAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.TurnAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitLiftAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner.Companion.newRRTrajectory
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
@@ -33,38 +34,55 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
 
                 actions.add(WaitAction(2.0))
         */
-        actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(startOrientation)
-                    .strafeToLinearHeading(Vector2d(158.0, 123.0), toRadians(-90.0 - 45.0))
-                    .build()
+        fun runToBasket(startOrientation: Orientation) {
+            actions.add(
+                FollowRRTrajectory(
+                    eventBus, newRRTrajectory(startOrientation)
+                        .strafeToLinearHeading(Vector2d(146.0, 126.0), toRadians(-90.0 - 45.0))
+                        .build()
+                )
             )
-        )
+        }
 
         fun basket() {
-            actions.add(WaitAction(1.0))
-
             actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED))
 
             actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
 
-            actions.add(WaitAction(1.0))
+            actions.add(WaitLiftAction(eventBus))
         }
 
+        fun clampStick(extension: Double){
+            actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, extension))
+
+            actions.add(WaitLiftAction(eventBus))
+
+            actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+
+            actions.add(WaitLiftAction(eventBus))
+        }
+
+        runToBasket(startOrientation)
         basket()
 
         actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(-90.0 - 10.0)))
 
-        actions.add(WaitAction(0.1))
-
-        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, 1000.0))
-
-        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-
-        actions.add(WaitAction(1.0))
+        clampStick(950.0)
 
         actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(-90.0 - 45.0)))
 
+        basket()
+
+        actions.add(
+            FollowRRTrajectory(
+                eventBus, newRRTrajectory(getEndOrientation(actions))
+                    .strafeToLinearHeading(Vector2d(151.8, 126.0), toRadians(-90.0))
+                    .build()
+            )
+        )
+
+        clampStick(900.0)
+        runToBasket(getEndOrientation(actions))
         basket()
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))

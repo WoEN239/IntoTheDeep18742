@@ -91,8 +91,6 @@ class WaitAction(private val _secTime: Double) : IAction {
 }
 
 class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPosition, val extensionPos: Double = 0.0) : IAction {
-    private val _timer = ElapsedTime()
-
     override fun update() {
 
     }
@@ -101,19 +99,15 @@ class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPos
 
     }
 
-    override fun isEnd() = _timer.seconds() > Configs.LiftConfig.LIFT_TIMER
+    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
 
     override fun start() {
-        _timer.reset()
-
         _eventBus.invoke(IntakeManager.EventSetLiftPose(pos))
         _eventBus.invoke(IntakeManager.EventSetExtensionPosition(extensionPos))
     }
 }
 
 class ClampAction(private val _eventBus: EventBus, val pos: Intake.ClampPosition) : IAction {
-    private val _timer = ElapsedTime()
-
     override fun update() {
 
     }
@@ -122,11 +116,19 @@ class ClampAction(private val _eventBus: EventBus, val pos: Intake.ClampPosition
 
     }
 
-    override fun isEnd() = _timer.seconds() > Configs.IntakeConfig.CLAMP_TIME
+    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
 
     override fun start() {
         _eventBus.invoke(IntakeManager.EventSetClampPose(pos))
-
-        _timer.reset()
     }
+}
+
+class WaitLiftAction(private val _eventBus: EventBus): IAction{
+    override fun update() {}
+
+    override fun end() {}
+
+    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
+
+    override fun start() {}
 }

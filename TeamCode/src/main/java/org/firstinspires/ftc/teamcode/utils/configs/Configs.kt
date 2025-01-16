@@ -57,6 +57,15 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
+        var STEP_X = 1.0
+
+        @JvmField
+        var STEP_Y = 1.0
+
+        @JvmField
+        var STEP_H = 0.1
+
+        @JvmField
         var ROTATE_P = 6.4
 
         @JvmField
@@ -129,13 +138,13 @@ object Configs {
         var AIM_PID = PIDConfig(0.75)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.05)
+        var EXTENSION_PID = PIDConfig(0.08)
 
         @JvmField
-        var EXTENSION_SENS = 100.0
+        var EXTENSION_SENS = 150.0
 
         @JvmField
-        var AIM_SENS = 10.0
+        var AIM_SENS = 15.0
 
         @JvmField
         var TRIGET_SLOW_POS = 20.0
@@ -166,9 +175,6 @@ object Configs {
 
         @JvmField
         var MAX_POTENTIOMETER_VOLTAGE = 3.0
-
-        @JvmField
-        var LIFT_TIMER = 2.2
 
         @JvmField
         var AIM_POTENTIOMETER_DIFFERENCE = -22.8
@@ -245,10 +251,10 @@ object Configs {
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 3.0
+        var DEFAULT_E = 8.0
 
         @JvmField
-        var DEFAULT_W_MAX = 20.0
+        var DEFAULT_W_MAX = 28.0
     }
 
     @Config

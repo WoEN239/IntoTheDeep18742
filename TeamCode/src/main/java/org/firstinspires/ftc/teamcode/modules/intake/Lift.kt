@@ -46,6 +46,7 @@ class Lift {
         _extensionMotor = collector.devices.liftExtensionMotor
 
         _aimMotor.direction = REVERSE
+        //_extensionMotor.direction = REVERSE
 
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
