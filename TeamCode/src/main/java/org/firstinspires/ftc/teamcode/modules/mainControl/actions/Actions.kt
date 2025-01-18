@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TurnSegment
-import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
@@ -37,7 +36,8 @@ interface ITransportAction : IAction {
     }
 }
 
-class FollowRRTrajectory(private val _eventBus: EventBus, trajectory: List<Trajectory>) : ITransportAction {
+class FollowRRTrajectory(private val _eventBus: EventBus, trajectory: List<Trajectory>) :
+    ITransportAction {
     private val _segment = RRTrajectorySegment(trajectory)
 
     override fun update() {}
@@ -54,7 +54,8 @@ class FollowRRTrajectory(private val _eventBus: EventBus, trajectory: List<Traje
     override fun getEndOrientation() = _segment.targetOrientation(_segment.duration())
 }
 
-class TurnAction(private val _eventBus: EventBus, startOrientation: Orientation, endAngle: Angle) : ITransportAction {
+class TurnAction(private val _eventBus: EventBus, startOrientation: Orientation, endAngle: Angle) :
+    ITransportAction {
     private val _segment =
         TurnSegment((endAngle - startOrientation.angl).angle, startOrientation)
 
@@ -90,7 +91,11 @@ class WaitAction(private val _secTime: Double) : IAction {
     }
 }
 
-class LiftAction(private val _eventBus: EventBus, val pos: IntakeManager.LiftPosition, val extensionPos: Double = 0.0) : IAction {
+class LiftAction(
+    private val _eventBus: EventBus,
+    val pos: IntakeManager.LiftPosition,
+    val extensionPos: Double = 0.0
+) : IAction {
     override fun update() {
 
     }
@@ -123,7 +128,7 @@ class ClampAction(private val _eventBus: EventBus, val pos: Intake.ClampPosition
     }
 }
 
-class WaitLiftAction(private val _eventBus: EventBus): IAction{
+class WaitLiftAction(private val _eventBus: EventBus) : IAction {
     override fun update() {}
 
     override fun end() {}
@@ -131,4 +136,49 @@ class WaitLiftAction(private val _eventBus: EventBus): IAction{
     override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
 
     override fun start() {}
+}
+
+class ParallelActions(
+    private val _actions: Array<ArrayList<IAction>>,
+    private val _exitType: ExitType
+) : IAction {
+    enum class ExitType {
+        AND, OR
+    }
+
+    override fun update() {
+        for (i in _actions) {
+            if (!i.isEmpty) {
+                i[0].update()
+
+                if (i[0].isEnd()) {
+                    i[0].end()
+
+                    i.removeAt(0)
+                }
+            }
+        }
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd(): Boolean {
+        for (i in _actions)
+            if(i[0].isEnd()){
+                if(_exitType == ExitType.OR && i.isEmpty())
+                    return true
+                else if(_exitType == ExitType.AND && !i.isEmpty())
+                    return false
+            }
+
+        return true
+    }
+
+    override fun start() {
+        for(i in _actions)
+            if(!i.isEmpty)
+                i[0].start()
+    }
 }
