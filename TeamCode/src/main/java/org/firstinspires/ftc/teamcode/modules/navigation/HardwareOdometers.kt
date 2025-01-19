@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderFix
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import kotlin.math.PI
 
 class HardwareOdometers : IRobotModule {
@@ -52,6 +53,10 @@ class HardwareOdometers : IRobotModule {
         _oldPositionLeft = currentLeftPosition
         _oldPositionRight = currentRightPosition
         _oldPositionSide = currentSidePosition
+
+        StaticTelemetry.addData("left odometer", currentLeftPosition)
+        StaticTelemetry.addData("right odometer", currentRightPosition)
+        StaticTelemetry.addData("side odometer", currentSidePosition)
     }
 
     override fun start() {

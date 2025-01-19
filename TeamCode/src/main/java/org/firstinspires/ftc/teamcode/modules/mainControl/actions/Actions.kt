@@ -141,20 +141,34 @@ class WaitLiftAction(private val _eventBus: EventBus) : IAction {
 class ParallelActions(
     private val _actions: Array<ArrayList<IAction>>,
     private val _exitType: ExitType
-) : IAction {
+) : ITransportAction {
     enum class ExitType {
         AND, OR
     }
 
+    override fun getEndOrientation(): Orientation {
+        for(i in _actions){
+            for (j in i.indices.reversed()) {
+                if(i[j] is ITransportAction)
+                    return (i[j] as ITransportAction).getEndOrientation()
+            }
+        }
+
+        throw Exception("trajectory not contains transport actions")
+    }
+
     override fun update() {
         for (i in _actions) {
-            if (!i.isEmpty) {
+            if (!i.isEmpty()) {
                 i[0].update()
 
                 if (i[0].isEnd()) {
                     i[0].end()
 
                     i.removeAt(0)
+
+                    if(!i.isEmpty())
+                        i[0].start()
                 }
             }
         }
@@ -166,7 +180,7 @@ class ParallelActions(
 
     override fun isEnd(): Boolean {
         for (i in _actions)
-            if(i[0].isEnd()){
+            if(!i.isEmpty() && i[0].isEnd()){
                 if(_exitType == ExitType.OR && i.isEmpty())
                     return true
                 else if(_exitType == ExitType.AND && !i.isEmpty())
@@ -178,7 +192,7 @@ class ParallelActions(
 
     override fun start() {
         for(i in _actions)
-            if(!i.isEmpty)
+            if(!i.isEmpty())
                 i[0].start()
     }
 }

@@ -122,6 +122,8 @@ class IntakeManager : IRobotModule {
                 _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
 
                 if (_liftPosition == LiftPosition.UP_BASKED) {
+                    _intake.setDifPos(xRot = 0.0, yRot = -180.0)
+
                     Timers.newTimer().start({ !_lift.atTarget() }) {
                         _intake.setDifPos(xRot = -80.0, yRot = 0.0)
                     }

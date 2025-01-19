@@ -72,16 +72,16 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 1.0
+        var POSITION_P_X = 1.15
 
         @JvmField
-        var POSITION_P_Y = 1.0
+        var POSITION_P_Y = 1.15
 
         @JvmField
-        var POSITION_SENS_X = 15.0
+        var POSITION_SENS_X = 2.0
 
         @JvmField
-        var POSITION_SENS_Y = 15.0
+        var POSITION_SENS_Y = 2.0
 
         @JvmField
         var POS_VELOCITY_SENS_X = 20.0
@@ -135,7 +135,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.75)
+        var AIM_PID = PIDConfig(0.75, d = 0.045)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -299,7 +299,7 @@ object Configs {
     @Config
     internal object GyroscopeConfig {
         @JvmField
-        var MERGE_COEF = 0.8
+        var MERGE_COEF = 0.0
 
         @JvmField
         var READ_HZ = 50.0
