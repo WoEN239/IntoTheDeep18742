@@ -20,7 +20,8 @@ data class PIDConfig(
     @JvmField var f: Double = 0.0,
     @JvmField var g: Double = 0.0,
     @JvmField var limitU: Double = -1.0,
-    @JvmField var fr: Double = 0.0
+    @JvmField var fr: Double = 0.0,
+    @JvmField var resetZeroIntegral: Boolean = false
 )
 
 /**
@@ -44,6 +45,10 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
 
         _integral += err * _deltaTime.seconds()
         _integral = clamp(_integral, -config.limitI / config.i, config.limitI / config.i)
+
+        if(err * _errOld < -0.01 && config.resetZeroIntegral)
+            resetIntegral()
+
         val uI = _integral * config.i
 
         val uD = (err - _errOld) / _deltaTime.seconds() * config.d

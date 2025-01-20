@@ -24,10 +24,10 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 10.0, i = 2.0, f = 2.0)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.5, i = 0.7, f = 2.0, resetZeroIntegral = true)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 10.0, i = 2.0, f = 4.0)
+        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.5, i = 0.7, f = 4.0, resetZeroIntegral = true)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(10.0, limitI = 4.0, i = 4.0, f = 50.0)
@@ -57,10 +57,10 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var STEP_X = 1.0
+        var STEP_X = 2.5
 
         @JvmField
-        var STEP_Y = 1.0
+        var STEP_Y = 2.5
 
         @JvmField
         var STEP_H = 0.1
@@ -72,10 +72,10 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 1.15
+        var POSITION_P_X = 0.6
 
         @JvmField
-        var POSITION_P_Y = 1.15
+        var POSITION_P_Y = 0.6
 
         @JvmField
         var POSITION_SENS_X = 2.0
@@ -84,16 +84,16 @@ object Configs {
         var POSITION_SENS_Y = 2.0
 
         @JvmField
-        var POS_VELOCITY_SENS_X = 20.0
+        var POS_VELOCITY_SENS_X = 10.0
 
         @JvmField
-        var POS_VELOCITY_SENS_Y = 20.0
+        var POS_VELOCITY_SENS_Y = 10.0
 
         @JvmField
-        var POS_VELOCITY_P_X = 0.1
+        var POS_VELOCITY_P_X = 0.03
 
         @JvmField
-        var POS_VELOCITY_P_Y = 0.1
+        var POS_VELOCITY_P_Y = 0.03
 
         @JvmField
         var HEADING_VEL_SENS = 0.3
@@ -272,7 +272,7 @@ object Configs {
         var CAMERA_POSITION = Vec2(0.0, 0.0)
 
         @JvmField
-        var MERGE_COEF = 0.8
+        var MERGE_COEF = 0.0
 
         @JvmField
         var USE_CAMERA = false
@@ -281,13 +281,13 @@ object Configs {
     @Config
     internal object OdometryConfig {
         @JvmField
-        var SIDE_ODOMETER_RADIUS = 6.0
+        var SIDE_ODOMETER_RADIUS = 6.235
 
         @JvmField
-        var FORWARD_ODOMETER_LEFT_RADIUS = 8.0
+        var FORWARD_ODOMETER_LEFT_RADIUS = 8.415
 
         @JvmField
-        var FORWARD_ODOMETER_RIGHT_RADIUS = 8.0
+        var FORWARD_ODOMETER_RIGHT_RADIUS = 8.415
 
         @JvmField
         var ODOMETER_DIAMETER = 4.8

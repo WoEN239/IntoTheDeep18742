@@ -13,7 +13,7 @@ class OdometerGyro : IRobotModule {
         bus.subscribe(HardwareOdometers.UpdateHardwareOdometersEvent::class) {
             bus.invoke(
                 UpdateOdometerGyroEvent(
-                    Angle((it.rightPosition / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftPosition / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS) / 2.0),
+                    Angle((it.rightPosition / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftPosition / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS) / 2.0) + collector.gameSettings.startPosition.angle,
                     (it.rightVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_RIGHT_RADIUS - it.leftVelocity / Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS) / 2
                 )
             )

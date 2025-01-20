@@ -13,6 +13,7 @@ class MergeGyro : IRobotModule {
     private val _mergeFilter = ExponentialFilter(Configs.GyroscopeConfig.MERGE_COEF)
 
     private var _oldOdometerRotate = Angle.ZERO
+    private var _odometerRotate = Angle.ZERO
 
     private var _oldMergeRotation = Angle.ZERO
 
@@ -22,6 +23,7 @@ class MergeGyro : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _mergeRotate = collector.gameSettings.startPosition.angle
         _oldMergeRotation = collector.gameSettings.startPosition.angle
+        _oldOdometerRotate = collector.gameSettings.startPosition.angle
 
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
             _mergeRotate = Angle(_mergeFilter.updateRaw(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
@@ -31,6 +33,7 @@ class MergeGyro : IRobotModule {
             _oldMergeRotation = _mergeRotate
             _mergeRotate += it.rotate - _oldOdometerRotate
 
+            _odometerRotate = it.rotate
             _oldOdometerRotate = it.rotate
 
             _velocity = it.velocity
@@ -42,10 +45,11 @@ class MergeGyro : IRobotModule {
             it.rotation = _mergeRotate
             it.velocity = _velocity
             it.oldRotation = _oldMergeRotation
+            it.odometerRotate = _odometerRotate
         }
     }
 
-    class RequestMergeGyroEvent(var rotation: Angle? = null, var oldRotation: Angle? = null, var velocity: Double? = null): IEvent
+    class RequestMergeGyroEvent(var rotation: Angle? = null, var oldRotation: Angle? = null, var velocity: Double? = null, var odometerRotate: Angle? = null): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

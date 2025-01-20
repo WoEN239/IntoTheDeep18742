@@ -22,12 +22,14 @@ class OdometersOdometry : IRobotModule {
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld
             val deltaSidePosition = it.sidePosition - it.sidePositionOld
-            val deltaRotate = gyro.rotation!! - gyro.oldRotation!!
+            val deltaRotate = gyro.odometerRotate!! - _oldOdometerRotate
+
+            _oldOdometerRotate = gyro.odometerRotate!!
 
             _position += Vec2(
                 (deltaRightPosition + deltaLeftPosition) / 2.0,
                 deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
-            ).turn(gyro.rotation!!.angle)
+            ).turn(gyro.rotation!!.angle - (gyro.oldRotation!!.angle - gyro.rotation!!.angle) * 0.5)
 
             val velocity = Vec2(
                 (it.leftVelocity + it.rightVelocity) / 2.0,
@@ -39,6 +41,7 @@ class OdometersOdometry : IRobotModule {
     }
 
     private var _position = Vec2.ZERO
+    private var _oldOdometerRotate = Angle.ZERO
 
     class UpdateOdometersOdometryEvent(val position: Vec2, val velocity: Vec2): IEvent
 }
