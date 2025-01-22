@@ -23,10 +23,10 @@ class Hook: IRobotModule {
         _rightHook = collector.devices.servoHookRight
 
         bus.subscribe(HookRun::class){
-            if(_gameTimer.seconds() > 90.0) {
+            //if(_gameTimer.seconds() > 90.0) {
                 _rightHook.position = 0.5 - Configs.HookConfig.HOOK_SPEED
                 _leftHook.position = 1.0 - (0.5 - Configs.HookConfig.HOOK_SPEED)
-            }
+            //}
         }
 
         bus.subscribe(HookStop::class){
@@ -35,10 +35,10 @@ class Hook: IRobotModule {
         }
 
         bus.subscribe(HookRunRevers::class){
-            if(_gameTimer.seconds() > 90.0) {
+            //if(_gameTimer.seconds() > 90.0) {
                 _rightHook.position = 0.5 + Configs.HookConfig.HOOK_SPEED
                 _leftHook.position = 1.0 - (0.5 + Configs.HookConfig.HOOK_SPEED)
-            }
+            //}
         }
     }
 

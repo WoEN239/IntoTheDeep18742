@@ -24,10 +24,10 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.5, i = 0.7, f = 2.0, resetZeroIntegral = true)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 0.3, resetZeroIntegral = true)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.5, i = 0.7, f = 4.0, resetZeroIntegral = true)
+        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.4, i = 0.7, f = 2.3, resetZeroIntegral = true)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(10.0, limitI = 4.0, i = 4.0, f = 50.0)
@@ -45,7 +45,10 @@ object Configs {
         var MAX_ROTATE_VELOCITY = 9.9
 
         @JvmField
-        var TRANSLATION_ACCEL = 70.0
+        var MAX_TRANSLATION_ACCEL = 80.0
+
+        @JvmField
+        var MIN_TRANSLATION_ACCEL = -40.0
 
         @JvmField
         var MAX_TRANSLATION_VELOCITY = 120.0
@@ -72,10 +75,10 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 0.6
+        var POSITION_P_X = 1.0
 
         @JvmField
-        var POSITION_P_Y = 0.6
+        var POSITION_P_Y = 1.0
 
         @JvmField
         var POSITION_SENS_X = 2.0
@@ -84,16 +87,16 @@ object Configs {
         var POSITION_SENS_Y = 2.0
 
         @JvmField
-        var POS_VELOCITY_SENS_X = 10.0
+        var POS_VELOCITY_SENS_X = 1.0
 
         @JvmField
-        var POS_VELOCITY_SENS_Y = 10.0
+        var POS_VELOCITY_SENS_Y = 1.0
 
         @JvmField
-        var POS_VELOCITY_P_X = 0.03
+        var POS_VELOCITY_P_X = 0.07
 
         @JvmField
-        var POS_VELOCITY_P_Y = 0.03
+        var POS_VELOCITY_P_Y = 0.07
 
         @JvmField
         var HEADING_VEL_SENS = 0.3
@@ -108,7 +111,7 @@ object Configs {
         var UP_LAYER_UNCLAMP_AIM = 55.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 0.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 90.0
 
         @JvmField
         var CLAMP_CENTER_AIM = 0.00
@@ -135,7 +138,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.75, d = 0.045)
+        var AIM_PID = PIDConfig(0.75)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -227,7 +230,7 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.2
+        var SERVO_CLAMP = 0.42
 
         @JvmField
         var SERVO_UNCLAMP = 0.75
@@ -298,7 +301,7 @@ object Configs {
 
     @Config
     internal object GyroscopeConfig {
-        @JvmField
+         @JvmField
         var MERGE_COEF = 0.0
 
         @JvmField

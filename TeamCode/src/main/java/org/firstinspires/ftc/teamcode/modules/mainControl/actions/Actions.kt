@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 import com.acmerobotics.roadrunner.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
@@ -195,4 +196,28 @@ class ParallelActions(
             if(!i.isEmpty())
                 i[0].start()
     }
+}
+
+class DifAction(val eventBus: EventBus, val dir: DifDirection): IAction{
+    enum class DifDirection{
+        NEXT,
+        PREVIOUS
+    }
+
+    override fun update() {
+
+    }
+
+    override fun end() {
+    }
+
+    override fun isEnd() = true
+
+    override fun start() {
+        if(dir == DifDirection.NEXT)
+            eventBus.invoke(IntakeManager.NextDifPos())
+        else
+            eventBus.invoke(IntakeManager.PreviousDifPos())
+    }
+
 }

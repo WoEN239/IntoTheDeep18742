@@ -60,7 +60,7 @@ class IntakeManager : IRobotModule {
             } else {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_EXTENSION
-                _intake.setDifPos(0.0, 0.0)
+                _intake.setDifPos(40.0, 0.0)
 
                 Timers.newTimer().start(Configs.IntakeConfig.DOWN_TIME) {
                     setPos()

@@ -36,8 +36,8 @@ class TrajectorySegmentRunner : IRobotModule {
                 )
             ),
             ProfileAccelConstraint(
-                -Configs.DriveTrainConfig.TRANSLATION_ACCEL,
-                Configs.DriveTrainConfig.TRANSLATION_ACCEL
+                Configs.DriveTrainConfig.MIN_TRANSLATION_ACCEL,
+                Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL
             )
         )
     }
