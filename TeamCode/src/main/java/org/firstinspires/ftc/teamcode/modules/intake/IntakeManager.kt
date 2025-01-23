@@ -102,38 +102,40 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(EventSetLiftPose::class) {
-            if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
-                _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
-                _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
-                _intake.setDifPos(xRot = -40.0, yRot = -180.0)
-                _liftPosition = it.pos
-            } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
-                _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
-                _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
-                _intake.setDifPos(xRot = -50.0, yRot = 0.0)
-                _liftPosition = it.pos
-            } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
-                _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
-                _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
-                _intake.setDifPos(xRot = 90.0, yRot = 0.0)
-                _liftPosition = it.pos
-            } else if (it.pos == LiftPosition.TRANSPORT) {
-                _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
-                _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
+            if(_lift.atTarget()) {
+                if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                    _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
+                    _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
+                    _intake.setDifPos(xRot = -40.0, yRot = -180.0)
+                    _liftPosition = it.pos
+                } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                    _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
+                    _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
+                    _intake.setDifPos(xRot = -50.0, yRot = 0.0)
+                    _liftPosition = it.pos
+                } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                    _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
+                    _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
+                    _intake.setDifPos(xRot = 90.0, yRot = 0.0)
+                    _liftPosition = it.pos
+                } else if (it.pos == LiftPosition.TRANSPORT) {
+                    _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
+                    _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
 
-                if (_liftPosition == LiftPosition.UP_BASKED) {
-                    _intake.setDifPos(xRot = 0.0, yRot = -180.0)
+                    if (_liftPosition == LiftPosition.UP_BASKED) {
+                        _intake.setDifPos(xRot = 0.0, yRot = -180.0)
 
-                    Timers.newTimer().start({ !_lift.atTarget() }) {
+                        Timers.newTimer().start(0.8) {
+                            _intake.setDifPos(xRot = -80.0, yRot = 0.0)
+                        }
+                    } else
                         _intake.setDifPos(xRot = -80.0, yRot = 0.0)
-                    }
-                } else
-                    _intake.setDifPos(xRot = -80.0, yRot = 0.0)
 
-                _liftPosition = it.pos
+                    _liftPosition = it.pos
+                }
+
+                _lift.deltaExtension = 0.0
             }
-
-            _lift.deltaExtension = 0.0
         }
 
         bus.subscribe(RequestLiftAtTargetEvent::class) {

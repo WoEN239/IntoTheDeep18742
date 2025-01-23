@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 class OdometersOdometry : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _position = collector.gameSettings.startPosition.position
+        _oldRotate = collector.gameSettings.startPosition.angle
 
         bus.subscribe(HardwareOdometers.UpdateHardwareOdometersEvent::class) {
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
@@ -22,17 +23,17 @@ class OdometersOdometry : IRobotModule {
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld
             val deltaSidePosition = it.sidePosition - it.sidePositionOld
-            val deltaRotate = gyro.odometerRotate!! - _oldOdometerRotate
+            val deltaRotate = gyro.rotation!! - _oldRotate
 
-            _oldOdometerRotate = gyro.odometerRotate!!
+            _oldRotate = gyro.rotation!!
 
             _position += Vec2(
-                (deltaRightPosition + deltaLeftPosition) / 2.0,
+                deltaLeftPosition - (Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * deltaRotate.angle),
                 deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
             ).turn(gyro.rotation!!.angle - (gyro.oldRotation!!.angle - gyro.rotation!!.angle) * 0.5)
 
             val velocity = Vec2(
-                (it.leftVelocity + it.rightVelocity) / 2.0,
+                it.leftVelocity - Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * gyro.velocity!!,
                 it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * gyro.velocity!!
             )
 
@@ -41,7 +42,7 @@ class OdometersOdometry : IRobotModule {
     }
 
     private var _position = Vec2.ZERO
-    private var _oldOdometerRotate = Angle.ZERO
+    private var _oldRotate = Angle.ZERO
 
     class UpdateOdometersOdometryEvent(val position: Vec2, val velocity: Vec2): IEvent
 }

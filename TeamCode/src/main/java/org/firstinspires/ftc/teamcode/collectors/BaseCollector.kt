@@ -31,7 +31,7 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), /*IMUGyro(),*/ OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro()/*, OdometerGyro()*/, MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
         IntakeManager(), Camera())
 
     private val _updateHandler = UpdateHandler()
@@ -48,10 +48,10 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
     enum class GameOrientation { HUMAN, BASKET }
 
     enum class GameStartPosition(val position: Vec2, val angle: Angle, val color: GameColor, val orientation: GameOrientation){
-        RED_HUMAN(Vec2(-32.0, -155.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.HUMAN),
-        RED_BASKET(Vec2(-32.0, -155.0), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
-        BLUE_HUMAN(Vec2(-80.0 + 28.8, 156.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
-        BLUE_BASKET(Vec2(80.0, 156.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
+        RED_HUMAN(Vec2(80.0 - 28.8, -156.5 + 1.5), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.HUMAN),
+        RED_BASKET(Vec2(-80.0, -156.0 + 1.5), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
+        BLUE_HUMAN(Vec2(-80.0 + 28.8, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
+        BLUE_BASKET(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
         NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BASKET)
     }
 

@@ -44,11 +44,11 @@ class IMUGyro: IRobotModule {
 
             _oldReadTime.reset()
 
-            _eventBus.invoke(UpdateImuGyroEvent(rot, _oldRot))
+            _eventBus.invoke(UpdateImuGyroEvent(rot, _oldRot, _imu.getRobotAngularVelocity(AngleUnit.RADIANS).xRotationRate.toDouble()))
 
             _oldRot = rot
         }
     }
 
-    class UpdateImuGyroEvent(val rotate: Angle, val oldRot: Angle): IEvent
+    class UpdateImuGyroEvent(val rotate: Angle, val oldRot: Angle, val velocity: Double): IEvent
 }

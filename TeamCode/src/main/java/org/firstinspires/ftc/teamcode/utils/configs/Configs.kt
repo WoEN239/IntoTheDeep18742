@@ -24,7 +24,7 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 0.3, resetZeroIntegral = true)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 2.3, resetZeroIntegral = true)
 
         @JvmField
         var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.4, i = 0.7, f = 2.3, resetZeroIntegral = true)
@@ -156,7 +156,7 @@ object Configs {
         var MAX_TRIGGER_SPEED_DOWN = 0.0
 
         @JvmField
-        var INIT_POWER = 0.14
+        var INIT_POWER = 0.13
 
         @JvmField
         var GAMEPAD_EXTENSION_SENS = 1900.0
@@ -230,7 +230,7 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.42
+        var SERVO_CLAMP = 0.39
 
         @JvmField
         var SERVO_UNCLAMP = 0.75
@@ -305,7 +305,7 @@ object Configs {
         var MERGE_COEF = 0.0
 
         @JvmField
-        var READ_HZ = 50.0
+        var READ_HZ = 500.0
     }
 
     @Config
