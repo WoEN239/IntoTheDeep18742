@@ -24,16 +24,16 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 2.3, resetZeroIntegral = true)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 2.5, resetZeroIntegral = true)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.4, i = 0.7, f = 2.3, resetZeroIntegral = true)
+        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.4, i = 0.7, f = 2.5, resetZeroIntegral = true)
 
         @JvmField
         var VELOCITY_PIDF_ROTATE = PIDConfig(10.0, limitI = 4.0, i = 4.0, f = 50.0)
 
         @JvmField
-        var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь
+        var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь //я знаю что здесь ошибка, но чтобы ее исправить придеться пифы на скорость перенастраивать
 
         @JvmField
         var LIFT_MAX_SPEED = 0.09
@@ -300,15 +300,21 @@ object Configs {
 
         @JvmField
         var ODOMETER_TICKS = 8192
+
+        @JvmField
+        var DUAL_ODOMETER = false
     }
 
     @Config
     internal object GyroscopeConfig {
          @JvmField
-        var MERGE_COEF = 0.0
+        var MERGE_COEF = 0.8
 
         @JvmField
-        var READ_HZ = 500.0
+        var READ_HZ = 50.0
+
+        @JvmField
+        var USE_GYRO = false
     }
 
     @Config

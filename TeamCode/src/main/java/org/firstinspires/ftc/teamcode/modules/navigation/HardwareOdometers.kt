@@ -53,10 +53,6 @@ class HardwareOdometers : IRobotModule {
         _oldPositionLeft = currentLeftPosition
         _oldPositionRight = currentRightPosition
         _oldPositionSide = currentSidePosition
-
-        StaticTelemetry.addData("left odometer", currentLeftPosition)
-        StaticTelemetry.addData("right odometer", currentRightPosition)
-        StaticTelemetry.addData("side odometer", currentSidePosition)
     }
 
     override fun start() {

@@ -26,24 +26,28 @@ class MergeGyro : IRobotModule {
         _oldOdometerRotate = collector.gameSettings.startPosition.angle
 
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
-            _oldMergeRotation = _mergeRotate
-            _mergeRotate = it.rotate
-            _velocity = it.velocity
-
-            StaticTelemetry.addData("gyroVelocity", it.velocity)
+            if(Configs.OdometryConfig.DUAL_ODOMETER) {
+                _oldMergeRotation = _mergeRotate
+                _mergeRotate = it.rotate
+                _velocity = it.velocity
+            }
+            else
+                _mergeRotate = Angle(_mergeFilter.update(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
         }
 
-        /*bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
-            _oldMergeRotation = _mergeRotate
-            _mergeRotate += it.rotate - _oldOdometerRotate
+        bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
+            if(!Configs.OdometryConfig.DUAL_ODOMETER) {
+                _oldMergeRotation = _mergeRotate
+                _mergeRotate += it.rotate - _oldOdometerRotate
 
-            _odometerRotate = it.rotate
-            _oldOdometerRotate = it.rotate
+                _odometerRotate = it.rotate
+                _oldOdometerRotate = it.rotate
 
-            _velocity = it.velocity
+                _velocity = it.velocity
 
-            StaticTelemetry.addData("robot merge rotate", _mergeRotate.toDegree())
-        }*/
+                StaticTelemetry.addData("robot merge rotate", _mergeRotate.toDegree())
+            }
+        }
 
         bus.subscribe(RequestMergeGyroEvent::class){
             it.rotation = _mergeRotate

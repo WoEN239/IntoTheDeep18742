@@ -22,7 +22,6 @@ class IMUGyro: IRobotModule {
 
     override fun init(collector: BaseCollector, bus: EventBus) {
         _startAngle = collector.gameSettings.startPosition.angle
-        _oldRot = _startAngle
 
         _imu = collector.devices.imu
 
@@ -36,19 +35,15 @@ class IMUGyro: IRobotModule {
         _imu.resetYaw()
     }
 
-    private var _oldRot = Angle.ZERO
-
     override fun update() {
-        if(_oldReadTime.milliseconds() > 1000.0 / Configs.GyroscopeConfig.READ_HZ) {
+        if(_oldReadTime.milliseconds() > 1000.0 / Configs.GyroscopeConfig.READ_HZ && Configs.GyroscopeConfig.USE_GYRO) {
             val rot = Angle(_imu.robotYawPitchRollAngles.getYaw(AngleUnit.RADIANS)) + _startAngle
 
             _oldReadTime.reset()
 
-            _eventBus.invoke(UpdateImuGyroEvent(rot, _oldRot, _imu.getRobotAngularVelocity(AngleUnit.RADIANS).xRotationRate.toDouble()))
-
-            _oldRot = rot
+            _eventBus.invoke(UpdateImuGyroEvent(rot, _imu.getRobotAngularVelocity(AngleUnit.RADIANS).xRotationRate.toDouble()))
         }
     }
 
-    class UpdateImuGyroEvent(val rotate: Angle, val oldRot: Angle, val velocity: Double): IEvent
+    class UpdateImuGyroEvent(val rotate: Angle, val velocity: Double): IEvent
 }

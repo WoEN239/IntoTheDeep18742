@@ -28,12 +28,18 @@ class OdometersOdometry : IRobotModule {
             _oldRotate = gyro.rotation!!
 
             _position += Vec2(
-                deltaLeftPosition - (Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * deltaRotate.angle),
+                if(Configs.OdometryConfig.DUAL_ODOMETER)
+                    deltaLeftPosition - (Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * deltaRotate.angle)
+                else
+                    (deltaLeftPosition + deltaRightPosition) / 2.0,
                 deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
             ).turn(gyro.rotation!!.angle - (gyro.oldRotation!!.angle - gyro.rotation!!.angle) * 0.5)
 
             val velocity = Vec2(
-                it.leftVelocity - Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * gyro.velocity!!,
+                if(Configs.OdometryConfig.DUAL_ODOMETER)
+                    it.leftVelocity - Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * gyro.velocity!!
+                else
+                    (it.leftVelocity + it.rightVelocity) / 2.0,
                 it.sideVelocity - Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * gyro.velocity!!
             )
 
