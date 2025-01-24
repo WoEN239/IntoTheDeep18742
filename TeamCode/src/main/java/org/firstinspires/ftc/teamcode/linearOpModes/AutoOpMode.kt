@@ -13,8 +13,9 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
         val collector = BaseCollector(this,
             BaseCollector.GameSettings(
                 startPosition = startPos,
-                isAuto = true
-            ))
+            ),
+            isAuto = true
+        )
 
         collector.addAdditionalModules(arrayOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner()))
 

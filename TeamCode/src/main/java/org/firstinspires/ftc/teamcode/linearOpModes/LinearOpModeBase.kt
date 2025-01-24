@@ -24,7 +24,7 @@ open class LinearOpModeBase : LinearOpMode() {
 
     protected open fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = false)
 
-    protected open fun getCollector() = BaseCollector(this, BaseCollector.GameSettings(startPosition = BaseCollector.GameStartPosition.NONE, isAuto = false))
+    protected open fun getCollector() = BaseCollector(this, BaseCollector.GameSettings(startPosition = BaseCollector.GameStartPosition.NONE), isAuto = false)
 
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)

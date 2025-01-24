@@ -66,13 +66,13 @@ class ActionsRunner: IRobotModule {
 //
 //        _eventBus.invoke(RunActionsEvent(actions))
 
-        when(collector.gameSettings.startPosition){
+        when(collector.getStaticParameters().oldStartPosition){
             BaseCollector.GameStartPosition.RED_HUMAN -> RedHumanTrajectory()
             BaseCollector.GameStartPosition.RED_BASKET -> RedBaskedTrajectory()
             BaseCollector.GameStartPosition.BLUE_HUMAN -> BlueHumanTrajectory()
             BaseCollector.GameStartPosition.BLUE_BASKET -> BlueBaskedTrajectory()
             BaseCollector.GameStartPosition.NONE -> throw Exception("none is not start auto pos")
-        }.runTrajectory(bus, Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
+        }.runTrajectory(bus, Orientation(collector.getStaticParameters().oldStartPosition.position, collector.getStaticParameters().oldStartPosition.angle))
     }
 
     override fun update() {

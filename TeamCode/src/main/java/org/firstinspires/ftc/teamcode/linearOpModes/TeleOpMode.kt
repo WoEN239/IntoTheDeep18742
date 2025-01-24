@@ -16,9 +16,9 @@ class TeleOpMode : LinearOpModeBase() {
         val collector = BaseCollector(
             this,
             BaseCollector.GameSettings(
-                startPosition = BaseCollector.GameStartPosition.BLUE_BASKET,
-                isAuto = false
-            )
+                startPosition = BaseCollector.GameStartPosition.NONE
+            ),
+            isAuto = false
         )
 
         collector.addAdditionalModules(arrayOf(/*ся модули для телеопа*/Gamepad(), Hook()))

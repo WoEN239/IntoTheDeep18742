@@ -41,7 +41,7 @@ class DriveTrain : IRobotModule {
         _eventBus = bus
 
         _battery = collector.devices.battery
-        _isAuto = collector.gameSettings.isAuto
+        _isAuto = collector.isAuto
 
         _leftForwardDrive = collector.devices.leftForwardDrive
         _rightForwardDrive = collector.devices.rightForwardDrive

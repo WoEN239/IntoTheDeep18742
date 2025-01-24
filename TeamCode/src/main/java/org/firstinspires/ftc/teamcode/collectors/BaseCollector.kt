@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.IMUGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.utils.devices.Devices
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
@@ -26,12 +28,18 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings) {
+open class BaseCollector(val robot: LinearOpMode, private val gameSettings: GameSettings, val isAuto: Boolean) {
+    companion object{
+        private val staticParameters = StaticParameters(GameStartPosition.NONE)
+    }
+
+    data class StaticParameters(var oldStartPosition: GameStartPosition = GameStartPosition.NONE)
+
     data class InitContext(val battery: Battery)
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro()/*, OdometerGyro()*/, MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
+    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
         IntakeManager(), Camera())
 
     private val _updateHandler = UpdateHandler()
@@ -42,7 +50,7 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
     fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
-    data class GameSettings(val startPosition: GameStartPosition = GameStartPosition.NONE, val isAuto: Boolean)
+    data class GameSettings(val startPosition: GameStartPosition = GameStartPosition.NONE)
 
     enum class GameColor{ RED, BLUE }
     enum class GameOrientation { HUMAN, BASKET }
@@ -52,10 +60,13 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
         RED_BASKET(Vec2(-80.0, -156.0 + 1.5), Angle.ofDeg(90.0), GameColor.RED, GameOrientation.BASKET),
         BLUE_HUMAN(Vec2(-80.0 + 28.8, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.HUMAN),
         BLUE_BASKET(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET),
-        NONE(Vec2.ZERO, Angle(0.0), GameColor.RED, GameOrientation.BASKET)
+        NONE(Vec2.ZERO, Angle(0.0), GameColor.BLUE, GameOrientation.BASKET)
     }
 
     fun init() {
+        if(gameSettings.startPosition != GameStartPosition.NONE)
+            staticParameters.oldStartPosition = gameSettings.startPosition
+
         for (i in _allModules)
             i.init(this, _eventBus)
 
@@ -63,7 +74,6 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
             i.lateInit(this, _eventBus)
 
         _updateHandler.init(InitContext(devices.battery))
-
     }
 
     fun start() {
@@ -112,4 +122,6 @@ open class BaseCollector(val robot: LinearOpMode, val gameSettings: GameSettings
 
         _updateHandler.stop()
     }
+
+    fun getStaticParameters() = staticParameters
 }

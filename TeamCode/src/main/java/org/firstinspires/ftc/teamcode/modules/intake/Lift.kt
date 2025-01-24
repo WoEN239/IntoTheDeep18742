@@ -51,7 +51,7 @@ class Lift {
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
-        if(collector.gameSettings.isAuto) {
+        if(collector.isAuto) {
             _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
