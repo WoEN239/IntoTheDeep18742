@@ -70,8 +70,6 @@ class Lift {
     fun getAimPos() = _aimPotentiometer.voltage / Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE + Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        StaticTelemetry.addData("liftExtensionVel",  extensionVelocity)
-
         deltaExtension += _deltaTime.seconds() * extensionVelocity
 
         deltaExtension = clamp(
@@ -98,8 +96,6 @@ class Lift {
             targetDefencedAimPos = _oldTargetAimPos
 
         val targetDefencedExtensionPos: Double
-
-        StaticTelemetry.addData("lift angle", getAimPos())
 
         if(abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
