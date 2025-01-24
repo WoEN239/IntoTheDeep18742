@@ -26,10 +26,10 @@ class Intake{
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
-        _servoClamp = SoftServo(collector.devices.servoClamp)
+        _servoClamp = SoftServo(collector.devices.servoClamp, Configs.IntakeConfig.SERVO_CLAMP)
 
-        _servoDifLeft = SoftServo(collector.devices.servoDifLeft)
-        _servoDifRight = SoftServo(collector.devices.servoDifRight)
+        _servoDifLeft = SoftServo(collector.devices.servoDifLeft, 0.5)
+        _servoDifRight = SoftServo(collector.devices.servoDifRight, 0.5)
 
         collector.devices.servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
         collector.devices.servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)

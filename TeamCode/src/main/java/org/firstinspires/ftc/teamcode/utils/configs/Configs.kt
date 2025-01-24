@@ -249,6 +249,9 @@ object Configs {
 
         @JvmField
         var USE_CAMERA = false
+
+        @JvmField
+        var UP_BASKET_DOWN_TIME = 0.85
     }
 
     @Config

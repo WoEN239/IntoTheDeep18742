@@ -125,7 +125,7 @@ class IntakeManager : IRobotModule {
                     if (_liftPosition == LiftPosition.UP_BASKED) {
                         _intake.setDifPos(xRot = 0.0, yRot = -180.0)
 
-                        Timers.newTimer().start(0.8) {
+                        Timers.newTimer().start(Configs.IntakeConfig.UP_BASKET_DOWN_TIME) {
                             _intake.setDifPos(xRot = -80.0, yRot = 0.0)
                         }
                     } else
@@ -184,7 +184,7 @@ class IntakeManager : IRobotModule {
         _intake.start()
         _lift.start()
 
-        _eventBus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+        _eventBus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
     }
 }
