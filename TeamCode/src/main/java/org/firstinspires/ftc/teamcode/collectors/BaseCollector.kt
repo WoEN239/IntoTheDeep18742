@@ -136,5 +136,6 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
         _updateHandler.update()
     }
 
-    fun getStaticParameters() = staticParameters
+    val parameters
+        get() = staticParameters
 }

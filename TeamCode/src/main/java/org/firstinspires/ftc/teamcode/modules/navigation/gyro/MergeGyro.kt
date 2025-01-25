@@ -21,9 +21,9 @@ class MergeGyro : IRobotModule {
     private var _velocity = 0.0
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _mergeRotate = collector.getStaticParameters().oldStartPosition.angle
-        _oldMergeRotation = collector.getStaticParameters().oldStartPosition.angle
-        _oldOdometerRotate = collector.getStaticParameters().oldStartPosition.angle
+        _mergeRotate = collector.parameters.oldStartPosition.angle
+        _oldMergeRotation = collector.parameters.oldStartPosition.angle
+        _oldOdometerRotate = collector.parameters.oldStartPosition.angle
 
         bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
             if(Configs.OdometryConfig.DUAL_ODOMETER) {

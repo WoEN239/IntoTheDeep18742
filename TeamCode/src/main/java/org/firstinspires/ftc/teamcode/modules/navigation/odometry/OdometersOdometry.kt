@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class OdometersOdometry : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _position = collector.getStaticParameters().oldStartPosition.position
-        _oldRotate = collector.getStaticParameters().oldStartPosition.angle
+        _position = collector.parameters.oldStartPosition.position
+        _oldRotate = collector.parameters.oldStartPosition.angle
 
         bus.subscribe(HardwareOdometers.UpdateHardwareOdometersEvent::class) {
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())

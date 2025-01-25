@@ -21,7 +21,7 @@ class IMUGyro: IRobotModule {
     private var _startAngle = Angle.ZERO
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        _startAngle = collector.getStaticParameters().oldStartPosition.angle
+        _startAngle = collector.parameters.oldStartPosition.angle
 
         _imu = collector.devices.imu
 
