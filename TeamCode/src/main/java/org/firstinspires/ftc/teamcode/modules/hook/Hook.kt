@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.hook
 
+import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
@@ -13,8 +14,8 @@ class Hook: IRobotModule {
     class HookStop: IEvent
     class HookRunRevers: IEvent
 
-    private lateinit var _leftHook: Servo
-    private lateinit var _rightHook: Servo
+    private lateinit var _leftHook: CRServo
+    private lateinit var _rightHook: CRServo
 
     private val _gameTimer = ElapsedTime()
 
@@ -23,22 +24,22 @@ class Hook: IRobotModule {
         _rightHook = collector.devices.servoHookRight
 
         bus.subscribe(HookRun::class){
-            //if(_gameTimer.seconds() > 90.0) {
-                _rightHook.position = 0.5 - Configs.HookConfig.HOOK_SPEED
-                _leftHook.position = 1.0 - (0.5 - Configs.HookConfig.HOOK_SPEED)
-            //}
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
+                _rightHook.power = Configs.HookConfig.HOOK_POWER
+                _leftHook.power = -Configs.HookConfig.HOOK_POWER
+            }
         }
 
         bus.subscribe(HookStop::class){
-            _rightHook.position = 0.5
-            _leftHook.position = 0.5
+            _rightHook.power = 0.0
+            _leftHook.power = 0.0
         }
 
         bus.subscribe(HookRunRevers::class){
-            //if(_gameTimer.seconds() > 90.0) {
-                _rightHook.position = 0.5 + Configs.HookConfig.HOOK_SPEED
-                _leftHook.position = 1.0 - (0.5 + Configs.HookConfig.HOOK_SPEED)
-            //}
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
+                _rightHook.power = Configs.HookConfig.HOOK_POWER
+                _leftHook.power = -Configs.HookConfig.HOOK_POWER
+            }
         }
     }
 

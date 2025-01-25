@@ -359,7 +359,10 @@ object Configs {
     @Config
     internal object HookConfig {
         @JvmField
-        var HOOK_SPEED = 0.5
+        var HOOK_POWER = 1.0
+
+        @JvmField
+        var ACTIVATION_TIME_SEC = 90.0
     }
 
     @Config
