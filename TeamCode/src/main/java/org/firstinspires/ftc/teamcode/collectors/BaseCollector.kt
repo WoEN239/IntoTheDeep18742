@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-open class BaseCollector(val robot: LinearOpMode, private val gameSettings: GameSettings, val isAuto: Boolean) {
+open class BaseCollector(val robot: LinearOpMode, private val gameSettings: GameSettings, val isAuto: Boolean, val _allModules: MutableList<IRobotModule>) {
     companion object{
         private val staticParameters = StaticParameters(GameStartPosition.NONE)
     }
@@ -39,16 +39,24 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
 
     val devices = Devices(robot.hardwareMap)
 
-    private val _allModules: MutableList<IRobotModule> = mutableListOf(/*ся модули*/HardwareOdometers(), IMUGyro(), OdometerGyro(), MergeGyro(), OdometersOdometry(), MergeOdometry(), DriveTrain(),
-        IntakeManager(), Camera())
+    init {
+        _allModules.addAll(arrayOf(/*ся модули*/HardwareOdometers(),
+            IMUGyro(),
+            OdometerGyro(),
+            MergeGyro(),
+            OdometersOdometry(),
+            MergeOdometry(),
+            DriveTrain(),
+            IntakeManager(),
+            Camera()
+        ))
+    }
 
     private val _updateHandler = UpdateHandler()
     private val _bulkAdapter = Bulk(devices)
     private val _timers = Timers()
 
     private val _eventBus = EventBus()
-
-    fun addAdditionalModules(modules: Array<IRobotModule>) = _allModules.addAll(modules)
 
     data class GameSettings(val startPosition: GameStartPosition = GameStartPosition.NONE)
 
