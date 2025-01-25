@@ -19,8 +19,6 @@ class Lift {
     private lateinit var _aimMotor: DcMotorEx
     private lateinit var _extensionMotor: DcMotorEx
 
-    private lateinit var _extensionEndingDown: DigitalChannel
-
     private lateinit var _aimPotentiometer: AnalogInput
 
     private val _aimPID = PIDRegulator(Configs.LiftConfig.AIM_PID)

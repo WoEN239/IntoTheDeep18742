@@ -48,7 +48,8 @@ class IntakeManager : IRobotModule {
         _lift.init(collector)
         _intake.init(collector)
 
-        _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
+        if(collector.isAuto)
+            _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
 
         bus.subscribe(EventSetClampPose::class) {
             fun setPos() {
@@ -66,7 +67,7 @@ class IntakeManager : IRobotModule {
             } else {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_EXTENSION
-                _intake.setDifPos(40.0, 0.0)
+                _intake.setDifPos(Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_X, Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_X)
 
                 Timers.newTimer().start(Configs.IntakeConfig.DOWN_TIME) {
                     setPos()
@@ -112,33 +113,20 @@ class IntakeManager : IRobotModule {
                 if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
-                    _intake.setDifPos(xRot = -40.0, yRot = -180.0)
+                    _intake.setDifPos(xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X, yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y)
                     _liftPosition = it.pos
                 } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
-                    _intake.setDifPos(xRot = -50.0, yRot = 0.0)
+                    _intake.setDifPos(xRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_X, yRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_Y)
                     _liftPosition = it.pos
                 } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
-                    _intake.setDifPos(xRot = 90.0, yRot = 0.0)
+                    _intake.setDifPos(xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y)
                     _liftPosition = it.pos
-                } else if (it.pos == LiftPosition.TRANSPORT) {
-                    _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
-                    _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
-
-                    if (_liftPosition == LiftPosition.UP_BASKED) {
-                        _intake.setDifPos(xRot = 0.0, yRot = -180.0)
-
-                        Timers.newTimer().start(Configs.IntakeConfig.UP_BASKET_DOWN_TIME) {
-                            _intake.setDifPos(xRot = -80.0, yRot = 0.0)
-                        }
-                    } else
-                        _intake.setDifPos(xRot = -80.0, yRot = 0.0)
-
-                    _liftPosition = it.pos
-                }
+                } else if (it.pos == LiftPosition.TRANSPORT)
+                    setDownState()
 
                 _lift.deltaExtension = 0.0
             }
@@ -179,18 +167,34 @@ class IntakeManager : IRobotModule {
                         closesdStickL = l
                     }
                 }
-                _intake.setDifPos(90.0, closesdStick.angl.angle / PI * 180.0)
+
+                _intake.setDifPos(90.0, closesdStick.angl.toDegree())
 
             } else
                 _eventBus.invoke(Camera.SetStickDetectEnable(false))
         }
     }
 
+    fun setDownState(){
+        _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
+        _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
+
+        if (_liftPosition == LiftPosition.UP_BASKED) {
+            _intake.setDifPos(xRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_X, yRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_Y)
+
+            Timers.newTimer().start(Configs.IntakeConfig.UP_BASKET_DOWN_TIME) {
+                _intake.setDifPos(xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X, yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y)
+            }
+        } else
+            _intake.setDifPos(xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X, yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y)
+
+        _liftPosition = LiftPosition.TRANSPORT
+    }
+
     override fun start() {
         _intake.start()
         _lift.start()
 
-        _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-        _eventBus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
+        setDownState()
     }
 }

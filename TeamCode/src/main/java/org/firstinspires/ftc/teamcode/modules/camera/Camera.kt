@@ -38,21 +38,21 @@ class Camera : IRobotModule {
             _visionPortalBuilder.addProcessor(it.processor)
         }
 
-        //_processor = StickProcessor()
+        _processor = StickProcessor()
 
-        //_processor.gameColor.set(collector.gameSettings.startPosition.color)
+        _processor.gameColor.set(collector.getStaticParameters().oldStartPosition.color)
 
-        //_visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
+        _visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
     }
 
     override fun start() {
-        //_visionPortal = _visionPortalBuilder.build()
-        //FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
-        //_processor.enableDetect.set(true)
+        _visionPortal = _visionPortalBuilder.build()
+        FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
+        _processor.enableDetect.set(true)
     }
 
     override fun stop() {
-        //_visionPortal.stopStreaming()
+        _visionPortal.stopStreaming()
         FtcDashboard.getInstance().stopCameraStream()
     }
 }

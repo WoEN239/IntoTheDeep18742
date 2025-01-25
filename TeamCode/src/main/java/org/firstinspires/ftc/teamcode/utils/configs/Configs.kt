@@ -138,7 +138,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.75)
+        var AIM_PID = PIDConfig(0.85)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -147,7 +147,7 @@ object Configs {
         var EXTENSION_SENS = 150.0
 
         @JvmField
-        var AIM_SENS = 15.0
+        var AIM_SENS = 25.0
 
         @JvmField
         var TRIGET_SLOW_POS = 20.0
@@ -255,6 +255,42 @@ object Configs {
 
         @JvmField
         var UP_BASKET_DOWN_TIME = 0.85
+
+        @JvmField
+        var UP_BASKET_DIF_POS_X = -40.0
+
+        @JvmField
+        var UP_BASKET_DIF_POS_Y = -180.0
+
+        @JvmField
+        var UP_BASKET_DOWN_MOVE_DIF_POS_X = 0.0
+
+        @JvmField
+        var UP_BASKET_DOWN_MOVE_DIF_POS_Y = -180.0
+
+        @JvmField
+        var TRANSPORT_DIF_POS_X = -80.0
+
+        @JvmField
+        var TRANSPORT_DIF_POS_Y = 0.0
+
+        @JvmField
+        var CLAMP_CENTER_DIF_POS_X = 90.0
+
+        @JvmField
+        var CLAMP_CENTER_DIF_POS_Y = 0.0
+
+        @JvmField
+        var UP_LAYER_DIF_POS_X = -50.0
+
+        @JvmField
+        var UP_LAYER_DIF_POS_Y = 0.0
+
+        @JvmField
+        var UP_LAYER_CLAMPED_DIF_POS_X = 40.0
+
+        @JvmField
+        var UP_LAYER_CLAMPED_DIF_POS_Y = 0.0
     }
 
     @Config
