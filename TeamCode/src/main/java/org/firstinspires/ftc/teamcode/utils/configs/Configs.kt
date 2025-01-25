@@ -227,6 +227,18 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var GAMEPADE_DIF_STEP = 20.0
+
+        @JvmField
+        var MAX_DIF_POS_Y = 80.0
+
+        @JvmField
+        var DIF_DIFFERENCE_X = 135.0
+
+        @JvmField
+        var DIF_DIFFERENCE_Y = 0.0
+
+        @JvmField
         var GEAR_RATIO = 16.0 / 28.0
 
         @JvmField

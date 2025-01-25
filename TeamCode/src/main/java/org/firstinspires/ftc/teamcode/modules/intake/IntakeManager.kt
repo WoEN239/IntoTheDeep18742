@@ -67,7 +67,7 @@ class IntakeManager : IRobotModule {
             } else {
                 _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_AIM
                 _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_EXTENSION
-                _intake.setDifPos(Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_X, Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_X)
+                _intake.setDifPos(Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_X, Configs.IntakeConfig.UP_LAYER_CLAMPED_DIF_POS_Y)
 
                 Timers.newTimer().start(Configs.IntakeConfig.DOWN_TIME) {
                     setPos()
@@ -100,12 +100,12 @@ class IntakeManager : IRobotModule {
 
         bus.subscribe(NextDifPos::class) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
-                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos + 20.0, -80.0, 80.0))
+                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos + Configs.IntakeConfig.GAMEPADE_DIF_STEP, -Configs.IntakeConfig.MAX_DIF_POS_Y, Configs.IntakeConfig.MAX_DIF_POS_Y))
         }
 
         bus.subscribe(PreviousDifPos::class) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
-                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos - 20.0, -80.0, 80.0))
+                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos - Configs.IntakeConfig.GAMEPADE_DIF_STEP, -Configs.IntakeConfig.MAX_DIF_POS_Y, Configs.IntakeConfig.MAX_DIF_POS_Y))
         }
 
         bus.subscribe(EventSetLiftPose::class) {

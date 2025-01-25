@@ -50,8 +50,8 @@ class Intake{
         xPos = xRot
         yPos = yRot
 
-        val x = xRot + 135.0
-        val y = yRot * Configs.IntakeConfig.GEAR_RATIO
+        val x = xRot + Configs.IntakeConfig.DIF_DIFFERENCE_X
+        val y = (yRot + Configs.IntakeConfig.DIF_DIFFERENCE_Y) * Configs.IntakeConfig.GEAR_RATIO
 
         _servoDifRight.targetPosition = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
         _servoDifLeft.targetPosition = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
