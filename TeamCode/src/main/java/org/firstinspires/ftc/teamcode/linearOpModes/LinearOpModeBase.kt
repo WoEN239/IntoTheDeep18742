@@ -39,7 +39,10 @@ open class LinearOpModeBase : LinearOpMode() {
             if(settings.isAutoStart)
                 OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode()
 
-            waitForStart()
+            while (!isStarted()){
+                collector.initUpdate()
+            }
+
             resetRuntime()
 
             collector.start()

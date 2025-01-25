@@ -123,5 +123,12 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
         _updateHandler.stop()
     }
 
+    fun initUpdate(){
+        for(i in _allModules)
+            i.initUpdate()
+        
+        _updateHandler.update()
+    }
+
     fun getStaticParameters() = staticParameters
 }

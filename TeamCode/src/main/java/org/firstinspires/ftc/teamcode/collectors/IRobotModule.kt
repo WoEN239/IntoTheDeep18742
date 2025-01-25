@@ -11,6 +11,8 @@ interface IRobotModule {
     fun init(collector: BaseCollector, bus: EventBus)
     fun lateInit(collector: BaseCollector, bus: EventBus) {}
 
+    fun initUpdate() {}
+
     fun start() {}
     fun lateStart() {}
 
