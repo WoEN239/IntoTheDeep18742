@@ -57,7 +57,9 @@ class Lift {
     var deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
-    fun getAimPos() = _aimPotentiometer.voltage / Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE + Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
+    fun getAimPos() = _aimPotentiometer.voltage /
+            Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
+            Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
         deltaExtension += _deltaTime.seconds() * extensionVelocity
@@ -92,8 +94,10 @@ class Lift {
         _aimErr = targetDefencedAimPos - getAimPos()
         _extensionErr = (targetDefencedExtensionPos + deltaExtension) - getCurrentExtensionPos()
 
-        val triggerMinPower = if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS) Configs.LiftConfig.MAX_SPEED_DOWN
-        else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
+        val triggerMinPower =
+            if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS)
+            Configs.LiftConfig.MAX_SPEED_DOWN
+            else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
         val aimPower = _battery.voltageToPower(_aimPID.update(_aimErr)
             .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
