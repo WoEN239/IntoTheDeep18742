@@ -32,7 +32,7 @@ class MergeGyro : IRobotModule {
                 _velocity = it.velocity
             }
             else
-                _mergeRotate = Angle(_mergeFilter.update(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
+                _mergeRotate = Angle(_mergeFilter.updateRaw(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
         }
 
         bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
