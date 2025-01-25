@@ -181,6 +181,9 @@ object Configs {
 
         @JvmField
         var AIM_POTENTIOMETER_DIFFERENCE = -22.8
+
+        @JvmField
+        var INIT_POS = 35.0
     }
 
     @Config
@@ -257,7 +260,7 @@ object Configs {
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 8.0
+        var DEFAULT_E = 11.0
 
         @JvmField
         var DEFAULT_W_MAX = 28.0

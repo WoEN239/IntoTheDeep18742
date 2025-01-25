@@ -48,7 +48,7 @@ class IntakeManager : IRobotModule {
         _lift.init(collector)
         _intake.init(collector)
 
-        _lift.aimTargetPosition = 30.0
+        _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
 
         bus.subscribe(EventSetClampPose::class) {
             fun setPos() {

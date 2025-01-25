@@ -31,8 +31,6 @@ class Lift {
     private var _aimErr = 0.0
     private var _extensionErr = 0.0
 
-    private var _extensionStartPosition = 0
-
     var extensionVelocity = 0.0
 
     var aimTargetPosition = 0.0
@@ -46,8 +44,6 @@ class Lift {
         _extensionMotor = collector.devices.liftExtensionMotor
 
         _aimMotor.direction = REVERSE
-        //_extensionMotor.direction = REVERSE
-
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
@@ -55,12 +51,8 @@ class Lift {
             _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
-
-        //_extensionEndingDown = collector.devices.liftExtensionEndingDown
-
-        _aimMotor.power = Configs.LiftConfig.INIT_POWER
     }
-    fun getCurrentExtensionPos() = (_extensionMotor.currentPosition - _extensionStartPosition).toDouble()
+    fun getCurrentExtensionPos() = _extensionMotor.currentPosition.toDouble()
 
     private val _deltaTime = ElapsedTime()
 
@@ -82,9 +74,6 @@ class Lift {
 
         val targetExtensionPos = extensionTargetPosition
         val targetAimPos = aimTargetPosition
-
-        /*if(_extensionEndingDown.state)
-            _extensionStartPosition = _extensionMotor.currentPosition*/
 
         val targetDefencedAimPos: Double
 
