@@ -38,11 +38,17 @@ class IntakeManager : IRobotModule {
 
     private var _liftPosition = LiftPosition.TRANSPORT
 
+    override fun initUpdate() {
+        _lift.update()
+    }
+
     override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
         _lift.init(collector)
         _intake.init(collector)
+
+        _lift.aimTargetPosition = 30.0
 
         bus.subscribe(EventSetClampPose::class) {
             fun setPos() {

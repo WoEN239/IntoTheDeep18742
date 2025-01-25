@@ -35,7 +35,7 @@ class Lift {
 
     var extensionVelocity = 0.0
 
-    var aimTargetPosition = 0.0;
+    var aimTargetPosition = 0.0
     var extensionTargetPosition = 0.0
 
     fun init(collector: BaseCollector) {
