@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.modules.navigation.gyro.IMUGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.OdometerGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.HardwareOdometers
+import org.firstinspires.ftc.teamcode.modules.navigation.odometry.CVOdometry
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.OdometersOdometry
 import org.firstinspires.ftc.teamcode.utils.bulk.Bulk
@@ -45,6 +46,7 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
             OdometerGyro(),
             MergeGyro(),
             OdometersOdometry(),
+            CVOdometry(),
             MergeOdometry(),
             DriveTrain(),
             IntakeManager(),

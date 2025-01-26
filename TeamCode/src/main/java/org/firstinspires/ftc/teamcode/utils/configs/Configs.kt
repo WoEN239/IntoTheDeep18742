@@ -7,6 +7,15 @@ import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 object Configs {
     @Config
+    internal object Lighting{
+        @JvmField
+        var ON_POWER = 0.1
+
+        @JvmField
+        var OFF_POWER = 0.999999
+    }
+
+    @Config
     internal object ChargeConfig {
         @JvmField
         var BATTERY_UPDATE_SEC = 0.05
@@ -123,7 +132,7 @@ object Configs {
         var UP_LAYER_AIM = 55.0
 
         @JvmField
-        var TRANSPORT_AIM = 0.00
+        var TRANSPORT_AIM = -5.00
 
         @JvmField
         var TRANSPORT_EXTENSION = 0.00
@@ -154,9 +163,6 @@ object Configs {
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
-
-        @JvmField
-        var INIT_POWER = 0.13
 
         @JvmField
         var GAMEPAD_EXTENSION_SENS = 1900.0
@@ -236,7 +242,7 @@ object Configs {
         var DIF_DIFFERENCE_X = 135.0
 
         @JvmField
-        var DIF_DIFFERENCE_Y = 0.0
+        var DIF_DIFFERENCE_Y = 3.5
 
         @JvmField
         var GEAR_RATIO = 16.0 / 28.0
@@ -281,7 +287,7 @@ object Configs {
         var UP_BASKET_DOWN_MOVE_DIF_POS_Y = -180.0
 
         @JvmField
-        var TRANSPORT_DIF_POS_X = -80.0
+        var TRANSPORT_DIF_POS_X = 0.0
 
         @JvmField
         var TRANSPORT_DIF_POS_Y = 0.0
@@ -326,13 +332,16 @@ object Configs {
     @Config
     internal object CVOdometryConfig{
         @JvmField
-        var CAMERA_POSITION = Vec2(0.0, 0.0)
+        var CAMERA_POSITION = Vec2(34.0, 0.0)
 
         @JvmField
-        var MERGE_COEF = 0.0
+        var MERGE_COEF = 0.5
 
         @JvmField
-        var USE_CAMERA = false
+        var USE_CAMERA = true
+
+        @JvmField
+        var DETECT_DIST = 100.0
     }
 
     @Config
@@ -359,13 +368,13 @@ object Configs {
     @Config
     internal object GyroscopeConfig {
          @JvmField
-        var MERGE_COEF = 0.8
+        var MERGE_COEF = 0.5
 
         @JvmField
         var READ_HZ = 50.0
 
         @JvmField
-        var USE_GYRO = false
+        var USE_GYRO = true
     }
 
     @Config

@@ -14,7 +14,7 @@ import kotlin.math.sqrt
  * @see Angle
  * @see Color
  */
-data class Vec2(var x: Double, var y: Double) {
+data class Vec2(@JvmField var x: Double, @JvmField var y: Double) {
     companion object {
         val ZERO = Vec2(0.0, 0.0)
     }

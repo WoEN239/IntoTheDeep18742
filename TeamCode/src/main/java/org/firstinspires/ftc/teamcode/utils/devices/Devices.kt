@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
 import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
@@ -64,4 +65,7 @@ class Devices(hardMap: HardwareMap)  {
     val servoHookRight = hardMap.get("servoHookRight") as CRServo
 
     val aimPotentiometer = hardMap.get("aimPotentiometer") as AnalogInput
+
+    val leftLight = LEDLine(hardMap.get("leftLEDLine") as Servo)
+    val rightLight = LEDLine(hardMap.get("rightLEDLine") as Servo)
 }

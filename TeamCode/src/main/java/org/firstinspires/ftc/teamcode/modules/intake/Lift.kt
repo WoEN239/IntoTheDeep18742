@@ -45,11 +45,12 @@ class Lift {
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
-        if(collector.isAuto) {
+        if (collector.isAuto) {
             _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
     }
+
     fun getCurrentExtensionPos() = _extensionMotor.currentPosition.toDouble()
 
     private val _deltaTime = ElapsedTime()
@@ -80,13 +81,12 @@ class Lift {
         if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.EXTENSION_SENS) {
             targetDefencedAimPos = targetAimPos
             _oldTargetAimPos = targetAimPos
-        }
-        else
+        } else
             targetDefencedAimPos = _oldTargetAimPos
 
         val targetDefencedExtensionPos: Double
 
-        if(abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
+        if (abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
         else
             targetDefencedExtensionPos = targetExtensionPos
@@ -96,11 +96,12 @@ class Lift {
 
         val triggerMinPower =
             if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS)
-            Configs.LiftConfig.MAX_SPEED_DOWN
+                Configs.LiftConfig.MAX_SPEED_DOWN
             else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
-        val aimPower = _battery.voltageToPower(_aimPID.update(_aimErr)
-            .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
+        val aimPower =
+            _battery.voltageToPower(_aimPID.update(_aimErr)
+                .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
 
         val extensionPower = _battery.voltageToPower(_extensionPID.update(_extensionErr))
 
@@ -108,9 +109,10 @@ class Lift {
         _extensionMotor.power = extensionPower
     }
 
-    fun atTarget() = abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_extensionErr) < Configs.LiftConfig.EXTENSION_SENS
+    fun atTarget() =
+        abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_extensionErr) < Configs.LiftConfig.EXTENSION_SENS
 
-    fun start(){
+    fun start() {
         _deltaTime.reset()
     }
 }

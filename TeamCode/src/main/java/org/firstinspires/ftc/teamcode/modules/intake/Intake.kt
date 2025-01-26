@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 
@@ -15,6 +16,9 @@ class Intake{
 
     private lateinit var _servoDifLeft: SoftServo
     private lateinit var _servoDifRight: SoftServo
+
+    private lateinit var _leftLED: LEDLine
+    private lateinit var _rightLED: LEDLine
 
     fun atTarget() = _servoClamp.isEnd && _servoDifLeft.isEnd && _servoDifRight.isEnd
 
@@ -33,14 +37,25 @@ class Intake{
 
         collector.devices.servoDifLeft.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
         collector.devices.servoDifRight.pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+
+        _leftLED = collector.devices.leftLight
+        _rightLED = collector.devices.rightLight
     }
 
     var clamp = ClampPosition.SERVO_UNCLAMP
         set(value) {
-            if (value == ClampPosition.SERVO_CLAMP)
+            if (value == ClampPosition.SERVO_CLAMP) {
                 _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_CLAMP
-            else
+
+                _leftLED.power = Configs.Lighting.ON_POWER
+                _rightLED.power = Configs.Lighting.ON_POWER
+            }
+            else {
                 _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_UNCLAMP
+
+                _leftLED.power = Configs.Lighting.OFF_POWER
+                _rightLED.power = Configs.Lighting.OFF_POWER
+            }
 
             field = value
         }
