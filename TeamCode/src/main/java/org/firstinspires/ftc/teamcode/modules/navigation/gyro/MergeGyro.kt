@@ -30,6 +30,7 @@ class MergeGyro : IRobotModule {
                 _oldMergeRotation = _mergeRotate
                 _mergeRotate = it.rotate
                 _velocity = it.velocity
+                _odometerRotate = it.rotate
             }
             else
                 _mergeRotate = Angle(_mergeFilter.updateRaw(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))

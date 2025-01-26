@@ -23,9 +23,9 @@ class OdometersOdometry : IRobotModule {
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld
             val deltaSidePosition = it.sidePosition - it.sidePositionOld
-            val deltaRotate = gyro.rotation!! - _oldRotate
+            val deltaRotate = gyro.odometerRotate!! - _oldRotate
 
-            _oldRotate = gyro.rotation!!
+            _oldRotate = gyro.odometerRotate!!
 
             _position += Vec2(
                 if(Configs.OdometryConfig.DUAL_ODOMETER)
