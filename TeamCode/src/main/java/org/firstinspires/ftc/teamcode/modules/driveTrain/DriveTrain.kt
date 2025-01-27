@@ -103,10 +103,10 @@ class DriveTrain : IRobotModule {
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        val leftFrontVoltage = (-direction.x + direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO
-        val rightBackVoltage = (-direction.x + direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO
-        val leftBackVoltage = (-direction.x - direction.y + rotate) / Configs.DriveTrainConfig.BELT_RATIO
-        val rightForwardVoltage = (-direction.x - direction.y - rotate) / Configs.DriveTrainConfig.BELT_RATIO
+        val leftFrontVoltage = (-direction.x + direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val rightBackVoltage = (-direction.x + direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val leftBackVoltage = (-direction.x - direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val rightForwardVoltage = (-direction.x - direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
 
         var leftFrontPower = _battery.voltageToPower(leftFrontVoltage)
         var rightBackPower = _battery.voltageToPower(rightBackVoltage)

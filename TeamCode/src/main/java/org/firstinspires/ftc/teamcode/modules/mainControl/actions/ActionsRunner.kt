@@ -27,9 +27,6 @@ class ActionsRunner: IRobotModule {
         _eventBus = bus
 
         bus.subscribe(RunActionsEvent::class){
-            if(_actions.isEmpty())
-                it.actions[0].start()
-
             _actions.addAll(it.actions)
         }
 
@@ -91,6 +88,9 @@ class ActionsRunner: IRobotModule {
     }
 
     override fun start() {
+        if(!_actions.isEmpty())
+            _actions[0].start()
+
         /*_eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(-0.3, 0.0), 0.0))
 
         Timers.newTimer().start(0.7){

@@ -148,9 +148,9 @@ class ParallelActions(
     }
 
     override fun getEndOrientation(): Orientation {
-        for(i in _actions){
+        for (i in _actions) {
             for (j in i.indices.reversed()) {
-                if(i[j] is ITransportAction)
+                if (i[j] is ITransportAction)
                     return (i[j] as ITransportAction).getEndOrientation()
             }
         }
@@ -168,7 +168,7 @@ class ParallelActions(
 
                     i.removeAt(0)
 
-                    if(!i.isEmpty())
+                    if (!i.isEmpty())
                         i[0].start()
                 }
             }
@@ -181,25 +181,23 @@ class ParallelActions(
 
     override fun isEnd(): Boolean {
         for (i in _actions)
-            if(!i.isEmpty() && i[0].isEnd()){
-                if(_exitType == ExitType.OR && i.isEmpty())
-                    return true
-                else if(_exitType == ExitType.AND && !i.isEmpty())
-                    return false
-            }
+            if (_exitType == ExitType.OR && i.isEmpty())
+                return true
+            else if (_exitType == ExitType.AND && !i.isEmpty())
+                return false
 
         return true
     }
 
     override fun start() {
-        for(i in _actions)
-            if(!i.isEmpty())
+        for (i in _actions)
+            if (i.isNotEmpty())
                 i[0].start()
     }
 }
 
-class DifAction(val eventBus: EventBus, val dir: DifDirection): IAction{
-    enum class DifDirection{
+class DifAction(val eventBus: EventBus, val dir: DifDirection) : IAction {
+    enum class DifDirection {
         NEXT,
         PREVIOUS
     }
@@ -211,10 +209,10 @@ class DifAction(val eventBus: EventBus, val dir: DifDirection): IAction{
     override fun end() {
     }
 
-    override fun isEnd() = true
+    override fun isEnd() = eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
 
     override fun start() {
-        if(dir == DifDirection.NEXT)
+        if (dir == DifDirection.NEXT)
             eventBus.invoke(IntakeManager.NextDifPos())
         else
             eventBus.invoke(IntakeManager.PreviousDifPos())

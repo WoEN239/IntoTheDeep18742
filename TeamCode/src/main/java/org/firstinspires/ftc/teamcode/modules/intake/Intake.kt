@@ -42,7 +42,7 @@ class Intake{
         _rightLED = collector.devices.rightLight
     }
 
-    var clamp = ClampPosition.SERVO_UNCLAMP
+    var clamp = ClampPosition.SERVO_CLAMP
         set(value) {
             if (value == ClampPosition.SERVO_CLAMP) {
                 _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_CLAMP

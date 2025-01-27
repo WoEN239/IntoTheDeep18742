@@ -21,11 +21,11 @@ class Gamepad : IRobotModule {
     }
 
     private var _oldClamp = false
-    private var _clampPos = false
 
     private var _basketOld = false
     private var _centerOld = false
     private var _layerOld = false
+    private var _clampWallOld = false
 
     private var _oldNextDifPos = false
     private var _oldPreviousDifPos = false
@@ -41,9 +41,7 @@ class Gamepad : IRobotModule {
         )
 
         if (_gamepad.circle && !_oldClamp) {
-            _clampPos = !_clampPos
-
-            if (_clampPos)
+            if (_eventBus.invoke(IntakeManager.RequestClampPosEvent()).pos == ClampPosition.SERVO_UNCLAMP)
                 _eventBus.invoke(IntakeManager.EventSetClampPose(ClampPosition.SERVO_CLAMP))
             else
                 _eventBus.invoke(IntakeManager.EventSetClampPose(ClampPosition.SERVO_UNCLAMP))
@@ -67,9 +65,13 @@ class Gamepad : IRobotModule {
         if (!_layerOld && _gamepad.dpad_right)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.UP_LAYER))
 
+        if (!_clampWallOld && _gamepad.dpad_left)
+            _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.CLAMP_WALL))
+
         _basketOld = _gamepad.dpad_up
         _centerOld = _gamepad.dpad_down
         _layerOld = _gamepad.dpad_right
+        _clampWallOld = _gamepad.dpad_left
 
         _eventBus.invoke(IntakeManager.EventSetExtensionVel((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
 

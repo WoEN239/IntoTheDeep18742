@@ -33,16 +33,16 @@ object Configs {
     @Config
     internal object DriveTrainConfig {
         @JvmField
-        var VELOCITY_PIDF_FORWARD = PIDConfig(p = 2.0, limitI = 1.4, i = 0.7, f = 2.5, resetZeroIntegral = true)
+        var VELOCITY_PIDF_FORWARD = PIDConfig(1.0, limitI = 4.0, i = 0.8, f = 1.0, resetZeroIntegral = true)
 
         @JvmField
-        var VELOCITY_PIDF_SIDE = PIDConfig(3.0, limitI = 1.4, i = 0.7, f = 2.5, resetZeroIntegral = true)
+        var VELOCITY_PIDF_SIDE = PIDConfig(1.0, limitI = 3.5, i = 0.8, f = 1.3, resetZeroIntegral = true)
 
         @JvmField
-        var VELOCITY_PIDF_ROTATE = PIDConfig(10.0, limitI = 4.0, i = 4.0, f = 50.0)
+        var VELOCITY_PIDF_ROTATE = PIDConfig(20.0, limitI = 20.0, i = 1.0, f = 30.0)
 
         @JvmField
-        var BELT_RATIO = 20.0 * (26.0 / 19.0) //очень сомнительная вещь //я знаю что здесь ошибка, но чтобы ее исправить придеться пифы на скорость перенастраивать
+        var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь //я знаю что здесь ошибка, но чтобы ее исправить придеться пифы на скорость перенастраивать
 
         @JvmField
         var LIFT_MAX_SPEED = 0.09
@@ -51,43 +51,43 @@ object Configs {
         var LIFT_MAX_ROTATE_SPEED = 0.5
 
         @JvmField
-        var MAX_ROTATE_VELOCITY = 9.9
+        var MAX_ROTATE_VELOCITY = 5.0
 
         @JvmField
-        var MAX_TRANSLATION_ACCEL = 80.0
+        var MAX_TRANSLATION_ACCEL = 85.0
 
         @JvmField
-        var MIN_TRANSLATION_ACCEL = -40.0
+        var MIN_TRANSLATION_ACCEL = -85.0
 
         @JvmField
         var MAX_TRANSLATION_VELOCITY = 120.0
 
         @JvmField
-        var ROTATE_ACCEL = 4.8
+        var ROTATE_ACCEL = 4.0
     }
 
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var STEP_X = 2.5
+        var STEP_X = 3.5
 
         @JvmField
-        var STEP_Y = 2.5
+        var STEP_Y = 3.5
 
         @JvmField
-        var STEP_H = 0.1
+        var STEP_H = 0.6
 
         @JvmField
-        var ROTATE_P = 6.4
+        var ROTATE_P = 3.5
 
         @JvmField
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 1.0
+        var POSITION_P_X = 1.05
 
         @JvmField
-        var POSITION_P_Y = 1.0
+        var POSITION_P_Y = 1.05
 
         @JvmField
         var POSITION_SENS_X = 2.0
@@ -96,26 +96,44 @@ object Configs {
         var POSITION_SENS_Y = 2.0
 
         @JvmField
-        var POS_VELOCITY_SENS_X = 1.0
+        var POS_VELOCITY_SENS_X = 0.01
 
         @JvmField
-        var POS_VELOCITY_SENS_Y = 1.0
+        var POS_VELOCITY_SENS_Y = 0.01
 
         @JvmField
-        var POS_VELOCITY_P_X = 0.07
+        var POS_VELOCITY_P_X = 0.09
 
         @JvmField
-        var POS_VELOCITY_P_Y = 0.07
+        var POS_VELOCITY_P_Y = 0.09
 
         @JvmField
         var HEADING_VEL_SENS = 0.3
 
         @JvmField
-        var HEADING_VEL_P = 0.1
+        var HEADING_VEL_P = 0.0
     }
 
     @Config
     internal object LiftConfig {
+        @JvmField
+        var CLAMP_WALL_AIM_POS = 15.0
+
+        @JvmField
+        var CLAMP_WALL_EXTENSION_POS = 150.0
+
+        @JvmField
+        var CLAMP_WALL_CLAMPED_AIM_POS = 30.0
+
+        @JvmField
+        var CLAMP_WALL_CLAMPED_EXTENSION_POS = 150.0
+
+        @JvmField
+        var HUMAN_ADD_AIM_POS = 0.0
+
+        @JvmField
+        var HUMAN_ADD_EXTENSION_POS = 1000.0
+
         @JvmField
         var UP_LAYER_UNCLAMP_AIM = 55.0
 
@@ -260,7 +278,10 @@ object Configs {
         var CLAMP_TIME = 0.5
 
         @JvmField
-        var DOWN_TIME = 1.0
+        var UP_LAYER_DOWN_TIME = 0.5
+
+        @JvmField
+        var CLAMP_WALL_UP_TIME = 0.5
 
         @JvmField
         var CAMERA_CLAMP_POS_Y = 0.0
@@ -309,15 +330,33 @@ object Configs {
 
         @JvmField
         var UP_LAYER_CLAMPED_DIF_POS_Y = 0.0
+
+        @JvmField
+        var HUMAN_ADD_DIF_POS_X = 90.0
+
+        @JvmField
+        var HUMAN_ADD_DIF_POS_Y = -45.0
+
+        @JvmField
+        var CLAMP_WALL_DIF_POS_X = 15.0
+
+        @JvmField
+        var CLAMP_WALL_DIF_POS_Y = 0.0
+
+        @JvmField
+        var CLAMP_WALL_CLAMPED_DIF_POS_X = -10.0
+
+        @JvmField
+        var CLAMP_WALL_CLAMPED_DIF_POS_Y = 0.0
     }
 
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 11.0
+        var DEFAULT_E = 8.0
 
         @JvmField
-        var DEFAULT_W_MAX = 28.0
+        var DEFAULT_W_MAX = 20.0
     }
 
     @Config
