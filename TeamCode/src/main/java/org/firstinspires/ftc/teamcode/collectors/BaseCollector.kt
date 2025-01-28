@@ -96,17 +96,9 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
             i.lateStart()
 
         _updateHandler.start()
-        _deltaTime.reset()
     }
 
-    private val _deltaTime = ElapsedTime()
-
     fun update() {
-        StaticTelemetry.addData("runtime", System.currentTimeMillis())
-        StaticTelemetry.addData("update time", _deltaTime.milliseconds())
-
-        _deltaTime.reset()
-
         _timers.update()
         _bulkAdapter.update()
         devices.battery.update()
@@ -134,8 +126,6 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
     }
 
     fun initUpdate(){
-        _deltaTime.reset()
-
         _timers.update()
         _bulkAdapter.update()
         devices.battery.update()
