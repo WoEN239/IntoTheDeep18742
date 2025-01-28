@@ -24,41 +24,44 @@ open class LinearOpModeBase : LinearOpMode() {
 
     protected open fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = false)
 
-    protected open fun getCollector() = BaseCollector(this, BaseCollector.GameSettings(startPosition = BaseCollector.GameStartPosition.NONE), isAuto = false, mutableListOf())
+    protected open fun getCollector() = BaseCollector(
+        this,
+        BaseCollector.GameSettings(startPosition = BaseCollector.GameStartPosition.NONE),
+        isAuto = false,
+        mutableListOf()
+    )
 
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
 
-        try {
-            val settings = getOpModeSettings()
+        val settings = getOpModeSettings()
 
-            val collector = getCollector()
+        val collector = getCollector()
 
-            collector.init()
+        collector.init()
 
-            if(settings.isAutoStart)
-                OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode()
+        if (settings.isAutoStart)
+            OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity())
+                .startActiveOpMode()
 
-            while (!isStarted()){
-                collector.initUpdate()
-            }
-
-            resetRuntime()
-
-            collector.start()
-
-            while (opModeIsActive()) {
-                StaticTelemetry.update()
-
-                collector.update()
-            }
-
-            collector.stop()
-
-            if(settings.isPreInit)
-                OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).initOpMode(settings.preInitOpModeName)
-        } catch (e: Exception) {
-            throw e
+        while (!isStarted()) {
+            collector.initUpdate()
         }
+
+        resetRuntime()
+
+        collector.start()
+
+        while (opModeIsActive()) {
+            StaticTelemetry.update()
+
+            collector.update()
+        }
+
+        collector.stop()
+
+        if (settings.isPreInit)
+            OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity())
+                .initOpMode(settings.preInitOpModeName)
     }
 }
