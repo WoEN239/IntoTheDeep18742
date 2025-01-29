@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
+import kotlin.math.abs
 import kotlin.math.sign
 
 /**
@@ -46,7 +47,7 @@ class PIDRegulator(var config: PIDConfig) : IHandler {
         _integral += err * _deltaTime.seconds()
         _integral = clamp(_integral, -config.limitI / config.i, config.limitI / config.i)
 
-        if(err * _errOld < -0.01 && config.resetZeroIntegral)
+        if(abs(sign(err) - sign(_errOld)) > 0.01 && config.resetZeroIntegral)
             resetIntegral()
 
         val uI = _integral * config.i
