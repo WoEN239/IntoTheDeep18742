@@ -45,10 +45,10 @@ object Configs {
         var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь
 
         @JvmField
-        var LIFT_MAX_SPEED = 0.5
+        var LIFT_MAX_SPEED_K = 0.5
 
         @JvmField
-        var LIFT_MAX_ROTATE_SPEED = 0.5
+        var LIFT_MAX_ROTATE_SPEED_K = 0.5
 
         @JvmField
         var MAX_ROTATE_VELOCITY = 5.0
