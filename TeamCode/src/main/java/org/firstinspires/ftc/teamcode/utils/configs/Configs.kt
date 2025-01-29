@@ -84,10 +84,10 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 1.05
+        var POSITION_P_X = 2.1
 
         @JvmField
-        var POSITION_P_Y = 1.05
+        var POSITION_P_Y = 2.1
 
         @JvmField
         var POSITION_SENS_X = 2.0
@@ -102,10 +102,10 @@ object Configs {
         var POS_VELOCITY_SENS_Y = 0.01
 
         @JvmField
-        var POS_VELOCITY_P_X = 0.09
+        var POS_VELOCITY_P_X = 0.4
 
         @JvmField
-        var POS_VELOCITY_P_Y = 0.09
+        var POS_VELOCITY_P_Y = 0.4
 
         @JvmField
         var HEADING_VEL_SENS = 0.3
@@ -117,16 +117,16 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 15.0
+        var CLAMP_WALL_AIM_POS = 13.0
 
         @JvmField
-        var CLAMP_WALL_EXTENSION_POS = 150.0
+        var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 30.0
+        var CLAMP_WALL_CLAMPED_AIM_POS = 13.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_EXTENSION_POS = 150.0
+        var CLAMP_WALL_CLAMPED_EXTENSION_POS = 250.0
 
         @JvmField
         var HUMAN_ADD_AIM_POS = 0.0
@@ -135,10 +135,10 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 55.0
+        var UP_LAYER_UNCLAMP_AIM = 50.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 90.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 100.0
 
         @JvmField
         var CLAMP_CENTER_AIM = 0.00
@@ -147,7 +147,7 @@ object Configs {
         var UP_BASKED_AIM = 62.5
 
         @JvmField
-        var UP_LAYER_AIM = 55.0
+        var UP_LAYER_AIM = 50.0
 
         @JvmField
         var TRANSPORT_AIM = -5.00
@@ -165,7 +165,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.85)
+        var AIM_PID = PIDConfig(0.85, d = 0.02)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -272,16 +272,16 @@ object Configs {
         var SERVO_CLAMP = 0.39
 
         @JvmField
-        var SERVO_UNCLAMP = 0.75
+        var SERVO_UNCLAMP = 0.73
 
         @JvmField
         var CLAMP_TIME = 0.5
 
         @JvmField
-        var UP_LAYER_DOWN_TIME = 0.5
+        var UP_LAYER_DOWN_TIME = 0.2
 
         @JvmField
-        var CLAMP_WALL_UP_TIME = 0.5
+        var CLAMP_WALL_UP_TIME = 0.2
 
         @JvmField
         var CAMERA_CLAMP_POS_Y = 0.0
@@ -326,7 +326,7 @@ object Configs {
         var UP_LAYER_DIF_POS_Y = 0.0
 
         @JvmField
-        var UP_LAYER_CLAMPED_DIF_POS_X = 40.0
+        var UP_LAYER_CLAMPED_DIF_POS_X = 60.0
 
         @JvmField
         var UP_LAYER_CLAMPED_DIF_POS_Y = 0.0
@@ -338,7 +338,7 @@ object Configs {
         var HUMAN_ADD_DIF_POS_Y = -45.0
 
         @JvmField
-        var CLAMP_WALL_DIF_POS_X = 15.0
+        var CLAMP_WALL_DIF_POS_X = 13.0
 
         @JvmField
         var CLAMP_WALL_DIF_POS_Y = 0.0

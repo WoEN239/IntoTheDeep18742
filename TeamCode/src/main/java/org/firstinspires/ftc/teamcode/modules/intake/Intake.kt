@@ -30,6 +30,8 @@ class Intake{
     private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
+        collector.devices.servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
+
         _servoClamp = SoftServo(collector.devices.servoClamp, Configs.IntakeConfig.SERVO_CLAMP)
 
         _servoDifLeft = SoftServo(collector.devices.servoDifLeft, 0.5)

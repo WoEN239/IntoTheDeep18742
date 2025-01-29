@@ -30,7 +30,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                     FollowRRTrajectory(
                         eventBus, newRRTrajectory(startOrientation)
                             .strafeToLinearHeading(
-                                Vector2d(0.0, 79.0),
+                                Vector2d(0.0, 76.5),
                                 toRadians(90.0)
                             )
                             .build()
@@ -78,7 +78,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
             FollowRRTrajectory(
             eventBus, newRRTrajectory(startOrientation)
                 .strafeToLinearHeading(
-                    Vector2d(-78.0 - 27.0, 118.0),
+                    Vector2d(-78.0 - 20.0, 118.0),
                     toRadians(-90.0 - 45.0)
                 )
                 .build()
@@ -121,7 +121,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(getEndOrientation(actions))
                         .strafeToLinearHeading(
-                            Vector2d(-93.0, 134.0),
+                            Vector2d(-93.0, 133.0),
                             toRadians(90.0)
                         )
                         .build()
@@ -142,8 +142,12 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .splineToConstantHeading(
-                                    Vector2d(2.0, 79.0),
-                                    toRadians(90.0)
+                                    Vector2d(-2.0, 90.0),
+                                    toRadians(-90.0)
+                                )
+                                .splineToConstantHeading(
+                                    Vector2d(-2.0, 78.0),
+                                    toRadians(-90.0)
                                 )
                                 .build()
                         )
