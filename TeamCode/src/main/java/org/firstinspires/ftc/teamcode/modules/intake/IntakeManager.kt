@@ -193,7 +193,6 @@ class IntakeManager : IRobotModule {
     }
 
     override fun update() {
-        _intake.update()
         _lift.update()
 
         if (Configs.IntakeConfig.USE_CAMERA) {
@@ -243,7 +242,6 @@ class IntakeManager : IRobotModule {
     }
 
     override fun start() {
-        _intake.start()
         _lift.start()
 
         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP

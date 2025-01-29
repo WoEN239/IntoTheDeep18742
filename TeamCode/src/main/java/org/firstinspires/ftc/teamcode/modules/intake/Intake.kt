@@ -22,12 +22,8 @@ class Intake{
 
     fun atTarget() = _servoClamp.isEnd && _servoDifLeft.isEnd && _servoDifRight.isEnd
 
-    var xVelocity = 0.0
-    var yVelocity = 0.0
-
     var xPos = 0.0
     var yPos = 0.0
-    private val _deltaTime = ElapsedTime()
 
     fun init(collector: BaseCollector) {
         collector.devices.servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
@@ -78,15 +74,5 @@ class Intake{
     {
         SERVO_CLAMP,
         SERVO_UNCLAMP
-    }
-
-    fun update() {
-        setDifPos(clamp(xPos + _deltaTime.seconds() * xVelocity, -90.0, 90.0), clamp(yPos + _deltaTime.seconds() * yVelocity, -180.0, 180.0))
-
-        _deltaTime.reset()
-    }
-
-    fun start() {
-        _deltaTime.reset()
     }
 }
