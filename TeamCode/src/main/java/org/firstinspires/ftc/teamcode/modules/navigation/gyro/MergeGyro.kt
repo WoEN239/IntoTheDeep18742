@@ -58,7 +58,12 @@ class MergeGyro : IRobotModule {
         }
     }
 
-    class RequestMergeGyroEvent(var rotation: Angle? = null, var oldRotation: Angle? = null, var velocity: Double? = null, var odometerRotate: Angle? = null): IEvent
+    class RequestMergeGyroEvent(
+        var rotation: Angle? = null,
+        var oldRotation: Angle? = null,
+        var velocity: Double? = null,
+        var odometerRotate: Angle? = null
+    ): IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF
