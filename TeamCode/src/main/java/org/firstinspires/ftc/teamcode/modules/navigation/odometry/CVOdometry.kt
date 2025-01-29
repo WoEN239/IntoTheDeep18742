@@ -31,9 +31,7 @@ class CVOdometry : IRobotModule {
 
     private lateinit var _eventBus: EventBus
 
-    override fun init(collector: BaseCollector, bus: EventBus){}
-
-    override fun lateInit(collector: BaseCollector, bus: EventBus) {
+    override fun init(collector: BaseCollector, bus: EventBus) {
         _eventBus = bus
 
         if (Configs.CVOdometryConfig.USE_CAMERA) {

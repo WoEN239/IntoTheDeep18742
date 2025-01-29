@@ -42,7 +42,7 @@ object Configs {
         var VELOCITY_PIDF_ROTATE = PIDConfig(20.0, limitI = 20.0, i = 1.0, f = 30.0)
 
         @JvmField
-        var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь //я знаю что здесь ошибка, но чтобы ее исправить придеться пифы на скорость перенастраивать
+        var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь
 
         @JvmField
         var LIFT_MAX_SPEED = 0.5

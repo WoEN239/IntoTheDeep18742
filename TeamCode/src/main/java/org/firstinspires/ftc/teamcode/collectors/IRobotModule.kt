@@ -9,18 +9,12 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
  */
 interface IRobotModule {
     fun init(collector: BaseCollector, bus: EventBus)
-    fun lateInit(collector: BaseCollector, bus: EventBus) {}
 
     fun initUpdate() {}
 
     fun start() {}
-    fun lateStart() {}
 
     fun update() {}
-    fun lateUpdate() {}
 
     fun stop() {}
-    fun lateStop() {}
-
-    fun reset() {}
 }

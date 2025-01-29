@@ -46,11 +46,11 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
             OdometerGyro(),
             MergeGyro(),
             OdometersOdometry(),
-            CVOdometry(),
             MergeOdometry(),
             DriveTrain(),
             IntakeManager(),
-            Camera()
+            Camera(),
+            CVOdometry()
         ))
     }
 
@@ -80,9 +80,6 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
         for (i in _allModules)
             i.init(this, _eventBus)
 
-        for (i in _allModules)
-            i.lateInit(this, _eventBus)
-
         _updateHandler.init(InitContext(devices.battery))
     }
 
@@ -91,9 +88,6 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
 
         for (i in _allModules)
             i.start()
-
-        for (i in _allModules)
-            i.lateStart()
 
         _updateHandler.start()
     }
@@ -106,21 +100,12 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
         for (i in _allModules)
             i.update()
 
-        for (i in _allModules)
-            i.lateUpdate()
-
         _updateHandler.update()
     }
 
     fun stop() {
-        for (i in _allModules) {
-            i.stop()
-
-            i.reset()
-        }
-
         for (i in _allModules)
-            i.lateStop()
+            i.stop()
 
         _updateHandler.stop()
     }

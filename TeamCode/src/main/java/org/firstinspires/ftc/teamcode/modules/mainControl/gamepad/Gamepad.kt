@@ -30,7 +30,7 @@ class Gamepad : IRobotModule {
     private var _oldNextDifPos = false
     private var _oldPreviousDifPos = false
 
-    override fun lateUpdate() {
+    override fun update() {
         _eventBus.invoke(
             SetDrivePowerEvent(
                 Vec2(
