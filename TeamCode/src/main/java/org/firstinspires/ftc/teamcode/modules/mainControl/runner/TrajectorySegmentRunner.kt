@@ -135,7 +135,7 @@ class TrajectorySegmentRunner : IRobotModule {
 
         _targetHeadingVelocity = trajectory.turnVelocity(time)
 
-        _targetTransVelocity = trajectory.transVelocity(time) * Vec2(0.25)
+        _targetTransVelocity = trajectory.transVelocity(time)
 
         _targetOrientation = trajectory.targetOrientation(time)
 

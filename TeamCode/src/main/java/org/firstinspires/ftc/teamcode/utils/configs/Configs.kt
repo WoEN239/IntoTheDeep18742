@@ -45,7 +45,7 @@ object Configs {
         var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь //я знаю что здесь ошибка, но чтобы ее исправить придеться пифы на скорость перенастраивать
 
         @JvmField
-        var LIFT_MAX_SPEED = 0.09
+        var LIFT_MAX_SPEED = 0.5
 
         @JvmField
         var LIFT_MAX_ROTATE_SPEED = 0.5
@@ -422,7 +422,7 @@ object Configs {
         var HOOK_POWER = 1.0
 
         @JvmField
-        var ACTIVATION_TIME_SEC = 90.0
+        var ACTIVATION_TIME_SEC = 9.0
     }
 
     @Config

@@ -22,14 +22,12 @@ data class Vec2(@JvmField var x: Double, @JvmField var y: Double) {
     constructor(rrVec: Vector2d) : this(rrVec.x, rrVec.y);
     constructor(x: Double) : this(x, x)
 
-    fun length() = x * x + y * y
-
-    fun sqrtLength() = sqrt(length())
+    fun length() = sqrt(x * x + y * y)
 
     fun rot() = atan2(y, x)
 
     fun setRot(rot: Double): Vec2 {
-        val l = sqrtLength()
+        val l = length()
 
         return Vec2(cos(rot) * l, sin(rot) * l)
     }
