@@ -34,35 +34,6 @@ class ActionsRunner: IRobotModule {
             it.isEnd = _actions.isEmpty()
         }
 
-//        val actions = arrayListOf<IAction>()
-//
-//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(Orientation(collector.gameSettings.startPosition.position, collector.gameSettings.startPosition.angle))
-//            .strafeTo(Vector2d(55.0, -10.0))
-//            .build()))
-//
-//        actions.add(WaitAction(1.0))
-//
-//        actions.add(TurnAction(bus, getEndOrientation(actions), Angle.ofDeg(180.0)))
-//
-//        actions.add(FollowRRTrajectory(bus, TrajectorySegmentRunner.newRRTrajectory(getEndOrientation(actions))
-//                .strafeTo(Vector2d(60.0, 43.0))
-//                .strafeTo(Vector2d(132.0, 52.0))
-//
-//                .strafeTo(Vector2d(125.0, 65.0))
-//                .strafeTo(Vector2d(60.0, 70.0))
-//                .strafeTo(Vector2d(110.0, 62.0))
-//
-//                .strafeTo(Vector2d(120.0, 80.0))
-//                .strafeTo(Vector2d(60.0, 90.0))
-//                .strafeTo(Vector2d(121.0, 90.0))
-//
-//                .strafeTo(Vector2d(127.0, 120.0))
-//                .strafeTo(Vector2d(60.0, 120.0))
-//                .strafeTo(Vector2d(20.0, 100.0))
-//            .build()))
-//
-//        _eventBus.invoke(RunActionsEvent(actions))
-
         when(collector.parameters.oldStartPosition){
             BaseCollector.GameStartPosition.RED_HUMAN -> RedHumanTrajectory()
             BaseCollector.GameStartPosition.RED_BASKET -> RedBaskedTrajectory()
@@ -90,11 +61,5 @@ class ActionsRunner: IRobotModule {
     override fun start() {
         if(!_actions.isEmpty())
             _actions[0].start()
-
-        /*_eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(-0.3, 0.0), 0.0))
-
-        Timers.newTimer().start(0.7){
-            _eventBus.invoke(DriveTrain.SetDrivePowerEvent(Vec2(0.0, 0.0), 0.0))
-        }*/
     }
 }
