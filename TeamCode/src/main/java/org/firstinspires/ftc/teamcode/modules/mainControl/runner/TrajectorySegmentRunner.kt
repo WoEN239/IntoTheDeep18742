@@ -27,7 +27,7 @@ import kotlin.math.abs
 class TrajectorySegmentRunner : IRobotModule {
     companion object {
         fun newRRTrajectory(startOrientation: Orientation) = TrajectoryBuilder(
-            TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.1)),
+            TrajectoryBuilderParams(1e-6, ProfileParams(0.1, 0.1, 0.01)),
             Pose2d(startOrientation.x, startOrientation.y, startOrientation.angl.angle), 0.0,
             MinVelConstraint(
                 listOf(
