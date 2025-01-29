@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.hook
 
 import com.qualcomm.robotcore.hardware.CRServo
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
@@ -23,9 +24,11 @@ class Hook: IRobotModule {
         _leftHook = collector.devices.servoHookLeft
         _rightHook = collector.devices.servoHookRight
 
+        _leftHook.direction = DcMotorSimple.Direction.REVERSE
+
         bus.subscribe(HookRun::class){
             if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
-                _rightHook.power = -Configs.HookConfig.HOOK_POWER
+                _rightHook.power = Configs.HookConfig.HOOK_POWER
                 _leftHook.power = Configs.HookConfig.HOOK_POWER
             }
         }
@@ -38,7 +41,7 @@ class Hook: IRobotModule {
         bus.subscribe(HookRunRevers::class){
             if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
                 _rightHook.power = Configs.HookConfig.HOOK_POWER
-                _leftHook.power = -Configs.HookConfig.HOOK_POWER
+                _leftHook.power = Configs.HookConfig.HOOK_POWER
             }
         }
     }
