@@ -138,12 +138,22 @@ class IntakeManager : IRobotModule {
 
         bus.subscribe(NextDifPos::class) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
-                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos + Configs.IntakeConfig.GAMEPADE_DIF_STEP, -Configs.IntakeConfig.MAX_DIF_POS_Y, Configs.IntakeConfig.MAX_DIF_POS_Y))
+                _intake.setDifPos(
+                    _intake.xPos,
+                    clamp(_intake.yPos + Configs.IntakeConfig.GAMEPADE_DIF_STEP,
+                        -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                        Configs.IntakeConfig.MAX_DIF_POS_Y
+                    ))
         }
 
         bus.subscribe(PreviousDifPos::class) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
-                _intake.setDifPos(_intake.xPos, clamp(_intake.yPos - Configs.IntakeConfig.GAMEPADE_DIF_STEP, -Configs.IntakeConfig.MAX_DIF_POS_Y, Configs.IntakeConfig.MAX_DIF_POS_Y))
+                _intake.setDifPos(
+                    _intake.xPos,
+                    clamp(_intake.yPos - Configs.IntakeConfig.GAMEPADE_DIF_STEP,
+                        -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                        Configs.IntakeConfig.MAX_DIF_POS_Y
+                    ))
         }
 
         bus.subscribe(EventSetLiftPose::class) {
