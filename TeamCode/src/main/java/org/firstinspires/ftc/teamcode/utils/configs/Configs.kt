@@ -54,10 +54,10 @@ object Configs {
         var MAX_ROTATE_VELOCITY = 5.0
 
         @JvmField
-        var MAX_TRANSLATION_ACCEL = 85.0
+        var MAX_TRANSLATION_ACCEL = 105.0
 
         @JvmField
-        var MIN_TRANSLATION_ACCEL = -85.0
+        var MIN_TRANSLATION_ACCEL = -105.0
 
         @JvmField
         var MAX_TRANSLATION_VELOCITY = 120.0
@@ -69,10 +69,10 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
-        var STEP_X = 3.5
+        var STEP_X = 8.0
 
         @JvmField
-        var STEP_Y = 3.5
+        var STEP_Y = 8.0
 
         @JvmField
         var STEP_H = 0.6
@@ -84,10 +84,10 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 2.1
+        var POSITION_P_X = 2.9
 
         @JvmField
-        var POSITION_P_Y = 2.1
+        var POSITION_P_Y = 2.9
 
         @JvmField
         var POSITION_SENS_X = 2.0
@@ -117,7 +117,7 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 13.0
+        var CLAMP_WALL_AIM_POS = 14.0
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
@@ -138,7 +138,7 @@ object Configs {
         var UP_LAYER_UNCLAMP_AIM = 50.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 100.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 110.0
 
         @JvmField
         var CLAMP_CENTER_AIM = 0.00
@@ -162,10 +162,10 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
-        var UP_LAYER_EXTENSION = 0.00
+        var UP_LAYER_EXTENSION = 50.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.85, d = 0.02)
+        var AIM_PID = PIDConfig(0.53, d = 0.02)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -186,10 +186,10 @@ object Configs {
         var GAMEPAD_EXTENSION_SENS = 1900.0
 
         @JvmField
-        var MAX_SPEED_DOWN = -10.0
+        var MAX_SPEED_DOWN = -9.0
 
         @JvmField
-        var MIN_SPEED_UP = 6.0
+        var MIN_SPEED_UP = 12.0
 
         @JvmField
         var MAX_EXTENSION_POS = 1000.0
@@ -278,10 +278,10 @@ object Configs {
         var CLAMP_TIME = 0.5
 
         @JvmField
-        var UP_LAYER_DOWN_TIME = 0.2
+        var UP_LAYER_DOWN_TIME = 0.3
 
         @JvmField
-        var CLAMP_WALL_UP_TIME = 0.2
+        var CLAMP_WALL_UP_TIME = 0.1
 
         @JvmField
         var CAMERA_CLAMP_POS_Y = 0.0
@@ -326,7 +326,7 @@ object Configs {
         var UP_LAYER_DIF_POS_Y = 0.0
 
         @JvmField
-        var UP_LAYER_CLAMPED_DIF_POS_X = 60.0
+        var UP_LAYER_CLAMPED_DIF_POS_X = 70.0
 
         @JvmField
         var UP_LAYER_CLAMPED_DIF_POS_Y = 0.0
@@ -353,7 +353,7 @@ object Configs {
     @Config
     internal object SoftServo {
         @JvmField
-        var DEFAULT_E = 8.0
+        var DEFAULT_E = 12.0
 
         @JvmField
         var DEFAULT_W_MAX = 20.0
@@ -377,7 +377,7 @@ object Configs {
         var MERGE_COEF = 0.5
 
         @JvmField
-        var USE_CAMERA = true
+        var USE_CAMERA = false
 
         @JvmField
         var DETECT_DIST = 100.0

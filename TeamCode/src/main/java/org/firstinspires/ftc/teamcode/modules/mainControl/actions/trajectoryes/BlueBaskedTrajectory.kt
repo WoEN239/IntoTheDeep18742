@@ -24,23 +24,11 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
     override fun    runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
         val actions = arrayListOf<IAction>()
 
-        /*        actions.add(FollowRRTrajectory(eventBus, newRRTrajectory(startOrientation)
-                    .strafeToLinearHeading(Vector2d(0.0, 80.0), toRadians(90.0))
-                    .build()))
-
-                actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
-
-                actions.add(WaitAction(2.0))
-
-                actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
-
-                actions.add(WaitAction(2.0))
-        */
         fun runToBasket(startOrientation: Orientation) {
             actions.add(
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(startOrientation)
-                        .strafeToLinearHeading(Vector2d(127.7 + 0.37, 119.7 + 0.37), toRadians(-90.0 - 45.0))
+                        .strafeToLinearHeading(Vector2d(135.4, 127.4), toRadians(-90.0 - 45.0))
                         .build()
                 )
             )
@@ -67,6 +55,8 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
                 for(i in 0..2)
                     actions.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
 
+            actions.add(WaitAction(0.1))
+
             actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
             actions.add(WaitLiftAction(eventBus))
@@ -83,7 +73,7 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        clampStick(1000.0)
+        clampStick(950.0)
         runToBasket(getEndOrientation(actions))
 
         basket()
@@ -96,14 +86,14 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        clampStick(800.0)
+        clampStick(750.0)
         runToBasket(getEndOrientation(actions))
         basket()
 
         actions.add(
             FollowRRTrajectory(
                 eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .strafeToLinearHeading(Vector2d(139.0, 118.6), toRadians(-90.0 + 40))
+                    .strafeToLinearHeading(Vector2d(139.0, 108.6), toRadians(-90.0 + 40))
                     .build()
             )
         )
@@ -111,14 +101,14 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
         clampStick(750.0, true)
         runToBasket(getEndOrientation(actions))
         basket()
-//
-//        actions.add(
-//            FollowRRTrajectory(
-//                eventBus, newRRTrajectory(getEndOrientation(actions))
-//                    .strafeToLinearHeading(Vector2d(-93.0, 135.0), toRadians(0.0))
-//                    .build()
-//            )
-//        )
+
+        actions.add(
+            FollowRRTrajectory(
+                eventBus, newRRTrajectory(getEndOrientation(actions))
+                    .strafeToLinearHeading(Vector2d(-93.0, 135.0), toRadians(0.0))
+                    .build()
+            )
+        )
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
     }
