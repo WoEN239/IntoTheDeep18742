@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ActionsRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 
 open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
-    override fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = true, preInitOpModeName = "TeleOpMode")
+    override fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = false, preInitOpModeName = "TeleOpMode")
 
     override fun getCollector(): BaseCollector {
         val collector = BaseCollector(this,

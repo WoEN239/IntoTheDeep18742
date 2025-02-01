@@ -59,6 +59,10 @@ class HardwareOdometers : IRobotModule {
         _oldPositionLeft = _forwardOdometerLeft.realPosition
         _oldPositionRight = _forwardOdometerRight.realPosition
         _oldPositionSide = _sideOdometer.realPosition
+
+        _forwardOdometerLeft.reset()
+        _forwardOdometerRight.reset()
+        _sideOdometer.reset()
     }
 
     class UpdateHardwareOdometersEvent(

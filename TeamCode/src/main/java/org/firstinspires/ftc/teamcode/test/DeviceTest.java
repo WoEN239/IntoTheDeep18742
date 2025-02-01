@@ -26,7 +26,7 @@ public class DeviceTest extends LinearOpMode {
     public static String deviceName = "";
 
     public enum DeviceType {
-        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE
+        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE, CR_SERVO
     }
 
     public static DeviceType deviceType = DeviceType.NONE;
@@ -40,6 +40,7 @@ public class DeviceTest extends LinearOpMode {
         if (hardwareDevice instanceof IMU) return GYRO;
         if (hardwareDevice instanceof ColorSensor) return COLOR_SENSOR;
         if (hardwareDevice instanceof DistanceSensor) return DISTANCE_SENSOR;
+        if(hardwareDevice instanceof CRServo) return CR_SERVO;
         return NONE;
     }
 
@@ -72,6 +73,10 @@ public class DeviceTest extends LinearOpMode {
                         telemetry.addData("encoder vel", motor.getVelocity());
                         telemetry.addData("motor current", motor.getCurrent(CurrentUnit.AMPS));
                         motor.setPower(valueToSend);
+                        break;
+                    case CR_SERVO:
+                        CRServo serv = (CRServo) hardwareDevice;
+                        serv.setPower(valueToSend);
                         break;
                     case SERVO:
                         Servo servo = (Servo) hardwareDevice;

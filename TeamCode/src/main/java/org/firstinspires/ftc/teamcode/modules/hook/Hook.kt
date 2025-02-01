@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 
 class Hook: IRobotModule {
@@ -24,10 +25,10 @@ class Hook: IRobotModule {
         _leftHook = collector.devices.servoHookLeft
         _rightHook = collector.devices.servoHookRight
 
-        _leftHook.direction = DcMotorSimple.Direction.REVERSE
+        _rightHook.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(HookRun::class){
-            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER) {
                 _rightHook.power = Configs.HookConfig.HOOK_POWER
                 _leftHook.power = Configs.HookConfig.HOOK_POWER
             }
@@ -39,9 +40,9 @@ class Hook: IRobotModule {
         }
 
         bus.subscribe(HookRunRevers::class){
-            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC) {
-                _rightHook.power = Configs.HookConfig.HOOK_POWER
-                _leftHook.power = Configs.HookConfig.HOOK_POWER
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER) {
+                _rightHook.power = -Configs.HookConfig.HOOK_POWER
+                _leftHook.power = -Configs.HookConfig.HOOK_POWER
             }
         }
     }

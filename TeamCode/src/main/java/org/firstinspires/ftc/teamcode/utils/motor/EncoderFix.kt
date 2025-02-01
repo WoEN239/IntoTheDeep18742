@@ -34,10 +34,7 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
     init{
         UpdateHandler.addHandler(this)
 
-        if(encoder !is EncoderOnly) {
-            encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
+        reset()
     }
 
     private val _deltaTime = ElapsedTime()
@@ -59,5 +56,12 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
     override fun start() {
         _deltaTime.reset()
         _oldPosition = position
+    }
+
+    fun reset(){
+        if(encoder !is EncoderOnly) {
+            encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
     }
 }

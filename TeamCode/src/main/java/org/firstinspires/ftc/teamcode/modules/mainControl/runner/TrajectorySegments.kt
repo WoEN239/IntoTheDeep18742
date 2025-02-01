@@ -39,7 +39,6 @@ class TurnSegment(angle: Double, private val _startOrientation: Orientation): IT
     override fun duration() = _turn.duration
 }
 
-
 class RRTrajectorySegment(rawBuildedTrajectory: List<Trajectory>): ITrajectorySegment{
     private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
 

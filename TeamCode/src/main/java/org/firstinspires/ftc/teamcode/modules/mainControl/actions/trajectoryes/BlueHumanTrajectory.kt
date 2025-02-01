@@ -31,7 +31,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(startOrientation)
                                 .strafeToLinearHeading(
-                                    Vector2d(0.0, 74.0),
+                                    Vector2d(3.0, 76.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -56,8 +56,8 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-86.0, 121.5),
-                                    toRadians(-90.0 - 45.0)
+                                    Vector2d(-91.0, 120.5),
+                                    toRadians(-88.0 - 45.0)
                                 )
                                 .build()
                         )
@@ -73,7 +73,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
-        actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 30.0)))
+        actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 35.0)))
 
         actions.add(ParallelActions(arrayOf(
             arrayListOf(
@@ -83,7 +83,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(startOrientation)
                         .strafeToLinearHeading(
-                            Vector2d(-78.0 - 22.0, 118.0),
+                            Vector2d(-81.0 - 22.0, 119.0),
                             toRadians(-90.0 - 45.0)
                         )
                         .build()
@@ -93,7 +93,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
-        actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 30.0)))
+        actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 35.0)))
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
         /*
@@ -129,56 +129,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-93.0, 131.9),
-                                    toRadians(90.0)
-                                )
-                                .build()
-                        )
-                    ),
-                    arrayListOf(
-                        LiftAction(eventBus, IntakeManager.LiftPosition.TRANSPORT),
-                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_WALL)
-                    )
-                ), ParallelActions.ExitType.AND
-            )
-        )
-
-        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-
-        actions.add(
-            ParallelActions(
-                arrayOf(
-                    arrayListOf(
-                        FollowRRTrajectory(
-                            eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .splineToConstantHeading(
-                                    Vector2d(9.0, 90.0),
-                                    toRadians(-90.0)
-                                )
-                                .splineToConstantHeading(
-                                    Vector2d(9.0, 78.0),
-                                    toRadians(-90.0)
-                                )
-                                .build()
-                        )
-                    ),
-                    arrayListOf(
-                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER)
-                    )
-                ), ParallelActions.ExitType.AND
-            )
-        )
-
-        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
-
-        actions.add(
-            ParallelActions(
-                arrayOf(
-                    arrayListOf(
-                        FollowRRTrajectory(
-                            eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(
-                                    Vector2d(-93.0, 135.8),
+                                    Vector2d(-105.0, 132.5),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -205,7 +156,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                                     toRadians(-90.0)
                                 )
                                 .splineToConstantHeading(
-                                    Vector2d(12.0, 80.0),
+                                    Vector2d(12.0, 80.5),
                                     toRadians(-90.0)
                                 )
                                 .build()
@@ -220,15 +171,134 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
 
-        actions.add(FollowRRTrajectory(
-            eventBus, newRRTrajectory(getEndOrientation(actions))
-                .strafeToLinearHeading(
-                    Vector2d(0.0, 140.0),
-                    toRadians(0.0)
-                )
-                .strafeTo(Vector2d(-98.0, 140.0))
-                .build()
-        ))
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(-93.0, 140.6),
+                                    toRadians(90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        LiftAction(eventBus, IntakeManager.LiftPosition.TRANSPORT),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_WALL)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .splineToConstantHeading(
+                                    Vector2d(15.0, 82.0),
+                                    toRadians(-90.0)
+                                )
+                                .splineToConstantHeading(
+                                    Vector2d(15.0, 85.7),
+                                    toRadians(-90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(-93.0, 140.3),
+                                    toRadians(90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        LiftAction(eventBus, IntakeManager.LiftPosition.TRANSPORT),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_WALL)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .splineToConstantHeading(
+                                    Vector2d(24.0, 88.0),
+                                    toRadians(-90.0)
+                                )
+                                .splineToConstantHeading(
+                                    Vector2d(24.0, 91.7),
+                                    toRadians(-90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(-93.0, 142.0),
+                                    toRadians(90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, 200.0)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+
+//        actions.add(FollowRRTrajectory(
+//            eventBus, newRRTrajectory(getEndOrientation(actions))
+//                .strafeToLinearHeading(
+//                    Vector2d(0.0, 140.0),
+//                    toRadians(0.0)
+//                )
+//                .strafeTo(Vector2d(-98.0, 140.0))
+//                .build()
+//        ))
 
         eventBus.invoke(RunActionsEvent(actions))
     }
