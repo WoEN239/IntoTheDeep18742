@@ -45,10 +45,10 @@ object Configs {
         var BELT_RATIO = (1.0 / 20.0) * (26.0 / 19.0) //очень сомнительная вещь
 
         @JvmField
-        var LIFT_MAX_SPEED_K = 0.5
+        var LIFT_MAX_SPEED_K = 0.7
 
         @JvmField
-        var LIFT_MAX_ROTATE_SPEED_K = 0.5
+        var LIFT_MAX_ROTATE_SPEED_K = 0.7
 
         @JvmField
         var MAX_ROTATE_VELOCITY = 5.0
@@ -78,7 +78,7 @@ object Configs {
         var STEP_H = 0.6
 
         @JvmField
-        var ROTATE_P = 3.5
+        var ROTATE_P = 3.6
 
         @JvmField
         var ROTATE_SENS = 0.005
@@ -117,13 +117,13 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 14.0
+        var CLAMP_WALL_AIM_POS = 15.0
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 13.0
+        var CLAMP_WALL_CLAMPED_AIM_POS = 15.0
 
         @JvmField
         var CLAMP_WALL_CLAMPED_EXTENSION_POS = 250.0
@@ -135,7 +135,7 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 48.0
+        var UP_LAYER_UNCLAMP_AIM = 68.0
 
         @JvmField
         var UP_LAYER_UNCLAMP_EXTENSION = 890.0
@@ -144,10 +144,10 @@ object Configs {
         var CLAMP_CENTER_AIM = 0.00
 
         @JvmField
-        var UP_BASKED_AIM = 62.5
+        var UP_BASKED_AIM = 65.0
 
         @JvmField
-        var UP_LAYER_AIM = 48.0
+        var UP_LAYER_AIM = 68.0
 
         @JvmField
         var TRANSPORT_AIM = -5.00
@@ -162,10 +162,10 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
-        var UP_LAYER_EXTENSION = 330.00
+        var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.53, d = 0.015)
+        var AIM_PID = PIDConfig(0.44, d = 0.007, limitI = 0.2, i = 0.1)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.08)
@@ -204,7 +204,7 @@ object Configs {
         var MAX_POTENTIOMETER_VOLTAGE = 3.0
 
         @JvmField
-        var AIM_POTENTIOMETER_DIFFERENCE = -22.8
+        var AIM_POTENTIOMETER_DIFFERENCE = -17.8
 
         @JvmField
         var INIT_POS = 35.0
@@ -254,13 +254,13 @@ object Configs {
         var GAMEPADE_DIF_STEP = 20.0
 
         @JvmField
-        var MAX_DIF_POS_Y = 80.0
+        var MAX_DIF_POS_Y = 80.0 - 13.0
 
         @JvmField
         var DIF_DIFFERENCE_X = 135.0
 
         @JvmField
-        var DIF_DIFFERENCE_Y = 3.5
+        var DIF_DIFFERENCE_Y = 13.0
 
         @JvmField
         var GEAR_RATIO = 16.0 / 28.0
@@ -269,13 +269,13 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.39
+        var SERVO_CLAMP = 0.385
 
         @JvmField
         var SERVO_UNCLAMP = 0.73
 
         @JvmField
-        var CLAMP_TIME = 0.2
+        var CLAMP_TIME = 0.25
 
         @JvmField
         var UP_LAYER_DOWN_TIME = 0.3
@@ -338,7 +338,7 @@ object Configs {
         var HUMAN_ADD_DIF_POS_Y = -45.0
 
         @JvmField
-        var CLAMP_WALL_DIF_POS_X = 13.0
+        var CLAMP_WALL_DIF_POS_X = 16.0
 
         @JvmField
         var CLAMP_WALL_DIF_POS_Y = 0.0
@@ -422,13 +422,13 @@ object Configs {
         var HOOK_POWER = 1.0
 
         @JvmField
-        var ACTIVATION_TIME_SEC = 90.0
+        var ACTIVATION_TIME_SEC = 60.0
     }
 
     @Config
     internal object TelemetryConfig{
         @JvmField
-        var ENABLE = true
+        var ENABLE = false
 
         @JvmField
         var SEND_HZ = 30.0

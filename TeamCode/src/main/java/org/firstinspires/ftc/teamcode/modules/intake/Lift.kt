@@ -63,6 +63,8 @@ class Lift {
             Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
+        StaticTelemetry.addData("aim pos", getAimPos())
+
         deltaExtension += _deltaTime.seconds() * extensionVelocity
 
         deltaExtension = clamp(

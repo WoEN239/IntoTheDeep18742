@@ -60,13 +60,12 @@ class IntakeManager : IRobotModule {
                 _intake.clamp = it.pos
                 if (_liftPosition != LiftPosition.TRANSPORT) {
                     Timers.newTimer().start(Configs.IntakeConfig.CLAMP_TIME) {
-                        bus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
+                        setDownState()
 
                         isClampBusy = false
                     }
                 } else {
-                    bus.invoke(EventSetLiftPose(LiftPosition.TRANSPORT))
-
+                    setDownState()
                     isClampBusy = false
                 }
             }
@@ -163,33 +162,36 @@ class IntakeManager : IRobotModule {
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
                     _intake.setDifPos(xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X, yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y)
                     _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
                 } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
                     _intake.setDifPos(xRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_X, yRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_Y)
                     _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
                 } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
                     _intake.setDifPos(xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y)
                     _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
                 }
                 else if(it.pos == LiftPosition.CLAMP_WALL && _liftPosition == LiftPosition.TRANSPORT && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP){
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_WALL_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_WALL_EXTENSION_POS
                     _intake.setDifPos(xRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_X, yRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_Y)
                     _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
                 }
                 else if(it.pos == LiftPosition.HUMAN_ADD && _liftPosition == LiftPosition.TRANSPORT){
                     _lift.aimTargetPosition = Configs.LiftConfig.HUMAN_ADD_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.HUMAN_ADD_EXTENSION_POS
                     _intake.setDifPos(xRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_X, yRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_Y)
                     _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
                 }
                 else if (it.pos == LiftPosition.TRANSPORT)
                     setDownState()
-
-                _lift.deltaExtension = 0.0
             }
         }
 
@@ -249,6 +251,8 @@ class IntakeManager : IRobotModule {
             _intake.setDifPos(xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X, yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y)
 
         _liftPosition = LiftPosition.TRANSPORT
+
+        _lift.deltaExtension = 0.0
     }
 
     override fun start() {
