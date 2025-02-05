@@ -18,7 +18,7 @@ object Configs {
     @Config
     internal object ChargeConfig {
         @JvmField
-        var BATTERY_UPDATE_SEC = 0.05
+        var BATTERY_UPDATE_SEC = 1.0 / 10.0
     }
 
     @Config
@@ -84,16 +84,16 @@ object Configs {
         var ROTATE_SENS = 0.005
 
         @JvmField
-        var POSITION_P_X = 3.2
+        var POSITION_P_X = 3.3
 
         @JvmField
-        var POSITION_P_Y = 3.2
+        var POSITION_P_Y = 3.3
 
         @JvmField
-        var POSITION_SENS_X = 2.0
+        var POSITION_SENS_X = 1.0
 
         @JvmField
-        var POSITION_SENS_Y = 2.0
+        var POSITION_SENS_Y = 1.0
 
         @JvmField
         var POS_VELOCITY_SENS_X = 0.01
@@ -168,7 +168,7 @@ object Configs {
         var AIM_PID = PIDConfig(0.44, d = 0.007, limitI = 0.2, i = 0.1)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.08)
+        var EXTENSION_PID = PIDConfig(0.07)
 
         @JvmField
         var EXTENSION_SENS = 150.0
@@ -402,6 +402,9 @@ object Configs {
 
         @JvmField
         var DUAL_ODOMETER = false
+
+        @JvmField
+        var ROTATE_SENS = 1e-8
     }
 
     @Config
@@ -410,7 +413,7 @@ object Configs {
         var MERGE_COEF = 0.5
 
         @JvmField
-        var READ_HZ = 50.0
+        var READ_HZ = 10.0
 
         @JvmField
         var USE_GYRO = true
@@ -428,10 +431,10 @@ object Configs {
     @Config
     internal object TelemetryConfig{
         @JvmField
-        var ENABLE = false
+        var ENABLE = true
 
         @JvmField
-        var SEND_HZ = 30.0
+        var SEND_HZ = 10.0
 
         @JvmField
         var ROBOT_SIZE = Vec2(41.5, 38.8)

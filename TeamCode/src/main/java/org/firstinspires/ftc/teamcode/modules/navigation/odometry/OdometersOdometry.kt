@@ -11,6 +11,9 @@ import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 class OdometersOdometry : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
@@ -23,17 +26,31 @@ class OdometersOdometry : IRobotModule {
             val deltaLeftPosition = it.leftPosition - it.leftPositionOld
             val deltaRightPosition = it.rightPosition - it.rightPositionOld
             val deltaSidePosition = it.sidePosition - it.sidePositionOld
-            val deltaRotate = gyro.odometerRotate!! - _oldRotate
+            val deltaRotate = (gyro.odometerRotate!! - _oldRotate).angle
+
+            val deltaX = if(Configs.OdometryConfig.DUAL_ODOMETER)
+                deltaLeftPosition - (Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * deltaRotate)
+            else
+                (deltaLeftPosition + deltaRightPosition) / 2.0
+
+            val deltaY = deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate)
+
+            val deltaXCorrected: Double
+            val deltaYCorrected: Double
+
+            if(abs(deltaRotate) < Configs.OdometryConfig.ROTATE_SENS) {
+                deltaXCorrected = deltaX
+                deltaYCorrected = deltaY
+            }
+            else{
+                deltaXCorrected = deltaX * sin(deltaRotate) / deltaRotate + deltaY * (cos(deltaRotate) - 1.0) / deltaRotate
+                deltaYCorrected = deltaX * (1.0 - cos(deltaRotate)) / deltaRotate + deltaY * sin(deltaRotate) / deltaRotate
+            }
+
+            _position += Vec2(deltaXCorrected, deltaYCorrected
+            ).turn(gyro.oldRotation!!.angle)
 
             _oldRotate = gyro.odometerRotate!!
-
-            _position += Vec2(
-                if(Configs.OdometryConfig.DUAL_ODOMETER)
-                    deltaLeftPosition - (Configs.OdometryConfig.FORWARD_ODOMETER_LEFT_RADIUS * deltaRotate.angle)
-                else
-                    (deltaLeftPosition + deltaRightPosition) / 2.0,
-                deltaSidePosition - (Configs.OdometryConfig.SIDE_ODOMETER_RADIUS * deltaRotate.angle)
-            ).turn(gyro.rotation!!.angle/* - (gyro.oldRotation!!.angle - gyro.rotation!!.angle) * 0.5*/)
 
             val velocity = Vec2(
                 if(Configs.OdometryConfig.DUAL_ODOMETER)

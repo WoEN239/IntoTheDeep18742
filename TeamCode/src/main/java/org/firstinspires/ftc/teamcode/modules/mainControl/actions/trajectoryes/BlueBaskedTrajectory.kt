@@ -33,7 +33,7 @@ class BlueBaskedTrajectory : ITrajectoryBuilder {
                         arrayListOf(
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
-                                    .strafeToLinearHeading(Vector2d(136.6, 133.9), toRadians(-90.0 - 45.0))
+                                    .strafeToLinearHeading(Vector2d(135.0, 132.3), toRadians(-90.0 - 45.0))
                                     .build()
                             )
                         )

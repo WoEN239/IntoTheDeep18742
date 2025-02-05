@@ -31,7 +31,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(startOrientation)
                                 .strafeToLinearHeading(
-                                    Vector2d(3.0, 76.3),
+                                    Vector2d(19.2, 77.7),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -56,7 +56,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-91.0, 120.5),
+                                    Vector2d(-74.7, 118.2),
                                     toRadians(-88.0 - 45.0)
                                 )
                                 .build()
@@ -81,9 +81,9 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
             ),
             arrayListOf(
                 FollowRRTrajectory(
-                    eventBus, newRRTrajectory(startOrientation)
+                    eventBus, newRRTrajectory(getEndOrientation(actions))
                         .strafeToLinearHeading(
-                            Vector2d(-81.0 - 22.0, 119.0),
+                            Vector2d(-98.2, 116.7),
                             toRadians(-90.0 - 45.0)
                         )
                         .build()
@@ -129,7 +129,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-105.0, 132.5),
+                                    Vector2d(-83.5, 135.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -151,14 +151,8 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                     arrayListOf(
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .splineToConstantHeading(
-                                    Vector2d(12.0, 90.0),
-                                    toRadians(-90.0)
-                                )
-                                .splineToConstantHeading(
-                                    Vector2d(12.0, 80.5),
-                                    toRadians(-90.0)
-                                )
+                                .setTangent(toRadians(0.0))
+                                .splineToConstantHeading(Vector2d(12.0, 81.8), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -178,7 +172,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-93.0, 140.6),
+                                    Vector2d(-81.1, 144.1),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -200,14 +194,8 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                     arrayListOf(
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .splineToConstantHeading(
-                                    Vector2d(15.0, 82.0),
-                                    toRadians(-90.0)
-                                )
-                                .splineToConstantHeading(
-                                    Vector2d(15.0, 85.7),
-                                    toRadians(-90.0)
-                                )
+                                .setTangent(toRadians(0.0))
+                                .splineToConstantHeading(Vector2d(9.2, 100.2), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -227,7 +215,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-93.0, 140.3),
+                                    Vector2d(-78.1, 151.0),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -249,12 +237,9 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                     arrayListOf(
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .setTangent(toRadians(0.0))
                                 .splineToConstantHeading(
-                                    Vector2d(24.0, 88.0),
-                                    toRadians(-90.0)
-                                )
-                                .splineToConstantHeading(
-                                    Vector2d(24.0, 91.7),
+                                    Vector2d(10.1, 102.9),
                                     toRadians(-90.0)
                                 )
                                 .build()
@@ -276,14 +261,14 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-93.0, 142.0),
-                                    toRadians(90.0)
+                                    Vector2d(-42.0, 147.4),
+                                    toRadians(90.0 + 45.0)
                                 )
                                 .build()
                         )
                     ),
                     arrayListOf(
-                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, 200.0)
+                        LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, 1000.0)
                     )
                 ), ParallelActions.ExitType.AND
             )
