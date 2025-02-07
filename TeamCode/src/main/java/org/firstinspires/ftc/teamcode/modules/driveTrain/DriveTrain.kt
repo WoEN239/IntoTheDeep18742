@@ -61,7 +61,7 @@ class DriveTrain : IRobotModule {
             var rot = it.rotate
 
             if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT) {
-                dir *= Vec2(Configs.DriveTrainConfig.LIFT_MAX_SPEED_K)
+                dir *= Configs.DriveTrainConfig.LIFT_MAX_SPEED_K
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_ROTATE_SPEED_K
             }
 

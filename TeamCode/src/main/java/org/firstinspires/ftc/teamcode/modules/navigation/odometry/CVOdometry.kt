@@ -122,7 +122,7 @@ class CVOdometry : IRobotModule {
         if(normalDetections == 0)
             return
 
-        _eventBus.invoke(UpdateCVOdometryEvent((posSum / Vec2(normalDetections.toDouble())) -
+        _eventBus.invoke(UpdateCVOdometryEvent((posSum / normalDetections.toDouble()) -
                 Configs.CVOdometryConfig.CAMERA_POSITION.turn(_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)))
     }
 }

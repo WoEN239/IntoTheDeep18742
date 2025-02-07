@@ -42,4 +42,9 @@ data class Vec2(@JvmField var x: Double, @JvmField var y: Double) {
     operator fun minus(vec: Vec2) = Vec2(x - vec.x, y - vec.y)
     operator fun times(vec: Vec2) = Vec2(x * vec.x, y * vec.y)
     operator fun div(vec: Vec2) = Vec2(x / vec.x, y / vec.y)
+
+    operator fun times(value: Double) = Vec2(x * value, y * value)
+    operator fun div(value: Double) = Vec2(x / value, y / value)
+    operator fun plus(value: Double) = Vec2(x + value, y + value)
+    operator fun minus(value: Double) = Vec2(x - value, y - value)
 }
