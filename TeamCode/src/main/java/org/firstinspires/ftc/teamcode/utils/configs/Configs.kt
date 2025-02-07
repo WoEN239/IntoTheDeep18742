@@ -69,6 +69,9 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
+        var ROAD_RUNNER_VELOCITY = 90.0
+
+        @JvmField
         var STEP_X = 9.5
 
         @JvmField

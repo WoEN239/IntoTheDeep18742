@@ -31,7 +31,7 @@ class TrajectorySegmentRunner : IRobotModule {
             Pose2d(startOrientation.x, startOrientation.y, startOrientation.angl.angle), 0.0,
             MinVelConstraint(
                 listOf(
-                    TranslationalVelConstraint(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY - 30.0),
+                    TranslationalVelConstraint(Configs.RoadRunnerConfig.ROAD_RUNNER_VELOCITY),
                     AngularVelConstraint(Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
                 )
             ),
