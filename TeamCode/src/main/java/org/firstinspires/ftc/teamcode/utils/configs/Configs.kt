@@ -120,13 +120,13 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 15.0
+        var CLAMP_WALL_AIM_POS = 19.0
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 15.0
+        var CLAMP_WALL_CLAMPED_AIM_POS = 19.0
 
         @JvmField
         var CLAMP_WALL_CLAMPED_EXTENSION_POS = 250.0
@@ -138,7 +138,7 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 68.0
+        var UP_LAYER_UNCLAMP_AIM = 47.0
 
         @JvmField
         var UP_LAYER_UNCLAMP_EXTENSION = 890.0
@@ -150,7 +150,7 @@ object Configs {
         var UP_BASKED_AIM = 65.0
 
         @JvmField
-        var UP_LAYER_AIM = 68.0
+        var UP_LAYER_AIM = 47.0
 
         @JvmField
         var TRANSPORT_AIM = -5.00
@@ -168,7 +168,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.00
 
         @JvmField
-        var AIM_PID = PIDConfig(0.44, d = 0.007, limitI = 0.2, i = 0.1)
+        var AIM_PID = PIDConfig(0.4, d = 0.009, limitI = 0.2, i = 0.1)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.07)
@@ -231,7 +231,7 @@ object Configs {
 
         @JvmField
         var BLUE_STICK_DETECT =
-            StickDetectConfig(101.0, 165.0, 0.0, 120.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.BLUE, Color.GREEN)
+            StickDetectConfig(101.0, 0.0, 0.0, 120.0, 255.0, 255.0, 20.0, 35.0, 40.0, Color.BLUE, Color.GREEN)
 
         @JvmField
         var RED_STICK_DETECT =
@@ -245,14 +245,23 @@ object Configs {
         var DETECT_THREADS_COUNT = 3
 
         @JvmField
-        var MIN_STICK_AREA = 1000.0
+        var MIN_STICK_AREA = 38000.0
 
         @JvmField
-        var COMPRESSION_COEF = 0.65
+        var COMPRESSION_COEF = 0.5
     }
 
     @Config
     internal object IntakeConfig {
+        @JvmField
+        var CAMERA_SENS = 8.0
+
+        @JvmField
+        var CAMERA_UPDATE_HZ = 5.0
+
+        @JvmField
+        var CAMERA_ENABLE_TIMER = 0.5
+
         @JvmField
         var GAMEPADE_DIF_STEP = 20.0
 
@@ -272,10 +281,10 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.385
+        var SERVO_CLAMP = 0.34
 
         @JvmField
-        var SERVO_UNCLAMP = 0.73
+        var SERVO_UNCLAMP = 0.675
 
         @JvmField
         var CLAMP_TIME = 0.25
@@ -341,7 +350,7 @@ object Configs {
         var HUMAN_ADD_DIF_POS_Y = -45.0
 
         @JvmField
-        var CLAMP_WALL_DIF_POS_X = 16.0
+        var CLAMP_WALL_DIF_POS_X = 14.5
 
         @JvmField
         var CLAMP_WALL_DIF_POS_Y = 0.0

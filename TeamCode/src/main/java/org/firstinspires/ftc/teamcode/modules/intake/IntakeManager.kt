@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.intake
 
 import androidx.core.math.MathUtils.clamp
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
@@ -8,8 +9,10 @@ import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.camera.Camera.RequestAllianceDetectedSticks
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 class IntakeManager : IRobotModule {
@@ -22,7 +25,7 @@ class IntakeManager : IRobotModule {
     class PreviousDifPos : IEvent
     class EventSetExtensionPosition(val pos: Double) : IEvent
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
-    class RequestIntakeAtTarget(var target: Boolean? = null): IEvent
+    class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -52,7 +55,7 @@ class IntakeManager : IRobotModule {
 
         var isClampBusy = false
 
-        if(collector.isAuto)
+        if (collector.isAuto)
             _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
 
         bus.subscribe(EventSetClampPose::class) {
@@ -70,7 +73,7 @@ class IntakeManager : IRobotModule {
                 }
             }
 
-            if(!isClampBusy) {
+            if (!isClampBusy) {
                 isClampBusy = true
 
                 if (_liftPosition != LiftPosition.HUMAN_ADD) {
@@ -136,61 +139,78 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(NextDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
                 _intake.setDifPos(
                     _intake.xPos,
-                    clamp(_intake.yPos + Configs.IntakeConfig.GAMEPADE_DIF_STEP,
+                    clamp(
+                        _intake.yPos + Configs.IntakeConfig.GAMEPADE_DIF_STEP,
                         -Configs.IntakeConfig.MAX_DIF_POS_Y,
                         Configs.IntakeConfig.MAX_DIF_POS_Y
-                    ))
+                    )
+                )
         }
 
         bus.subscribe(PreviousDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER && !Configs.IntakeConfig.USE_CAMERA)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
                 _intake.setDifPos(
                     _intake.xPos,
-                    clamp(_intake.yPos - Configs.IntakeConfig.GAMEPADE_DIF_STEP,
+                    clamp(
+                        _intake.yPos - Configs.IntakeConfig.GAMEPADE_DIF_STEP,
                         -Configs.IntakeConfig.MAX_DIF_POS_Y,
                         Configs.IntakeConfig.MAX_DIF_POS_Y
-                    ))
+                    )
+                )
         }
 
         bus.subscribe(EventSetLiftPose::class) {
-            if(_lift.atTarget() || collector.isAuto) {
+            if (_lift.atTarget() || collector.isAuto) {
                 if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
-                    _intake.setDifPos(xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X, yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y)
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y
+                    )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
                 } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
-                    _intake.setDifPos(xRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_X, yRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_Y)
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.UP_LAYER_DIF_POS_Y
+                    )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
                 } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
-                    _intake.setDifPos(xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y)
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
+                    )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                }
-                else if(it.pos == LiftPosition.CLAMP_WALL && _liftPosition == LiftPosition.TRANSPORT && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP){
+                    _cameraEnableTimer.reset()
+                } else if (it.pos == LiftPosition.CLAMP_WALL && _liftPosition == LiftPosition.TRANSPORT && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_WALL_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_WALL_EXTENSION_POS
-                    _intake.setDifPos(xRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_X, yRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_Y)
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.CLAMP_WALL_DIF_POS_Y
+                    )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                }
-                else if(it.pos == LiftPosition.HUMAN_ADD && _liftPosition == LiftPosition.TRANSPORT){
+                } else if (it.pos == LiftPosition.HUMAN_ADD && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.HUMAN_ADD_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.HUMAN_ADD_EXTENSION_POS
-                    _intake.setDifPos(xRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_X, yRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_Y)
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.HUMAN_ADD_DIF_POS_Y
+                    )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                }
-                else if (it.pos == LiftPosition.TRANSPORT)
+                } else if (it.pos == LiftPosition.TRANSPORT)
                     setDownState()
             }
         }
@@ -199,23 +219,33 @@ class IntakeManager : IRobotModule {
             it.target = _lift.atTarget() && !isClampBusy
         }
 
-        bus.subscribe(RequestIntakeAtTarget::class){
+        bus.subscribe(RequestIntakeAtTarget::class) {
             it.target = _intake.atTarget() && !isClampBusy
         }
     }
+
+    private val _cameraUpdateTimer = ElapsedTime()
+    private val _cameraEnableTimer = ElapsedTime()
 
     override fun update() {
         _lift.update()
 
         if (Configs.IntakeConfig.USE_CAMERA) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+                if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
+                    return
+
+                _cameraUpdateTimer.reset()
+
                 _eventBus.invoke(Camera.SetStickDetectEnable(true))
 
                 val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
                 val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
 
-                if (allianceSticks.isEmpty() && yellowSticks.isEmpty())
+                if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
+                    //_intake.setDifPos(Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, 0.0)
                     return
+                }
 
                 var closesdStick = allianceSticks[0]
                 var closesdStickL = Double.MAX_VALUE
@@ -230,25 +260,42 @@ class IntakeManager : IRobotModule {
                     }
                 }
 
-                _intake.setDifPos(90.0, closesdStick.angl.toDegree())
+                val rot = closesdStick.angl.toDegree()
 
+                if (abs(rot) > Configs.IntakeConfig.CAMERA_SENS)
+                    _intake.setDifPos(
+                        Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, clamp(
+                            _intake.yPos + rot,
+                            -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                            Configs.IntakeConfig.MAX_DIF_POS_Y
+                        )
+                    )
             } else
                 _eventBus.invoke(Camera.SetStickDetectEnable(false))
         }
     }
 
-    fun setDownState(){
+    fun setDownState() {
         _lift.aimTargetPosition = Configs.LiftConfig.TRANSPORT_AIM
         _lift.extensionTargetPosition = Configs.LiftConfig.TRANSPORT_EXTENSION
 
         if (_liftPosition == LiftPosition.UP_BASKED) {
-            _intake.setDifPos(xRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_X, yRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_Y)
+            _intake.setDifPos(
+                xRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_X,
+                yRot = Configs.IntakeConfig.UP_BASKET_DOWN_MOVE_DIF_POS_Y
+            )
 
             Timers.newTimer().start(Configs.IntakeConfig.UP_BASKET_DOWN_TIME) {
-                _intake.setDifPos(xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X, yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y)
+                _intake.setDifPos(
+                    xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X,
+                    yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y
+                )
             }
         } else
-            _intake.setDifPos(xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X, yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y)
+            _intake.setDifPos(
+                xRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_X,
+                yRot = Configs.IntakeConfig.TRANSPORT_DIF_POS_Y
+            )
 
         _liftPosition = LiftPosition.TRANSPORT
 

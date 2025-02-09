@@ -31,7 +31,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(startOrientation)
                                 .strafeToLinearHeading(
-                                    Vector2d(19.2, 77.7),
+                                    Vector2d(14.2, 72.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -56,8 +56,8 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-74.7, 118.2),
-                                    toRadians(-88.0 - 45.0)
+                                    Vector2d(-86.2, 122.2),
+                                    toRadians(-90.0 - 45.0)
                                 )
                                 .build()
                         )
@@ -83,7 +83,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(getEndOrientation(actions))
                         .strafeToLinearHeading(
-                            Vector2d(-98.2, 116.7),
+                            Vector2d(-105.2, 123.2),
                             toRadians(-90.0 - 45.0)
                         )
                         .build()
@@ -129,7 +129,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-83.5, 135.3),
+                                    Vector2d(-90.5, 134.5),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -152,7 +152,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(12.0, 81.8), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(12.0, 80.8), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -172,7 +172,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-81.1, 144.1),
+                                    Vector2d(-90.1, 143.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -195,7 +195,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 100.2), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(9.2, 91.2), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -215,7 +215,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-78.1, 151.0),
+                                    Vector2d(-87.1, 153.2),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -239,7 +239,7 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
                                 .splineToConstantHeading(
-                                    Vector2d(10.1, 102.9),
+                                    Vector2d(10.1, 98.9),
                                     toRadians(-90.0)
                                 )
                                 .build()
@@ -284,6 +284,8 @@ class BlueHumanTrajectory : ITrajectoryBuilder {
 //                .strafeTo(Vector2d(-98.0, 140.0))
 //                .build()
 //        ))
+
+        //Warning: Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. processAllClasses() should only be called by the system. Any additional calls are ignored.
 
         eventBus.invoke(RunActionsEvent(actions))
     }

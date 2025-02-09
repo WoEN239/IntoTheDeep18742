@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.collectors.events
 import kotlin.reflect.KClass
 
 class EventBus {
-    private val _events = mutableMapOf<KClass<*>, ArrayList<(IEvent) -> Unit>>()
+    private val _events = hashMapOf<KClass<*>, ArrayList<(IEvent) -> Unit>>()
 
     fun <T: IEvent> subscribe(event: KClass<T>, callback: (T) -> Unit){
         if(_events[event] == null)

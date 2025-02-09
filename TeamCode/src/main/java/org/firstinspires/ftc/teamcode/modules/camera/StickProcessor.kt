@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.configs.Configs.CameraConfig.StickDetectConfig
 import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.VisionProcessor
@@ -46,8 +47,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     var allianceSticks = AtomicReference<Array<Orientation>>(arrayOf())
     var yellowSticks = AtomicReference<Array<Orientation>>(arrayOf())
 
-    var enableDetect = AtomicReference<Boolean>(false)
-    var gameColor = AtomicReference<BaseCollector.GameColor>(BaseCollector.GameColor.BLUE)
+    var enableDetect = AtomicReference(false)
+    var gameColor = AtomicReference(BaseCollector.GameColor.BLUE)
 
     private var lastFrame: AtomicReference<Bitmap> =
         AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
@@ -64,7 +65,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     private var _resizedFrame = Mat()
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
-        if(!enableDetect.get()) {
+        if (!enableDetect.get()) {
             allianceSticks.set(arrayOf())
 
             return frame
@@ -93,7 +94,14 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             val res = Array(rectsList.size) {
                 val pos = rectsList[it].center
 
-                Orientation(Vec2(pos.x, pos.y), Angle.ofDeg(rectsList[it].angle))
+                Orientation(
+                    Vec2(pos.x, pos.y), Angle.ofDeg(
+                        (if (rectsList[it].size.width < rectsList[it].size.height)
+                            rectsList[it].angle
+                        else
+                            rectsList[it].angle - 90.0)
+                    )
+                )
             }
 
             drawRotatedRects(
@@ -106,8 +114,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             return res
         }
 
-        allianceSticks.set(getSticks(if(gameColor.get() == BaseCollector.GameColor.RED) Configs.CameraConfig.RED_STICK_DETECT else Configs.CameraConfig.BLUE_STICK_DETECT))
-        yellowSticks.set(getSticks(Configs.CameraConfig.YELLOW_STICK_DETECT))
+        allianceSticks.set(getSticks(if (gameColor.get() == BaseCollector.GameColor.RED) Configs.CameraConfig.RED_STICK_DETECT else Configs.CameraConfig.BLUE_STICK_DETECT))
+        //yellowSticks.set(getSticks(Configs.CameraConfig.YELLOW_STICK_DETECT))
 
         val b = Bitmap.createBitmap(
             _drawFrame.width(),
@@ -152,6 +160,10 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
                 Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
             )
         )
+//
+//        if(parameters.CONTOUR_COLOR == Color.BLUE){
+//            _drawFrame = hsvFrame
+//        }
 
         val contours = arrayListOf<MatOfPoint>()
 
@@ -159,8 +171,9 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         val tasks = arrayListOf<Callable<RotatedRect?>>()
 
-        for (i in contours)
+        for (i in contours) {
             tasks.add { processContour(i) }
+        }
 
         val result = _executorService.invokeAll(tasks)
 
@@ -185,7 +198,10 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
             putText(
                 mat,
-                i.angle.toInt().toString(),
+                ((if (i.size.width < i.size.height)
+                    i.angle
+                else
+                    i.angle - 90.0)).toInt().toString(),
                 i.center,
                 5,
                 2.0,
@@ -198,6 +214,9 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         val points = MatOfPoint2f()
 
         points.fromArray(*contour.toArray())
+
+        if(contour.toArray().size <= 3)
+            return null
 
         val rect = minAreaRect(points)
 
