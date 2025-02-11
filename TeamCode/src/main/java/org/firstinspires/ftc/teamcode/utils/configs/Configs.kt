@@ -451,4 +451,13 @@ object Configs {
         @JvmField
         var ROBOT_SIZE = Vec2(41.5, 38.8)
     }
+
+    @Config
+    internal object CurrentSensor{
+        @JvmField
+        var DEFAULT_SENSOR_MAX_CURRENT = 5.0
+
+        @JvmField
+        var DEFAULT_BACKGROUND_CURRENT = 0.0
+    }
 }
