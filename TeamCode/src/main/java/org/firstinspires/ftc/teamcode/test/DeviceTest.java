@@ -11,6 +11,10 @@ import com.qualcomm.robotcore.eventloop.opmode.*;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
+import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine;
+import org.firstinspires.ftc.teamcode.utils.configs.Configs;
+import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor;
+
 import java.util.Arrays;
 
 /**
@@ -26,12 +30,14 @@ public class DeviceTest extends LinearOpMode {
     public static String deviceName = "";
 
     public enum DeviceType {
-        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE, CR_SERVO
+        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE, CR_SERVO, LED_LINE, CURRENT_SENSOR
     }
 
     public static DeviceType deviceType = DeviceType.NONE;
 
     private DeviceType getDeviceClass(HardwareDevice hardwareDevice) {
+        if(hardwareDevice instanceof Servo && customDriver) return LED_LINE;
+        if(hardwareDevice instanceof AnalogInput && customDriver) return CURRENT_SENSOR;
         if (hardwareDevice instanceof DcMotorEx) return DeviceType.DC_MOTOR;
         if (hardwareDevice instanceof DigitalChannel) return DIGITAL_CHANNEL;
         if (hardwareDevice instanceof VoltageSensor) return BATTERY_VOLTAGE;
@@ -46,6 +52,7 @@ public class DeviceTest extends LinearOpMode {
 
     public static boolean sendValue = true;
     public static double valueToSend = 0;
+    public static boolean customDriver = false;
 
     @Override
     public void runOpMode(){
@@ -64,6 +71,7 @@ public class DeviceTest extends LinearOpMode {
                 telemetry.addData("Device type", deviceType);
                 telemetry.addLine(hardwareDevice.getConnectionInfo());
                 telemetry.addData("send value?", sendValue);
+
                 switch (deviceType) {
                     case DC_MOTOR:
                         DcMotorEx motor = (DcMotorEx) hardwareDevice;
@@ -116,6 +124,12 @@ public class DeviceTest extends LinearOpMode {
                         DistanceSensor distanceSensor = (DistanceSensor) hardwareDevice;
                         telemetry.addData("range (cm)", distanceSensor.getDistance(DistanceUnit.CM));
                         break;
+                    case LED_LINE:
+                        LEDLine line = new LEDLine((Servo)hardwareDevice);
+                        line.setPower(valueToSend);
+                    case CURRENT_SENSOR:
+                        CurrentSensor sensor = new CurrentSensor((AnalogInput) hardwareDevice, Configs.CurrentSensor.DEFAULT_SENSOR_MAX_CURRENT, Configs.CurrentSensor.DEFAULT_BACKGROUND_CURRENT);
+                        telemetry.addData("amps:", sensor.getCurrent());
                     case NONE:
                     default:
                         break;
