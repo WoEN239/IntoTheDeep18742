@@ -13,16 +13,13 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.actions.IAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ITransportAction.Companion.getEndOrientation
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.LiftAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ParallelActions
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.TurnAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitLiftAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner.Companion.newRRTrajectory
-import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
-import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import java.lang.Math.toRadians
 
-class BlueBaskedTrajectory : ITrajectoryBuilder {
+class BaskedTrajectory : ITrajectoryBuilder {
     override fun    runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
         val actions = arrayListOf<IAction>()
 

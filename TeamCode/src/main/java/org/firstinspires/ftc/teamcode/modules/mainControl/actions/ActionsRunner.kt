@@ -4,16 +4,9 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
-import org.firstinspires.ftc.teamcode.modules.intake.Intake
-import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BlueBaskedTrajectory
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BlueHumanTrajectory
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.RedBaskedTrajectory
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.RedHumanTrajectory
-import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BaskedTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.HumanTrajectory
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
-import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class ActionsRunner: IRobotModule {
     class RunActionsEvent(val actions: List<IAction>): IEvent
@@ -35,10 +28,10 @@ class ActionsRunner: IRobotModule {
         }
 
         when(collector.parameters.oldStartPosition){
-            BaseCollector.GameStartPosition.RED_HUMAN -> RedHumanTrajectory()
-            BaseCollector.GameStartPosition.RED_BASKET -> RedBaskedTrajectory()
-            BaseCollector.GameStartPosition.BLUE_HUMAN -> BlueHumanTrajectory()
-            BaseCollector.GameStartPosition.BLUE_BASKET -> BlueBaskedTrajectory()
+            BaseCollector.GameStartPosition.RED_HUMAN -> HumanTrajectory()
+            BaseCollector.GameStartPosition.RED_BASKET -> BaskedTrajectory()
+            BaseCollector.GameStartPosition.BLUE_HUMAN -> HumanTrajectory()
+            BaseCollector.GameStartPosition.BLUE_BASKET -> BaskedTrajectory()
             BaseCollector.GameStartPosition.NONE -> throw Exception("none is not start auto pos")
         }.runTrajectory(bus, Orientation(collector.parameters.oldStartPosition.position, collector.parameters.oldStartPosition.angle))
     }
