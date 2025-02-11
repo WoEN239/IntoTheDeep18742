@@ -459,5 +459,8 @@ object Configs {
 
         @JvmField
         var DEFAULT_BACKGROUND_CURRENT = 0.0
+
+        @JvmField
+        var ANALOG_INPUT_MAX_VOLTADGE = 5.0
     }
 }
