@@ -29,7 +29,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(startOrientation)
                                 .strafeToLinearHeading(
-                                    Vector2d(14.2, 72.3),
+                                    Vector2d(14.2, 72.5),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -54,7 +54,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-86.2, 122.2),
+                                    Vector2d(-88.2, 120.2),
                                     toRadians(-90.0 - 45.0)
                                 )
                                 .build()
@@ -81,13 +81,15 @@ class HumanTrajectory : ITrajectoryBuilder {
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(getEndOrientation(actions))
                         .strafeToLinearHeading(
-                            Vector2d(-105.2, 123.2),
+                            Vector2d(-108.2, 118.2),
                             toRadians(-90.0 - 45.0)
                         )
                         .build()
                 )
             )
         ), ParallelActions.ExitType.AND))
+
+        actions.add(WaitAction(0.1))
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
@@ -127,7 +129,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-90.5, 134.5),
+                                    Vector2d(-95.5, 130.5),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -150,7 +152,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(12.0, 80.8), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(12.0, 82.0), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -170,7 +172,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-90.1, 143.3),
+                                    Vector2d(-90.1, 141.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -193,7 +195,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 91.2), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(9.2, 92.4), toRadians(-90.0))
                                 .build()
                         )
                     ),
@@ -213,7 +215,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-87.1, 153.2),
+                                    Vector2d(-87.1, 151.2),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -237,7 +239,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
                                 .splineToConstantHeading(
-                                    Vector2d(10.1, 98.9),
+                                    Vector2d(10.1, 100.3),
                                     toRadians(-90.0)
                                 )
                                 .build()

@@ -49,8 +49,8 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
             MergeOdometry(),
             DriveTrain(),
             IntakeManager(),
-            Camera(),
-            CVOdometry()
+            /*Camera(),
+            CVOdometry()*/
         ))
     }
 

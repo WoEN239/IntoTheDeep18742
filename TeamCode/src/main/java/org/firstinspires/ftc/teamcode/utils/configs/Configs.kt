@@ -120,16 +120,16 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 19.0
+        var CLAMP_WALL_AIM_POS = 19.7
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 19.0
+        var CLAMP_WALL_CLAMPED_AIM_POS = 24.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_EXTENSION_POS = 250.0
+        var CLAMP_WALL_CLAMPED_EXTENSION_POS = 260.0
 
         @JvmField
         var HUMAN_ADD_AIM_POS = 0.0
@@ -138,10 +138,10 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 47.0
+        var UP_LAYER_UNCLAMP_AIM = 55.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 890.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 19.0
 
         @JvmField
         var CLAMP_CENTER_AIM = 0.00
@@ -150,7 +150,7 @@ object Configs {
         var UP_BASKED_AIM = 65.0
 
         @JvmField
-        var UP_LAYER_AIM = 47.0
+        var UP_LAYER_AIM = 55.0
 
         @JvmField
         var TRANSPORT_AIM = -5.00
@@ -165,7 +165,7 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
-        var UP_LAYER_EXTENSION = 0.00
+        var UP_LAYER_EXTENSION = 19.0
 
         @JvmField
         var AIM_PID = PIDConfig(0.4, d = 0.009, limitI = 0.2, i = 0.1)
@@ -272,7 +272,7 @@ object Configs {
         var DIF_DIFFERENCE_X = 135.0
 
         @JvmField
-        var DIF_DIFFERENCE_Y = 13.0
+        var DIF_DIFFERENCE_Y = 4.0
 
         @JvmField
         var GEAR_RATIO = 16.0 / 28.0
@@ -281,16 +281,16 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.34
+        var SERVO_CLAMP = 0.28
 
         @JvmField
-        var SERVO_UNCLAMP = 0.675
+        var SERVO_UNCLAMP = 0.59
 
         @JvmField
         var CLAMP_TIME = 0.25
 
         @JvmField
-        var UP_LAYER_DOWN_TIME = 0.3
+        var UP_LAYER_DOWN_TIME = 0.8
 
         @JvmField
         var CLAMP_WALL_UP_TIME = 0.1
@@ -338,7 +338,7 @@ object Configs {
         var UP_LAYER_DIF_POS_Y = 0.0
 
         @JvmField
-        var UP_LAYER_CLAMPED_DIF_POS_X = -80.0
+        var UP_LAYER_CLAMPED_DIF_POS_X = 90.0
 
         @JvmField
         var UP_LAYER_CLAMPED_DIF_POS_Y = 0.0

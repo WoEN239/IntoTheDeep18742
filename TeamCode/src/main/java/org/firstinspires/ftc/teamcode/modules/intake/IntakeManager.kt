@@ -63,9 +63,9 @@ class IntakeManager : IRobotModule {
                 _intake.clamp = it.pos
                 if (_liftPosition != LiftPosition.TRANSPORT) {
                     Timers.newTimer().start(Configs.IntakeConfig.CLAMP_TIME) {
-                        setDownState()
-
                         isClampBusy = false
+
+                        setDownState()
                     }
                 } else {
                     setDownState()
