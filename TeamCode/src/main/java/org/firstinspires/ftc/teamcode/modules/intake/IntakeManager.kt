@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.camera.Camera.RequestAllianceDetectedSticks
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import kotlin.math.PI
@@ -38,6 +39,8 @@ class IntakeManager : IRobotModule {
 
     private lateinit var _eventBus: EventBus
 
+    private lateinit var _clampCurrentSensor: CurrentSensor
+
     private val _intake = Intake()
     private val _lift = Lift()
 
@@ -53,6 +56,8 @@ class IntakeManager : IRobotModule {
         _lift.init(collector)
         _intake.init(collector)
 
+        _clampCurrentSensor = collector.devices.clampCurrentSensor
+
         var isClampBusy = false
 
         if (collector.isAuto)
@@ -62,10 +67,13 @@ class IntakeManager : IRobotModule {
             fun setPos() {
                 _intake.clamp = it.pos
                 if (_liftPosition != LiftPosition.TRANSPORT) {
-                    Timers.newTimer().start(Configs.IntakeConfig.CLAMP_TIME) {
-                        isClampBusy = false
+                    Timers.newTimer().start({_intake.atTarget()}) {
+                        if(_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT)
+                            setDownState()
+                        else
+                            _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-                        setDownState()
+                        isClampBusy = false
                     }
                 } else {
                     setDownState()
@@ -163,7 +171,7 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(EventSetLiftPose::class) {
-            if (_lift.atTarget() || collector.isAuto) {
+            if ((_lift.atTarget() || collector.isAuto) && !isClampBusy) {
                 if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION

@@ -11,6 +11,6 @@ class CurrentSensor(val analogInput: AnalogInput,
         get() {
             val value = ((analogInput.voltage / Configs.CurrentSensor.ANALOG_INPUT_MAX_VOLTADGE) * 2.0 - 1.0) * maxSensorCurrent
 
-            return value - backgroundCurrent * sign(value)
+            return value - backgroundCurrent
         }
 }

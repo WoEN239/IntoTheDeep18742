@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
 import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
 
@@ -68,4 +69,6 @@ class Devices(hardMap: HardwareMap)  {
 
     val leftLight = LEDLine(hardMap.get("leftLEDLine") as Servo)
     val rightLight = LEDLine(hardMap.get("rightLEDLine") as Servo)
+
+    val clampCurrentSensor = CurrentSensor(hardMap.get("clampCurrentSensor") as AnalogInput)
 }

@@ -204,10 +204,10 @@ object Configs {
         var MAX_POTENTIOMETER_ANGLE = 300.0
 
         @JvmField
-        var MAX_POTENTIOMETER_VOLTAGE = 3.0
+        var MAX_POTENTIOMETER_VOLTAGE = 5.0
 
         @JvmField
-        var AIM_POTENTIOMETER_DIFFERENCE = -17.8
+        var AIM_POTENTIOMETER_DIFFERENCE = -53.16
 
         @JvmField
         var INIT_POS = 35.0
@@ -253,6 +253,9 @@ object Configs {
 
     @Config
     internal object IntakeConfig {
+        @JvmField
+        var CLAMP_CURRENT = 0.1
+
         @JvmField
         var CAMERA_SENS = 8.0
 
