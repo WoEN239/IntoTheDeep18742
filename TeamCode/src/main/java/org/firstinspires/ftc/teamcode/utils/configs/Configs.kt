@@ -18,7 +18,7 @@ object Configs {
     @Config
     internal object ChargeConfig {
         @JvmField
-        var BATTERY_UPDATE_SEC = 1.0 / 10.0
+        var BATTERY_UPDATE_HZ = 10.0
     }
 
     @Config

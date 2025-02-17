@@ -27,7 +27,7 @@ class Battery (private val _voltageSensor: VoltageSensor){
     fun voltageToPower(voltage: Double) = voltage / currentVoltage
 
     fun update(){
-        if(_oldUpdateTime.seconds() > Configs.ChargeConfig.BATTERY_UPDATE_SEC) {
+        if(_oldUpdateTime.seconds() > 1.0 / Configs.ChargeConfig.BATTERY_UPDATE_HZ) {
             currentVoltage = _voltageSensor.voltage
 
             _oldUpdateTime.reset()
@@ -60,7 +60,7 @@ class Devices(hardMap: HardwareMap)  {
     val liftAimMotor = MotorOnly(hardMap.get("rightOdometer") as DcMotorEx)
     val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
 
-    val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
+    //val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
 
     val servoHookLeft = hardMap.get("servoHookLeft") as CRServo
     val servoHookRight = hardMap.get("servoHookRight") as CRServo
