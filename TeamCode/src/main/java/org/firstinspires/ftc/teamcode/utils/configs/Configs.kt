@@ -254,6 +254,9 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var USE_CURRENT_SENSOR = true
+
+        @JvmField
         var CLAMP_CURRENT = 0.1
 
         @JvmField
@@ -288,9 +291,6 @@ object Configs {
 
         @JvmField
         var SERVO_UNCLAMP = 0.59
-
-        @JvmField
-        var CLAMP_TIME = 0.25
 
         @JvmField
         var UP_LAYER_DOWN_TIME = 0.8

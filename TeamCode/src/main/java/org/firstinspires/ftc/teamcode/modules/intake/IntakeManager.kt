@@ -68,7 +68,7 @@ class IntakeManager : IRobotModule {
                 _intake.clamp = it.pos
                 if (_liftPosition != LiftPosition.TRANSPORT) {
                     Timers.newTimer().start({_intake.atTarget()}) {
-                        if(_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT)
+                        if(_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT || _liftPosition != LiftPosition.CLAMP_CENTER || !Configs.IntakeConfig.USE_CURRENT_SENSOR)
                             setDownState()
                         else
                             _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
