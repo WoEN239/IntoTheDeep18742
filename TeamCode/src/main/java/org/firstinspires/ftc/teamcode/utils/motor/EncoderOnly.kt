@@ -24,6 +24,11 @@ class EncoderOnly(private val _motor: DcMotorEx): DcMotorEx {
         _motor.mode = RunMode.RUN_WITHOUT_ENCODER
     }
 
+    fun reset(){
+        _motor.mode = RunMode.STOP_AND_RESET_ENCODER
+        _motor.mode = RunMode.RUN_WITHOUT_ENCODER
+    }
+
     private var _direction = Direction.FORWARD
 
     override fun getManufacturer() = _motor.manufacturer

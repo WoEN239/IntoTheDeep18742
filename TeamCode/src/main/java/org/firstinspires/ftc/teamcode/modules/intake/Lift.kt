@@ -34,6 +34,8 @@ class Lift {
     var aimTargetPosition = 0.0
     var extensionTargetPosition = 0.0
 
+    private var _isResetExtension = false
+
     fun init(collector: BaseCollector) {
         _battery = collector.devices.battery
 
@@ -45,10 +47,7 @@ class Lift {
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
-        if (collector.isAuto) {
-            _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
+        _isResetExtension = collector.isAuto
     }
 
     fun getCurrentExtensionPos() = _extensionMotor.currentPosition.toDouble()
@@ -116,5 +115,10 @@ class Lift {
 
     fun start() {
         _deltaTime.reset()
+
+        if (_isResetExtension) {
+            _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
     }
 }
