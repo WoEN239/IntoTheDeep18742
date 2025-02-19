@@ -27,6 +27,7 @@ class IntakeManager : IRobotModule {
     class EventSetExtensionPosition(val pos: Double) : IEvent
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
     class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
+    class ClampDefendedEvent() : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -64,32 +65,17 @@ class IntakeManager : IRobotModule {
             _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
 
         bus.subscribe(EventSetClampPose::class) {
-            fun setPos() {
-                _intake.clamp = it.pos
-                if (_liftPosition != LiftPosition.TRANSPORT) {
-                    Timers.newTimer().start({!_intake.atTarget()}) {
-                        Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
-                            if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) || _liftPosition != LiftPosition.CLAMP_CENTER || !Configs.IntakeConfig.USE_CURRENT_SENSOR)
-                                setDownState()
-                            else
-                                _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
-
-                            isClampBusy = false
-                        }
-                    }
-                } else {
-                    setDownState()
-                    isClampBusy = false
-                }
-            }
-
             if (!isClampBusy) {
                 isClampBusy = true
 
-                if (_liftPosition != LiftPosition.HUMAN_ADD) {
-                    if (_liftPosition != LiftPosition.UP_LAYER && _liftPosition != LiftPosition.CLAMP_WALL) {
-                        setPos()
-                    } else if (_liftPosition == LiftPosition.UP_LAYER) {
+                when (_liftPosition) {
+                    LiftPosition.HUMAN_ADD -> {
+                        _intake.clamp = it.pos
+
+                        isClampBusy = false
+                    }
+
+                    LiftPosition.UP_LAYER -> {
                         _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_UNCLAMP_AIM
                         _lift.extensionTargetPosition =
                             Configs.LiftConfig.UP_LAYER_UNCLAMP_EXTENSION
@@ -99,28 +85,79 @@ class IntakeManager : IRobotModule {
                         )
 
                         Timers.newTimer().start(Configs.IntakeConfig.UP_LAYER_DOWN_TIME) {
-                            setPos()
+                            _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                            setDownState()
                         }
-                    } else {
-                        _intake.clamp = it.pos
-                        Timers.newTimer().start({ !_intake.atTarget() }) {
-                            _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_WALL_CLAMPED_AIM_POS
-                            _lift.extensionTargetPosition =
-                                Configs.LiftConfig.CLAMP_WALL_CLAMPED_EXTENSION_POS
-                            _intake.setDifPos(
-                                Configs.IntakeConfig.CLAMP_WALL_CLAMPED_DIF_POS_X,
-                                Configs.IntakeConfig.CLAMP_WALL_CLAMPED_DIF_POS_Y
-                            )
+                    }
 
-                            Timers.newTimer().start(Configs.IntakeConfig.CLAMP_WALL_UP_TIME) {
-                                setPos()
+                    LiftPosition.CLAMP_WALL -> {
+                        _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+
+                        Timers.newTimer().start({ !_intake.atTarget() }) {
+                            Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
+                                if (_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT ||
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR
+                                ) {
+
+                                    _lift.aimTargetPosition =
+                                        Configs.LiftConfig.CLAMP_WALL_CLAMPED_AIM_POS
+                                    _lift.extensionTargetPosition =
+                                        Configs.LiftConfig.CLAMP_WALL_CLAMPED_EXTENSION_POS
+
+                                    _intake.setDifPos(
+                                        Configs.IntakeConfig.CLAMP_WALL_CLAMPED_DIF_POS_X,
+                                        Configs.IntakeConfig.CLAMP_WALL_CLAMPED_DIF_POS_Y
+                                    )
+
+                                    Timers.newTimer()
+                                        .start(Configs.IntakeConfig.CLAMP_WALL_UP_TIME) {
+                                            setDownState()
+                                        }
+                                } else {
+                                    bus.invoke(ClampDefendedEvent())
+
+                                    _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+
+                                    isClampBusy = false
+                                }
                             }
                         }
                     }
-                } else {
-                    _intake.clamp = it.pos
 
-                    isClampBusy = false
+                    LiftPosition.TRANSPORT -> {
+                        _intake.clamp = it.pos
+                        setDownState()
+                        isClampBusy = false
+                    }
+
+                    LiftPosition.CLAMP_CENTER -> {
+                        _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+
+                        Timers.newTimer().start({ !_intake.atTarget() }) {
+                            Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
+                                if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
+                                            && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR)
+                                    setDownState()
+                                else {
+                                    _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+
+                                    bus.invoke(ClampDefendedEvent())
+                                }
+
+                                isClampBusy = false
+                            }
+                        }
+                    }
+
+                    LiftPosition.UP_BASKED -> {
+                        _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+
+                        Timers.newTimer().start({ !_intake.atTarget() }){
+                            setDownState()
+                            isClampBusy = false
+                        }
+                    }
                 }
             }
         }
