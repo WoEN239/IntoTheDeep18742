@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class Gamepad : IRobotModule {
@@ -73,7 +74,7 @@ class Gamepad : IRobotModule {
         _layerOld = _gamepad.dpad_right
         _clampWallOld = _gamepad.dpad_left
 
-        _eventBus.invoke(IntakeManager.EventSetExtensionVel((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
+        _eventBus.invoke(IntakeManager.EventSetExtensionVel(((_gamepad.right_trigger - _gamepad.left_trigger) * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS)))
 
         if(_gamepad.right_bumper && !_oldNextDifPos)
             _eventBus.invoke(IntakeManager.NextDifPos())

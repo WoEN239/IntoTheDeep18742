@@ -67,13 +67,15 @@ class IntakeManager : IRobotModule {
             fun setPos() {
                 _intake.clamp = it.pos
                 if (_liftPosition != LiftPosition.TRANSPORT) {
-                    Timers.newTimer().start({_intake.atTarget()}) {
-                        if(_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT || _liftPosition != LiftPosition.CLAMP_CENTER || !Configs.IntakeConfig.USE_CURRENT_SENSOR)
-                            setDownState()
-                        else
-                            _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                    Timers.newTimer().start({!_intake.atTarget()}) {
+                        Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
+                            if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) || _liftPosition != LiftPosition.CLAMP_CENTER || !Configs.IntakeConfig.USE_CURRENT_SENSOR)
+                                setDownState()
+                            else
+                                _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-                        isClampBusy = false
+                            isClampBusy = false
+                        }
                     }
                 } else {
                     setDownState()
@@ -237,6 +239,8 @@ class IntakeManager : IRobotModule {
 
     override fun update() {
         _lift.update()
+
+        StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
         if (Configs.IntakeConfig.USE_CAMERA) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER) {

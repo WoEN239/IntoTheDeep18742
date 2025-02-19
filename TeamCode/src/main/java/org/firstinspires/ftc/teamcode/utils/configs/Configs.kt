@@ -138,7 +138,7 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 55.0
+        var UP_LAYER_UNCLAMP_AIM = 100.0
 
         @JvmField
         var UP_LAYER_UNCLAMP_EXTENSION = 19.0
@@ -147,10 +147,10 @@ object Configs {
         var CLAMP_CENTER_AIM = 0.00
 
         @JvmField
-        var UP_BASKED_AIM = 65.0
+        var UP_BASKED_AIM = 100.0
 
         @JvmField
-        var UP_LAYER_AIM = 55.0
+        var UP_LAYER_AIM = 100.0
 
         @JvmField
         var TRANSPORT_AIM = -5.00
@@ -168,7 +168,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 19.0
 
         @JvmField
-        var AIM_PID = PIDConfig(0.4, d = 0.009, limitI = 0.2, i = 0.1)
+        var AIM_PID = PIDConfig(0.55, d = 0.03, limitI = 0.4, i = 0.3)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.07)
@@ -180,7 +180,7 @@ object Configs {
         var AIM_SENS = 25.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 20.0
+        var TRIGET_SLOW_POS = 30.0
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
@@ -210,7 +210,7 @@ object Configs {
         var AIM_POTENTIOMETER_DIFFERENCE = -53.16
 
         @JvmField
-        var INIT_POS = 35.0
+        var INIT_POS = 50.0
     }
 
     @Config
@@ -254,10 +254,16 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var CURRENT_SENSOR_DELAY = 0.085
+
+        @JvmField
         var USE_CURRENT_SENSOR = true
 
         @JvmField
-        var CLAMP_CURRENT = 0.1
+        var CLAMP_CURRENT = 0.08
+
+        @JvmField
+        var CLAMP_CURRENT_TWO = 0.8
 
         @JvmField
         var CAMERA_SENS = 8.0
@@ -272,7 +278,7 @@ object Configs {
         var GAMEPADE_DIF_STEP = 20.0
 
         @JvmField
-        var MAX_DIF_POS_Y = 80.0 - 13.0
+        var MAX_DIF_POS_Y = 80.0
 
         @JvmField
         var DIF_DIFFERENCE_X = 135.0
@@ -287,7 +293,7 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.28
+        var SERVO_CLAMP = 0.27
 
         @JvmField
         var SERVO_UNCLAMP = 0.59
@@ -461,7 +467,7 @@ object Configs {
         var DEFAULT_SENSOR_MAX_CURRENT = 5.0
 
         @JvmField
-        var DEFAULT_BACKGROUND_CURRENT = 0.0
+        var DEFAULT_BACKGROUND_CURRENT = -0.198
 
         @JvmField
         var ANALOG_INPUT_MAX_VOLTADGE = 5.0

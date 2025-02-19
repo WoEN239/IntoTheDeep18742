@@ -9,7 +9,7 @@ class CurrentSensor(val analogInput: AnalogInput,
                     val backgroundCurrent: Double = Configs.CurrentSensor.DEFAULT_BACKGROUND_CURRENT) {
     val current: Double
         get() {
-            val value = ((analogInput.voltage / Configs.CurrentSensor.ANALOG_INPUT_MAX_VOLTADGE) * 2.0 - 1.0) * maxSensorCurrent
+            val value = ((analogInput.voltage / Configs.CurrentSensor.ANALOG_INPUT_MAX_VOLTADGE) * 2.0 - 1.0) * -maxSensorCurrent
 
             return value - backgroundCurrent
         }
