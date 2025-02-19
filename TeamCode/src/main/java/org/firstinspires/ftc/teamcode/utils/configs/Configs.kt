@@ -254,6 +254,9 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var GAMEPAD_DEFENDED_RUMPLE_MS = 100
+
+        @JvmField
         var CURRENT_SENSOR_DELAY = 0.085
 
         @JvmField

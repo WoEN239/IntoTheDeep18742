@@ -19,6 +19,10 @@ class Gamepad : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _gamepad = collector.robot.gamepad1
         _eventBus = bus
+
+        bus.subscribe(IntakeManager.ClampDefendedEvent::class){
+            _gamepad.rumble(Configs.IntakeConfig.GAMEPAD_DEFENDED_RUMPLE_MS)
+        }
     }
 
     private var _oldClamp = false
