@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes
 
+import com.acmerobotics.roadrunner.AccelConstraint
+import com.acmerobotics.roadrunner.ProfileAccelConstraint
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
@@ -14,6 +16,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ParallelAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.TurnAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner.Companion.newRRTrajectory
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
@@ -30,7 +33,8 @@ class HumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(startOrientation)
                                 .strafeToLinearHeading(
                                     Vector2d(14.2, 72.5),
-                                    toRadians(90.0)
+                                    toRadians(90.0),
+                                    accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
                                 )
                                 .build()
                         )
@@ -54,7 +58,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-88.2, 120.2),
+                                    Vector2d(-78.2, 120.2),
                                     toRadians(-90.0 - 45.0)
                                 )
                                 .build()
@@ -81,7 +85,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                 FollowRRTrajectory(
                     eventBus, newRRTrajectory(getEndOrientation(actions))
                         .strafeToLinearHeading(
-                            Vector2d(-108.2, 118.2),
+                            Vector2d(-98.2, 118.2),
                             toRadians(-90.0 - 45.0)
                         )
                         .build()
@@ -129,7 +133,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-95.5, 130.5),
+                                    Vector2d(-95.5, 132.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -152,7 +156,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(12.0, 82.0), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(12.0, 81.0), toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL))
                                 .build()
                         )
                     ),
@@ -172,7 +176,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-90.1, 141.3),
+                                    Vector2d(-90.1, 142.8),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -195,7 +199,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 92.4), toRadians(-90.0))
+                                .splineToConstantHeading(Vector2d(9.2, 91.4), toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL))
                                 .build()
                         )
                     ),
@@ -215,7 +219,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-87.1, 151.2),
+                                    Vector2d(-87.1, 152.3),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -239,8 +243,8 @@ class HumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
                                 .splineToConstantHeading(
-                                    Vector2d(10.1, 100.3),
-                                    toRadians(-90.0)
+                                    Vector2d(8.1, 97.8),
+                                    toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
                                 )
                                 .build()
                         )

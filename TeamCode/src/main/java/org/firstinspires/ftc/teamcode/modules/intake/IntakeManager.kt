@@ -87,6 +87,8 @@ class IntakeManager : IRobotModule {
                         Timers.newTimer().start(Configs.IntakeConfig.UP_LAYER_DOWN_TIME) {
                             _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
                             setDownState()
+
+                            isClampBusy = false
                         }
                     }
 
@@ -96,7 +98,7 @@ class IntakeManager : IRobotModule {
                         Timers.newTimer().start({ !_intake.atTarget() }) {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if (_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT ||
-                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto
                                 ) {
 
                                     _lift.aimTargetPosition =
@@ -112,6 +114,7 @@ class IntakeManager : IRobotModule {
                                     Timers.newTimer()
                                         .start(Configs.IntakeConfig.CLAMP_WALL_UP_TIME) {
                                             setDownState()
+                                            isClampBusy = false
                                         }
                                 } else {
                                     bus.invoke(ClampDefendedEvent())
@@ -137,7 +140,8 @@ class IntakeManager : IRobotModule {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
                                             && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
-                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR)
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto
+                                    )
                                     setDownState()
                                 else {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
