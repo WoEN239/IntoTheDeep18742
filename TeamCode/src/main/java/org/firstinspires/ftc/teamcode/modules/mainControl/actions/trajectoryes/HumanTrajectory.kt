@@ -23,6 +23,8 @@ import java.lang.Math.toRadians
 
 class HumanTrajectory : ITrajectoryBuilder {
     override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
+        val layerAccelConstrain = ProfileAccelConstraint(-150.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
+
         val actions = arrayListOf<IAction>()
 
         actions.add(
@@ -34,7 +36,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                                 .strafeToLinearHeading(
                                     Vector2d(14.2, 72.5),
                                     toRadians(90.0),
-                                    accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
+                                    accelConstraintOverride = layerAccelConstrain
                                 )
                                 .build()
                         )
@@ -100,31 +102,6 @@ class HumanTrajectory : ITrajectoryBuilder {
         actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 35.0)))
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
-        /*
-                actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(-90.0 - 45.0)))
-
-                actions.add(
-                    FollowRRTrajectory(
-                        eventBus, newRRTrajectory(getEndOrientation(actions))
-                            .strafeTo(Vector2d(-78.0 - 27.0 - 25.0, 122.0))
-                            .build()
-                    )
-                )
-
-                actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-
-                actions.add(
-                    FollowRRTrajectory(
-                        eventBus, newRRTrajectory(getEndOrientation(actions))
-                            .strafeToLinearHeading(
-                                Vector2d(-73.0, 124.0),
-                                toRadians(180.0 - 45.0)
-                            )
-                            .build()
-                    )
-                )
-
-                actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))*/
 
         actions.add(
             ParallelActions(
@@ -133,7 +110,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-95.5, 132.3),
+                                    Vector2d(-95.5, 132.1),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -156,7 +133,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(12.0, 81.0), toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL))
+                                .splineToConstantHeading(Vector2d(12.0, 81.0), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
                                 .build()
                         )
                     ),
@@ -176,7 +153,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-90.1, 142.8),
+                                    Vector2d(-90.1, 142.6),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -199,7 +176,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 91.4), toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL))
+                                .splineToConstantHeading(Vector2d(9.2, 91.4), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
                                 .build()
                         )
                     ),
@@ -219,7 +196,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-87.1, 152.3),
+                                    Vector2d(-87.1, 152.1),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -244,7 +221,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                                 .setTangent(toRadians(0.0))
                                 .splineToConstantHeading(
                                     Vector2d(8.1, 97.8),
-                                    toRadians(-90.0), accelConstraintOverride = ProfileAccelConstraint(-180.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
+                                    toRadians(-90.0), accelConstraintOverride = layerAccelConstrain
                                 )
                                 .build()
                         )
@@ -277,19 +254,6 @@ class HumanTrajectory : ITrajectoryBuilder {
                 ), ParallelActions.ExitType.AND
             )
         )
-
-
-//        actions.add(FollowRRTrajectory(
-//            eventBus, newRRTrajectory(getEndOrientation(actions))
-//                .strafeToLinearHeading(
-//                    Vector2d(0.0, 140.0),
-//                    toRadians(0.0)
-//                )
-//                .strafeTo(Vector2d(-98.0, 140.0))
-//                .build()
-//        ))
-
-        //Warning: Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. Class processing had already started when registerFilter() was called. You must register your class filter before processAllClasses() is called in FtcRobotControllerActivity. processAllClasses() should only be called by the system. Any additional calls are ignored.
 
         eventBus.invoke(RunActionsEvent(actions))
     }
