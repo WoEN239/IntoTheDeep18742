@@ -72,15 +72,8 @@ class DriveTrain : IRobotModule {
         }
 
         bus.subscribe(SetDriveCmEvent::class){
-            var clampedDirLength = clamp(it.direction.length(), 0.0, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
-            val dirRot = it.direction.rot()
-
-            _targetDirectionVelocity = Vec2(clampedDirLength, 0.0).setRot(dirRot)
-            _targetRotateVelocity = clamp(
-                it.rotate,
-                -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY,
-                Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY
-            )
+            _targetDirectionVelocity = it.direction
+            _targetRotateVelocity = it.rotate
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){

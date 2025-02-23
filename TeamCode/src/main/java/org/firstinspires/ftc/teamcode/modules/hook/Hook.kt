@@ -28,7 +28,7 @@ class Hook: IRobotModule {
         _rightHook.direction = DcMotorSimple.Direction.REVERSE
 
         bus.subscribe(HookRun::class){
-            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER) {
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC/* && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER*/) {
                 _rightHook.power = Configs.HookConfig.HOOK_POWER
                 _leftHook.power = Configs.HookConfig.HOOK_POWER
             }
@@ -40,7 +40,7 @@ class Hook: IRobotModule {
         }
 
         bus.subscribe(HookRunRevers::class){
-            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER) {
+            if(_gameTimer.seconds() > Configs.HookConfig.ACTIVATION_TIME_SEC/* && bus.invoke(IntakeManager.RequestLiftPosEvent()).pos == IntakeManager.LiftPosition.UP_LAYER*/) {
                 _rightHook.power = -Configs.HookConfig.HOOK_POWER
                 _leftHook.power = -Configs.HookConfig.HOOK_POWER
             }

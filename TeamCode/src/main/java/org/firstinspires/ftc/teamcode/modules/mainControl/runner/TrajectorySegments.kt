@@ -26,7 +26,7 @@ interface ITrajectorySegment {
 
 class TurnSegment(angle: Double, private val _startOrientation: Orientation): ITrajectorySegment{
     private val _turn = TimeTurn(Pose2d(_startOrientation.x, _startOrientation.y, _startOrientation.angl.angle), angle,
-        TurnConstraints(Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, -Configs.DriveTrainConfig.ROTATE_ACCEL, Configs.DriveTrainConfig.ROTATE_ACCEL))
+        TurnConstraints(Configs.RoadRunnerConfig.ROAD_RUNNER_ROTATE_VELOCITY, -Configs.RoadRunnerConfig.ROAD_RUNNER_ROTATE_VELOCITY, Configs.DriveTrainConfig.ROTATE_ACCEL))
 
     override fun isEnd(time: Double) = time > duration()
 

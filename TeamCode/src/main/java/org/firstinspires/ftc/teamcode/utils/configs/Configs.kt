@@ -69,6 +69,9 @@ object Configs {
     @Config
     internal object RoadRunnerConfig {
         @JvmField
+        var ROAD_RUNNER_ROTATE_VELOCITY = 4.0
+
+        @JvmField
         var ROAD_RUNNER_VELOCITY = 90.0
 
         @JvmField
@@ -120,13 +123,13 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 11.0
+        var CLAMP_WALL_AIM_POS = 8.6
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 30.0
+        var CLAMP_WALL_CLAMPED_AIM_POS = 8.5
 
         @JvmField
         var CLAMP_WALL_CLAMPED_EXTENSION_POS = 260.0
@@ -141,7 +144,7 @@ object Configs {
         var UP_LAYER_UNCLAMP_AIM = 100.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 65.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 20.0
 
         @JvmField
         var CLAMP_CENTER_AIM = 0.00
@@ -165,10 +168,10 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
-        var UP_LAYER_EXTENSION = 65.0
+        var UP_LAYER_EXTENSION = 20.0
 
         @JvmField
-        var AIM_PID = PIDConfig(0.55, d = 0.005, limitI = 0.4, i = 0.3)
+        var AIM_PID = PIDConfig(0.7, d = 0.02, limitI = 0.4, i = 0.3)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.07)
@@ -180,7 +183,7 @@ object Configs {
         var AIM_SENS = 25.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 30.0
+        var TRIGET_SLOW_POS = 8.0
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
@@ -254,6 +257,9 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var MAX_DEFENDED_INTEGRATIOS = 2
+
+        @JvmField
         var GAMEPAD_DEFENDED_RUMPLE_MS = 190
 
         @JvmField
@@ -263,7 +269,7 @@ object Configs {
         var USE_CURRENT_SENSOR = true
 
         @JvmField
-        var CLAMP_CURRENT = 0.08
+        var CLAMP_CURRENT = 0.05
 
         @JvmField
         var CLAMP_CURRENT_TWO = 1.0
@@ -299,7 +305,7 @@ object Configs {
         var SERVO_CLAMP = 0.27
 
         @JvmField
-        var SERVO_UNCLAMP = 0.59
+        var SERVO_UNCLAMP = 0.62
 
         @JvmField
         var UP_LAYER_DOWN_TIME = 0.6
@@ -344,7 +350,7 @@ object Configs {
         var CLAMP_CENTER_DIF_POS_Y = 0.0
 
         @JvmField
-        var UP_LAYER_DIF_POS_X = -40.0
+        var UP_LAYER_DIF_POS_X = -25.0
 
         @JvmField
         var UP_LAYER_DIF_POS_Y = 0.0
@@ -449,7 +455,7 @@ object Configs {
         var HOOK_POWER = 1.0
 
         @JvmField
-        var ACTIVATION_TIME_SEC = 60.0
+        var ACTIVATION_TIME_SEC = 1.0
     }
 
     @Config

@@ -60,6 +60,7 @@ class IntakeManager : IRobotModule {
         _clampCurrentSensor = collector.devices.clampCurrentSensor
 
         var isClampBusy = false
+        var integrations = 0
 
         if (collector.isAuto)
             _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
@@ -98,7 +99,8 @@ class IntakeManager : IRobotModule {
                         Timers.newTimer().start({ !_intake.atTarget() }) {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if (_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT ||
-                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto ||
+                                    integrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
                                 ) {
 
                                     _lift.aimTargetPosition =
@@ -122,6 +124,7 @@ class IntakeManager : IRobotModule {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
                                     isClampBusy = false
+                                    integrations++
                                 }
                             }
                         }
@@ -140,11 +143,14 @@ class IntakeManager : IRobotModule {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
                                             && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
-                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto    ||
+                                    integrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
                                     )
                                     setDownState()
                                 else {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+
+                                    integrations++
 
                                     bus.invoke(ClampDefendedEvent())
                                 }
@@ -243,6 +249,7 @@ class IntakeManager : IRobotModule {
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
                     _cameraEnableTimer.reset()
+                    integrations = 0
                 } else if (it.pos == LiftPosition.CLAMP_WALL && _liftPosition == LiftPosition.TRANSPORT && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_WALL_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_WALL_EXTENSION_POS
@@ -252,6 +259,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
+                    integrations = 0
                 } else if (it.pos == LiftPosition.HUMAN_ADD && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.HUMAN_ADD_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.HUMAN_ADD_EXTENSION_POS
