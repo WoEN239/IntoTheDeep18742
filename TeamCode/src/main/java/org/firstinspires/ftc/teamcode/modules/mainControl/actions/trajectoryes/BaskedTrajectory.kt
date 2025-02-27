@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
 
 class BaskedTrajectory : ITrajectoryBuilder {
-    override fun    runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
+    override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
         val actions = arrayListOf<IAction>()
 
         fun runToBasket(startOrientation: Orientation) {
@@ -30,11 +30,13 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         arrayListOf(
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
-                                    .strafeToLinearHeading(Vector2d(135.0, 132.3), toRadians(-90.0 - 45.0))
+                                    .strafeToLinearHeading(
+                                        Vector2d(135.0, 132.3),
+                                        toRadians(-90.0 - 45.0)
+                                    )
                                     .build()
                             )
-                        )
-                        ,
+                        ),
                         arrayListOf(
                             WaitAction(0.1),
                             LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
@@ -45,23 +47,37 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         }
 
-        fun basket() {
-            actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
+        fun basket(extension: Double = -1.0): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
 
-            actions.add(WaitLiftAction(eventBus))
+            acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
+
+            acts.add(WaitLiftAction(eventBus))
+
+            if (extension > 0.0)
+                acts.add(
+                    LiftAction(
+                        eventBus,
+                        IntakeManager.LiftPosition.CLAMP_CENTER,
+                        extension
+                    )
+                )
+
+            return acts
         }
 
-        fun clampStick(extension: Double, isDif: Boolean = false){
-            actions.add(WaitLiftAction(eventBus))
+
+        fun clampStick(extension: Double, isDif: Boolean = false) {
+            /*actions.add(WaitLiftAction(eventBus))
 
             actions.add(WaitAction(0.15))
 
-            actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, extension))
+            actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, extension))*/
 
             actions.add(WaitLiftAction(eventBus))
 
-            if(isDif)
-                for(i in 0..2)
+            if (isDif)
+                for (i in 0..2)
                     actions.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
 
             actions.add(WaitAction(0.1))
@@ -72,76 +88,63 @@ class BaskedTrajectory : ITrajectoryBuilder {
         }
 
         runToBasket(startOrientation)
-        basket()
 
         actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .strafeToLinearHeading(Vector2d(119.6, 126.9), toRadians(-90.0))
-                    .build()
+            ParallelActions(
+                arrayOf(
+                    basket(950.0), arrayListOf(
+                        WaitAction(0.1),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(Vector2d(119.6, 126.9), toRadians(-90.0))
+                                .build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
             )
         )
 
         clampStick(950.0)
         runToBasket(getEndOrientation(actions))
 
-        basket()
-
         actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .strafeToLinearHeading(Vector2d(142.1, 119.6), toRadians(-90.0))
-                    .build()
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        WaitAction(0.1),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(Vector2d(142.1, 119.6), toRadians(-90.0))
+                                .build()
+                        )
+                    ), basket(700.0)
+                ), ParallelActions.ExitType.AND
             )
         )
 
         clampStick(800.0)
         runToBasket(getEndOrientation(actions))
-        basket()
-
         actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .strafeToLinearHeading(Vector2d(137.7, 106.7), toRadians(-90.0 + 39.5))
-                    .build()
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        WaitAction(0.1),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(137.7, 106.7),
+                                    toRadians(-90.0 + 39.5)
+                                )
+                                .build()
+                        )
+                    ), basket(780.0)
+                ), ParallelActions.ExitType.AND
             )
         )
 
         clampStick(780.0, true)
         runToBasket(getEndOrientation(actions))
-        basket()
-//
-//        actions.add(
-//            FollowRRTrajectory(
-//                eventBus, newRRTrajectory(getEndOrientation(actions))
-//                    .strafeToLinearHeading(Vector2d(105.8, 132.8), toRadians(180.0))
-//                    .build()
-//            )
-//        )
-//
-//        clampStick(700.0)
-//
-//        actions.add(
-//            ParallelActions(
-//                arrayOf(
-//                    arrayListOf(
-//                        FollowRRTrajectory(
-//                            eventBus, newRRTrajectory(startOrientation)
-//                                .strafeToLinearHeading(Vector2d(136.2, 128.2), toRadians(-90.0 - 45.0))
-//                                .build()
-//                        )
-//                    )
-//                    ,
-//                    arrayListOf(
-//                        WaitAction(0.1),
-//                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
-//                    )
-//                ),
-//                ParallelActions.ExitType.AND
-//            )
-//        )
-//
-//        basket()
+        actions.addAll(basket())
 
         actions.add(
             FollowRRTrajectory(

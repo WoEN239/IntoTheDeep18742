@@ -289,6 +289,7 @@ class IntakeManager : IRobotModule {
     override fun update() {
         _lift.update()
 
+        StaticTelemetry.addData("lift at target", _lift.atTarget())
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
         if (Configs.IntakeConfig.USE_CAMERA) {

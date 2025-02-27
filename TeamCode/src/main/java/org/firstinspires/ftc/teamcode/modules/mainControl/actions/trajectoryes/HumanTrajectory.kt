@@ -114,7 +114,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(-90.0))
                                 .splineToLinearHeading(
-                                    Pose2d(Vector2d(-95.5, 130.5 ),
+                                    Pose2d(Vector2d(-95.5, 131.0),
                                     toRadians(90.0)),
                                     toRadians(180.0 - 35.0)
                                 )
@@ -158,7 +158,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-90.1, 141.6),
+                                    Vector2d(-90.1, 139.6),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -181,7 +181,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 91.4), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
+                                .splineToConstantHeading(Vector2d(9.2, 91.2), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
                                 .build()
                         )
                     ),
@@ -201,7 +201,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-87.1, 151.1),
+                                    Vector2d(-87.1, 149.1),
                                     toRadians(90.0)
                                 )
                                 .build()
@@ -247,7 +247,7 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(-42.0, 147.4),
+                                    Vector2d(-42.0, 140.4),
                                     toRadians(90.0 + 45.0)
                                 )
                                 .build()

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
+import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import kotlin.math.abs
@@ -57,12 +58,14 @@ class Lift {
     var deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
-    fun getAimPos() = _aimPotentiometer.voltage /
+    fun getRawAimPos() = _aimPotentiometer.voltage /
             Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
             Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        StaticTelemetry.addData("aim pos", getAimPos())
+        val aimPos = getRawAimPos()
+
+        StaticTelemetry.addData("aimPos", aimPos)
 
         deltaExtension += _deltaTime.seconds() * extensionVelocity
 
@@ -87,16 +90,16 @@ class Lift {
 
         val targetDefencedExtensionPos: Double
 
-        if (abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
+        if (abs(targetAimPos - aimPos) > Configs.LiftConfig.AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
         else
             targetDefencedExtensionPos = targetExtensionPos
 
-        _aimErr = targetDefencedAimPos - getAimPos()
+        _aimErr = targetDefencedAimPos - aimPos
         _extensionErr = (targetDefencedExtensionPos + deltaExtension) - getCurrentExtensionPos()
 
         val triggerMinPower =
-            if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS)
+            if (aimPos > Configs.LiftConfig.TRIGET_SLOW_POS)
                 Configs.LiftConfig.MAX_SPEED_DOWN
             else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 

@@ -123,13 +123,13 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var CLAMP_WALL_AIM_POS = 8.6
+        var CLAMP_WALL_AIM_POS = 25.0
 
         @JvmField
         var CLAMP_WALL_EXTENSION_POS = 250.0
 
         @JvmField
-        var CLAMP_WALL_CLAMPED_AIM_POS = 8.5
+        var CLAMP_WALL_CLAMPED_AIM_POS = 25.0
 
         @JvmField
         var CLAMP_WALL_CLAMPED_EXTENSION_POS = 260.0
@@ -141,22 +141,22 @@ object Configs {
         var HUMAN_ADD_EXTENSION_POS = 1000.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_AIM = 100.0
+        var UP_LAYER_UNCLAMP_AIM = 95.0
 
         @JvmField
-        var UP_LAYER_UNCLAMP_EXTENSION = 20.0
+        var UP_LAYER_UNCLAMP_EXTENSION = 0.0
 
         @JvmField
-        var CLAMP_CENTER_AIM = 0.00
+        var CLAMP_CENTER_AIM = -10.00
 
         @JvmField
-        var UP_BASKED_AIM = 100.0
+        var UP_BASKED_AIM = 95.0
 
         @JvmField
-        var UP_LAYER_AIM = 100.0
+        var UP_LAYER_AIM = 95.0
 
         @JvmField
-        var TRANSPORT_AIM = 0.00
+        var TRANSPORT_AIM = -10.00
 
         @JvmField
         var TRANSPORT_EXTENSION = 0.00
@@ -168,13 +168,13 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
-        var UP_LAYER_EXTENSION = 20.0
+        var UP_LAYER_EXTENSION = 0.0
 
         @JvmField
-        var AIM_PID = PIDConfig(0.7, d = 0.02, limitI = 0.4, i = 0.3)
+        var AIM_PID = PIDConfig(0.7, d = 0.015)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.07)
+        var EXTENSION_PID = PIDConfig(0.11)
 
         @JvmField
         var EXTENSION_SENS = 150.0
@@ -183,7 +183,7 @@ object Configs {
         var AIM_SENS = 25.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 8.0
+        var TRIGET_SLOW_POS = 42.0
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
@@ -204,16 +204,16 @@ object Configs {
         var MIN_EXTENSION_POS = 0.0
 
         @JvmField
-        var MAX_POTENTIOMETER_ANGLE = 300.0
+        var MAX_POTENTIOMETER_ANGLE = 450.0
 
         @JvmField
-        var MAX_POTENTIOMETER_VOLTAGE = 5.0
+        var MAX_POTENTIOMETER_VOLTAGE = 3.0
 
         @JvmField
-        var AIM_POTENTIOMETER_DIFFERENCE = -53.16
+        var AIM_POTENTIOMETER_DIFFERENCE = -24.4
 
         @JvmField
-        var INIT_POS = 40.0
+        var INIT_POS = 60.0
     }
 
     @Config
@@ -350,7 +350,7 @@ object Configs {
         var CLAMP_CENTER_DIF_POS_Y = 0.0
 
         @JvmField
-        var UP_LAYER_DIF_POS_X = -25.0
+        var UP_LAYER_DIF_POS_X = -35.0
 
         @JvmField
         var UP_LAYER_DIF_POS_Y = 0.0
