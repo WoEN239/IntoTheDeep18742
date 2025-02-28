@@ -42,7 +42,7 @@ class Camera : IRobotModule {
 
         _processor.gameColor.set(collector.parameters.oldStartPosition.color)
 
-        //_visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
+        _visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
     }
 
     override fun start() {
@@ -52,7 +52,12 @@ class Camera : IRobotModule {
     }
 
     override fun stop() {
-        _visionPortal.stopStreaming()
-        FtcDashboard.getInstance().stopCameraStream()
+        try {
+            _visionPortal.stopStreaming()
+            FtcDashboard.getInstance().stopCameraStream()
+        }
+        catch (_: Exception){
+             
+        }
     }
 }

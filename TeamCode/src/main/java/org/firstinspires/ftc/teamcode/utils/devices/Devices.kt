@@ -40,7 +40,7 @@ class Devices(hardMap: HardwareMap)  {
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
 
-    //val camera = hardMap.get("Webcam 1") as WebcamName
+    val camera = hardMap.get("Webcam 1") as WebcamName
 
     val hubs = hardMap.getAll(LynxModule::class.java)
 

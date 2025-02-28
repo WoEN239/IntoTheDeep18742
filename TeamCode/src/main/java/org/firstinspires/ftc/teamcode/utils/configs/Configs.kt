@@ -174,7 +174,7 @@ object Configs {
         var AIM_PID = PIDConfig(0.7, d = 0.015)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.11)
+        var EXTENSION_PID = PIDConfig(0.09)
 
         @JvmField
         var EXTENSION_SENS = 150.0

@@ -23,8 +23,10 @@ class BaskedTrajectory : ITrajectoryBuilder {
     override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
         val actions = arrayListOf<IAction>()
 
-        fun runToBasket(startOrientation: Orientation) {
-            actions.add(
+        fun runToBasket(startOrientation: Orientation): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
+
+            acts.add(
                 ParallelActions(
                     arrayOf(
                         arrayListOf(
@@ -38,6 +40,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             )
                         ),
                         arrayListOf(
+                            WaitLiftAction(eventBus),
                             WaitAction(0.1),
                             LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
                         )
@@ -45,6 +48,8 @@ class BaskedTrajectory : ITrajectoryBuilder {
                     ParallelActions.ExitType.AND
                 )
             )
+
+            return acts
         }
 
         fun basket(extension: Double = -1.0): ArrayList<IAction> {
@@ -67,27 +72,25 @@ class BaskedTrajectory : ITrajectoryBuilder {
         }
 
 
-        fun clampStick(extension: Double, isDif: Boolean = false) {
-            /*actions.add(WaitLiftAction(eventBus))
+        fun clampStick(isDif: Boolean = false): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
 
-            actions.add(WaitAction(0.15))
-
-            actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.CLAMP_CENTER, extension))*/
-
-            actions.add(WaitLiftAction(eventBus))
+            acts.add(WaitLiftAction(eventBus))
 
             if (isDif)
                 for (i in 0..2)
-                    actions.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
+                    acts.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
 
-            actions.add(WaitAction(0.1))
+            acts.add(WaitAction(0.2))
 
-            actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+            acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
-            actions.add(WaitLiftAction(eventBus))
+            acts.add(WaitLiftAction(eventBus))
+
+            return acts
         }
 
-        runToBasket(startOrientation)
+        actions.addAll(runToBasket(startOrientation))
 
         actions.add(
             ParallelActions(
@@ -104,8 +107,8 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        clampStick(950.0)
-        runToBasket(getEndOrientation(actions))
+        actions.addAll(clampStick())
+        actions.addAll(runToBasket(getEndOrientation(actions)))
 
         actions.add(
             ParallelActions(
@@ -117,13 +120,14 @@ class BaskedTrajectory : ITrajectoryBuilder {
                                 .strafeToLinearHeading(Vector2d(142.1, 119.6), toRadians(-90.0))
                                 .build()
                         )
-                    ), basket(700.0)
+                    ), basket(650.0)
                 ), ParallelActions.ExitType.AND
             )
         )
 
-        clampStick(800.0)
-        runToBasket(getEndOrientation(actions))
+        actions.addAll(clampStick())
+        actions.addAll(runToBasket(getEndOrientation(actions)))
+
         actions.add(
             ParallelActions(
                 arrayOf(
@@ -142,21 +146,39 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        clampStick(780.0, true)
-        runToBasket(getEndOrientation(actions))
-        actions.addAll(basket())
+        actions.addAll(clampStick(true))
+        actions.addAll(runToBasket(getEndOrientation(actions)))
 
         actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .setTangent(toRadians(180.0))
-                    .splineToLinearHeading(Pose2d(62.0, 0.0, toRadians(0.0)), toRadians(180.0))
-                    .build()
+            ParallelActions(
+                arrayOf(
+                    basket(1000.0), arrayListOf(
+                        WaitAction(0.1), FollowRRTrajectory(
+                            eventBus,
+                            newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
+                                Vector2d(120.0, 132.3), toRadians(180.0)
+                            ).build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
             )
         )
 
-        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
+        actions.addAll(clampStick())
+        actions.addAll(runToBasket(getEndOrientation(actions)))
+        actions.addAll(basket())
+//
+//        actions.add(
+//            FollowRRTrajectory(
+//                eventBus, newRRTrajectory(getEndOrientation(actions))
+//                    .setTangent(toRadians(180.0))
+//                    .splineToLinearHeading(Pose2d(62.0, 0.0, toRadians(0.0)), toRadians(180.0))
+//                    .build()
+//            )
+//        )
+//
+//        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+//        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
     }
