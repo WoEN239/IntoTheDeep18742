@@ -37,7 +37,7 @@ object StaticTelemetry {
     private var _deltaTime = ElapsedTime()
 
     fun update() {
-        if(Configs.TelemetryConfig.ENABLE && _deltaTime.seconds() > 1.0 / Configs.TelemetryConfig.SEND_HZ) {
+        if (Configs.TelemetryConfig.ENABLE && _deltaTime.seconds() > 1.0 / Configs.TelemetryConfig.SEND_HZ) {
             _deltaTime.reset()
             _phoneTelemetry.update()
 
@@ -91,4 +91,16 @@ object StaticTelemetry {
 
     fun drawRect(center: Vec2, size: Vec2, rot: Double = 0.0, color: Color) =
         drawRect(center, size, rot, color.toString())
+
+    fun drawLine(points: Array<Vec2>) {
+        val inchPoints = Array(points.size) {
+            Vec2(
+                DistanceUnit.INCH.fromCm(points[it].x),
+                DistanceUnit.INCH.fromCm(points[it].y)
+            )
+        }
+
+        for(i in 0..inchPoints.size - 2)
+            canvas.strokeLine(inchPoints[i].x, inchPoints[i].y, inchPoints[i + 1].x, inchPoints[i + 1].y)
+    }
 }

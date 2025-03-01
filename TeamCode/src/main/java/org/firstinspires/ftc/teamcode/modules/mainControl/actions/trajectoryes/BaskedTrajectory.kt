@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
 
 class BaskedTrajectory : ITrajectoryBuilder {
-    override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation) {
+    override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation, teammate: BaseCollector.TeammateSate) {
         val actions = arrayListOf<IAction>()
 
         fun runToBasket(startOrientation: Orientation): ArrayList<IAction> {
@@ -33,7 +34,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
                                     .strafeToLinearHeading(
-                                        Vector2d(135.0, 132.3),
+                                        Vector2d(135.2, 132.5),
                                         toRadians(-90.0 - 45.0)
                                     )
                                     .build()
@@ -99,7 +100,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         WaitAction(0.1),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(Vector2d(119.6, 126.9), toRadians(-90.0))
+                                .strafeToLinearHeading(Vector2d(120.6, 126.9), toRadians(-90.0))
                                 .build()
                         )
                     )
@@ -117,10 +118,10 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         WaitAction(0.1),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(Vector2d(142.1, 119.6), toRadians(-90.0))
+                                .strafeToLinearHeading(Vector2d(142.7, 119.6), toRadians(-90.0))
                                 .build()
                         )
-                    ), basket(650.0)
+                    ), basket(750.0)
                 ), ParallelActions.ExitType.AND
             )
         )
@@ -149,36 +150,40 @@ class BaskedTrajectory : ITrajectoryBuilder {
         actions.addAll(clampStick(true))
         actions.addAll(runToBasket(getEndOrientation(actions)))
 
-        actions.add(
-            ParallelActions(
-                arrayOf(
-                    basket(1000.0), arrayListOf(
-                        WaitAction(0.1), FollowRRTrajectory(
-                            eventBus,
-                            newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
-                                Vector2d(120.0, 132.3), toRadians(180.0)
-                            ).build()
+        if(teammate.brick) {
+            actions.add(
+                ParallelActions(
+                    arrayOf(
+                        basket(1000.0), arrayListOf(
+                            WaitAction(0.1), FollowRRTrajectory(
+                                eventBus,
+                                newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
+                                    Vector2d(119.0, 134.3), toRadians(180.0)
+                                ).build()
+                            )
                         )
-                    )
-                ), ParallelActions.ExitType.AND
+                    ), ParallelActions.ExitType.AND
+                )
+            )
+
+            actions.addAll(clampStick())
+            actions.addAll(runToBasket(getEndOrientation(actions)))
+            actions.addAll(basket())
+        }
+        else
+            actions.addAll(basket())
+
+        actions.add(
+            FollowRRTrajectory(
+                eventBus, newRRTrajectory(getEndOrientation(actions))
+                    .setTangent(toRadians(180.0))
+                    .splineToLinearHeading(Pose2d(62.0, 0.0, toRadians(0.0)), toRadians(180.0))
+                    .build()
             )
         )
 
-        actions.addAll(clampStick())
-        actions.addAll(runToBasket(getEndOrientation(actions)))
-        actions.addAll(basket())
-//
-//        actions.add(
-//            FollowRRTrajectory(
-//                eventBus, newRRTrajectory(getEndOrientation(actions))
-//                    .setTangent(toRadians(180.0))
-//                    .splineToLinearHeading(Pose2d(62.0, 0.0, toRadians(0.0)), toRadians(180.0))
-//                    .build()
-//            )
-//        )
-//
-//        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-//        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
+        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
     }

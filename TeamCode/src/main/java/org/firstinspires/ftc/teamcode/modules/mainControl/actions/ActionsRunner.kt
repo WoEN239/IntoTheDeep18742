@@ -28,12 +28,10 @@ class ActionsRunner: IRobotModule {
         }
 
         when(collector.parameters.oldStartPosition){
-            BaseCollector.GameStartPosition.RED_HUMAN -> HumanTrajectory()
-            BaseCollector.GameStartPosition.RED_BASKET -> BaskedTrajectory()
-            BaseCollector.GameStartPosition.BLUE_HUMAN -> HumanTrajectory()
-            BaseCollector.GameStartPosition.BLUE_BASKET -> BaskedTrajectory()
+            BaseCollector.GameStartPosition.RED_HUMAN, BaseCollector.GameStartPosition.RED_HUMAN_BRICK, BaseCollector.GameStartPosition.BLUE_HUMAN, BaseCollector.GameStartPosition.BLUE_HUMAN_BRICK -> HumanTrajectory()
+            BaseCollector.GameStartPosition.RED_BASKET, BaseCollector.GameStartPosition.RED_BASKET_BRICK, BaseCollector.GameStartPosition.BLUE_BASKET, BaseCollector.GameStartPosition.BLUE_BASKET_BRICK -> BaskedTrajectory()
             BaseCollector.GameStartPosition.NONE -> throw Exception("none is not start auto pos")
-        }.runTrajectory(bus, Orientation(collector.parameters.oldStartPosition.position, collector.parameters.oldStartPosition.angle))
+        }.runTrajectory(bus, Orientation(collector.parameters.oldStartPosition.position, collector.parameters.oldStartPosition.angle), collector.parameters.oldStartPosition.teammate)
     }
 
     override fun update() {

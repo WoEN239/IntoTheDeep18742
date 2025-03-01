@@ -84,7 +84,7 @@ object Configs {
         var STEP_H = 0.6
 
         @JvmField
-        var ROTATE_P = 3.6
+        var ROTATE_P = 3.8
 
         @JvmField
         var ROTATE_SENS = 0.005
@@ -153,6 +153,9 @@ object Configs {
         var UP_BASKED_AIM = 95.0
 
         @JvmField
+        var LOW_BASKED_AIM = 95.0
+
+        @JvmField
         var UP_LAYER_AIM = 95.0
 
         @JvmField
@@ -168,13 +171,16 @@ object Configs {
         var UP_BASKED_EXTENSION = 1700.00
 
         @JvmField
+        var LOW_BASKED_EXTENSION = 500.00
+
+        @JvmField
         var UP_LAYER_EXTENSION = 0.0
 
         @JvmField
         var AIM_PID = PIDConfig(0.7, d = 0.015)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.09)
+        var EXTENSION_PID = PIDConfig(0.092)
 
         @JvmField
         var EXTENSION_SENS = 150.0
@@ -183,7 +189,7 @@ object Configs {
         var AIM_SENS = 25.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 42.0
+        var TRIGET_SLOW_POS = 40.0
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
@@ -213,7 +219,7 @@ object Configs {
         var AIM_POTENTIOMETER_DIFFERENCE = -24.4
 
         @JvmField
-        var INIT_POS = 60.0
+        var INIT_POS = 54.0
     }
 
     @Config
@@ -263,13 +269,13 @@ object Configs {
         var GAMEPAD_DEFENDED_RUMPLE_MS = 190
 
         @JvmField
-        var CURRENT_SENSOR_DELAY = 0.085
+        var CURRENT_SENSOR_DELAY = 0.11
 
         @JvmField
         var USE_CURRENT_SENSOR = true
 
         @JvmField
-        var CLAMP_CURRENT = 0.05
+        var CLAMP_CURRENT = 0.09
 
         @JvmField
         var CLAMP_CURRENT_TWO = 1.0
@@ -455,7 +461,10 @@ object Configs {
         var HOOK_POWER = 1.0
 
         @JvmField
-        var ACTIVATION_TIME_SEC = 1.0
+        var ACTIVATION_TIME_SEC = 60.0
+
+        @JvmField
+        var SYNC_K = 0.0
     }
 
     @Config

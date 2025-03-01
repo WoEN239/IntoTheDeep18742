@@ -27,7 +27,8 @@ class Gamepad : IRobotModule {
 
     private var _oldClamp = false
 
-    private var _basketOld = false
+    private var _upBasketOld = false
+    private var _lowBasketOld = false
     private var _centerOld = false
     private var _layerOld = false
     private var _clampWallOld = false
@@ -61,7 +62,7 @@ class Gamepad : IRobotModule {
         else
             _eventBus.invoke(Hook.HookStop())
 
-        if (!_basketOld && _gamepad.dpad_up)
+        if (!_upBasketOld && _gamepad.dpad_up)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.UP_BASKED))
 
         if (!_centerOld && _gamepad.dpad_down)
@@ -73,7 +74,11 @@ class Gamepad : IRobotModule {
         if (!_clampWallOld && _gamepad.dpad_left)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.CLAMP_WALL))
 
-        _basketOld = _gamepad.dpad_up
+        if(!_lowBasketOld && _gamepad.cross)
+            _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.LOW_BASKET))
+
+        _upBasketOld = _gamepad.dpad_up
+        _lowBasketOld = _gamepad.cross
         _centerOld = _gamepad.dpad_down
         _layerOld = _gamepad.dpad_right
         _clampWallOld = _gamepad.dpad_left

@@ -35,7 +35,8 @@ class IntakeManager : IRobotModule {
         UP_LAYER,
         TRANSPORT,
         HUMAN_ADD,
-        CLAMP_WALL
+        CLAMP_WALL,
+        LOW_BASKET
     }
 
     private lateinit var _eventBus: EventBus
@@ -143,9 +144,9 @@ class IntakeManager : IRobotModule {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
                                             && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
-                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto    ||
+                                    !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto ||
                                     integrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
-                                    )
+                                )
                                     setDownState()
                                 else {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
@@ -160,10 +161,10 @@ class IntakeManager : IRobotModule {
                         }
                     }
 
-                    LiftPosition.UP_BASKED -> {
+                    LiftPosition.UP_BASKED, LiftPosition.LOW_BASKET -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-                        Timers.newTimer().start({ !_intake.atTarget() }){
+                        Timers.newTimer().start({ !_intake.atTarget() }) {
                             setDownState()
                             isClampBusy = false
                         }
@@ -224,6 +225,15 @@ class IntakeManager : IRobotModule {
                 if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y
+                    )
+                    _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
+                } else if (it.pos == LiftPosition.LOW_BASKET && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                    _lift.aimTargetPosition = Configs.LiftConfig.LOW_BASKED_AIM
+                    _lift.extensionTargetPosition = Configs.LiftConfig.LOW_BASKED_EXTENSION
                     _intake.setDifPos(
                         xRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_X,
                         yRot = Configs.IntakeConfig.UP_BASKET_DIF_POS_Y
