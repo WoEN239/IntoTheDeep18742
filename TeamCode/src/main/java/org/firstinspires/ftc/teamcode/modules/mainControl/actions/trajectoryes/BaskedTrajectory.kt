@@ -34,7 +34,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
                                     .strafeToLinearHeading(
-                                        Vector2d(135.2, 132.5),
+                                        Vector2d(134.2, 131.5),
                                         toRadians(-90.0 - 45.0)
                                     )
                                     .build()
@@ -158,7 +158,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             WaitAction(0.1), FollowRRTrajectory(
                                 eventBus,
                                 newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
-                                    Vector2d(119.0, 134.3), toRadians(180.0)
+                                    Vector2d(117.0, 134.3), toRadians(180.0)
                                 ).build()
                             )
                         )
@@ -177,7 +177,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             FollowRRTrajectory(
                 eventBus, newRRTrajectory(getEndOrientation(actions))
                     .setTangent(toRadians(180.0))
-                    .splineToLinearHeading(Pose2d(62.0, 0.0, toRadians(0.0)), toRadians(180.0))
+                    .splineToLinearHeading(Pose2d(65.0, 0.0, toRadians(0.0)), toRadians(180.0))
                     .build()
             )
         )
