@@ -220,6 +220,9 @@ object Configs {
 
         @JvmField
         var INIT_POS = 54.0
+
+        @JvmField
+        var BASKET_DELAY = 0.1
     }
 
     @Config
@@ -275,10 +278,10 @@ object Configs {
         var USE_CURRENT_SENSOR = true
 
         @JvmField
-        var CLAMP_CURRENT = 0.09
+        var CLAMP_CURRENT = 0.03
 
         @JvmField
-        var CLAMP_CURRENT_TWO = 1.0
+        var CLAMP_CURRENT_TWO = 0.6
 
         @JvmField
         var CAMERA_SENS = 8.0

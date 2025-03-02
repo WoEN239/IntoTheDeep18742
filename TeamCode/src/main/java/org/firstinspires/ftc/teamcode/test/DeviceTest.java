@@ -130,7 +130,7 @@ public class DeviceTest extends LinearOpMode {
                         break;
                     case CURRENT_SENSOR:
                         CurrentSensor sensor = new CurrentSensor((AnalogInput) hardwareDevice, Configs.CurrentSensor.DEFAULT_SENSOR_MAX_CURRENT, Configs.CurrentSensor.DEFAULT_BACKGROUND_CURRENT);
-                        telemetry.addData("amps:", sensor.getCurrent());
+                        telemetry.addData("amps", sensor.getCurrent());
                         break;
                     case NONE:
                     default:

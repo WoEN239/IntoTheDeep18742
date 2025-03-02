@@ -68,15 +68,15 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
     class TeammateSate(val brick: Boolean)
 
     enum class GameStartPosition(val position: Vec2, val angle: Angle, val color: GameColor, val orientation: GameOrientation, val teammate: TeammateSate){
-        RED_HUMAN(Vec2(-40.0, 156.5 - 1.5), Angle.ofDeg(180.0), GameColor.RED, GameOrientation.HUMAN, TeammateSate(false)),
-        RED_BASKET(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.RED, GameOrientation.BASKET, TeammateSate(false)),
-        BLUE_HUMAN(Vec2(-40.0, 156.5 - 1.5), Angle.ofDeg(180.0), GameColor.BLUE, GameOrientation.HUMAN, TeammateSate(false)),
-        BLUE_BASKET(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET, TeammateSate(false)),
+        RED_HUMAN(Vec2(-40.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(180.0), GameColor.RED, GameOrientation.HUMAN, TeammateSate(false)),
+        RED_BASKET(Vec2(80.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(-90.0), GameColor.RED, GameOrientation.BASKET, TeammateSate(false)),
+        BLUE_HUMAN(Vec2(-40.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(180.0), GameColor.BLUE, GameOrientation.HUMAN, TeammateSate(false)),
+        BLUE_BASKET(Vec2(80.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET, TeammateSate(false)),
         NONE(Vec2.ZERO, Angle(0.0), GameColor.BLUE, GameOrientation.BASKET, TeammateSate(false)),
-        RED_HUMAN_BRICK(Vec2(-40.0, 156.5 - 1.5), Angle.ofDeg(180.0), GameColor.RED, GameOrientation.HUMAN, TeammateSate(true)),
-        RED_BASKET_BRICK(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.RED, GameOrientation.BASKET, TeammateSate(true)),
-        BLUE_HUMAN_BRICK(Vec2(-40.0, 156.5 - 1.5), Angle.ofDeg(180.0), GameColor.BLUE, GameOrientation.HUMAN, TeammateSate(true)),
-        BLUE_BASKET_BRICK(Vec2(80.0, 156.5 - 1.5), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET, TeammateSate(true)),
+        RED_HUMAN_BRICK(Vec2(-40.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(180.0), GameColor.RED, GameOrientation.HUMAN, TeammateSate(true)),
+        RED_BASKET_BRICK(Vec2(80.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(-90.0), GameColor.RED, GameOrientation.BASKET, TeammateSate(true)),
+    BLUE_HUMAN_BRICK(Vec2(-40.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(180.0), GameColor.BLUE, GameOrientation.HUMAN, TeammateSate(true)),
+        BLUE_BASKET_BRICK(Vec2(80.0, 156.5 - 1.5 + 0.2), Angle.ofDeg(-90.0), GameColor.BLUE, GameOrientation.BASKET, TeammateSate(true)),
     }
 
     fun init() {

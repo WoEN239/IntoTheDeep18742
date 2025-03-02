@@ -100,7 +100,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         WaitAction(0.1),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(Vector2d(120.6, 126.9), toRadians(-90.0))
+                                .strafeToLinearHeading(Vector2d(121.6, 126.9), toRadians(-90.0))
                                 .build()
                         )
                     )
@@ -118,7 +118,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         WaitAction(0.1),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(Vector2d(142.7, 119.6), toRadians(-90.0))
+                                .strafeToLinearHeading(Vector2d(146.2, 119.6), toRadians(-90.0))
                                 .build()
                         )
                     ), basket(750.0)
@@ -158,7 +158,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             WaitAction(0.1), FollowRRTrajectory(
                                 eventBus,
                                 newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
-                                    Vector2d(117.0, 134.3), toRadians(180.0)
+                                    Vector2d(117.0, 132.3), toRadians(180.0)
                                 ).build()
                             )
                         )
@@ -177,7 +177,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             FollowRRTrajectory(
                 eventBus, newRRTrajectory(getEndOrientation(actions))
                     .setTangent(toRadians(180.0))
-                    .splineToLinearHeading(Pose2d(65.0, 0.0, toRadians(0.0)), toRadians(180.0))
+                    .splineToLinearHeading(Pose2d(61.0, 0.0, toRadians(0.0)), toRadians(180.0))
                     .build()
             )
         )

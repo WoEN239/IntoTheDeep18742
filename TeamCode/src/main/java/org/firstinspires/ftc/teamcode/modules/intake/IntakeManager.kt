@@ -165,8 +165,10 @@ class IntakeManager : IRobotModule {
                         _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
                         Timers.newTimer().start({ !_intake.atTarget() }) {
-                            setDownState()
-                            isClampBusy = false
+                            Timers.newTimer().start(Configs.LiftConfig.BASKET_DELAY) {
+                                setDownState()
+                                isClampBusy = false
+                            }
                         }
                     }
                 }
