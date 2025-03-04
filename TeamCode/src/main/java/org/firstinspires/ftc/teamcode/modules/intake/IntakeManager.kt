@@ -28,6 +28,7 @@ class IntakeManager : IRobotModule {
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
     class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
     class ClampDefendedEvent() : IEvent
+    class AutoClamp(): IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -293,7 +294,13 @@ class IntakeManager : IRobotModule {
         bus.subscribe(RequestIntakeAtTarget::class) {
             it.target = _intake.atTarget() && !isClampBusy
         }
+
+        bus.subscribe(AutoClamp::class){
+            _isAutoClamp = true
+        }
     }
+
+    private var _isAutoClamp = false
 
     private val _cameraUpdateTimer = ElapsedTime()
     private val _cameraEnableTimer = ElapsedTime()
@@ -304,7 +311,7 @@ class IntakeManager : IRobotModule {
         StaticTelemetry.addData("lift at target", _lift.atTarget())
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
-        if (Configs.IntakeConfig.USE_CAMERA) {
+        if (Configs.IntakeConfig.USE_CAMERA && _isAutoClamp) {
             if (_liftPosition == LiftPosition.CLAMP_CENTER) {
                 if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
                     return
@@ -317,14 +324,15 @@ class IntakeManager : IRobotModule {
                 val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
 
                 if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
-                    //_intake.setDifPos(Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, 0.0)
+                    _lift.extensionTargetPosition = clamp(_lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP, 0.0, Configs.LiftConfig.MAX_EXTENSION_POS)
+
                     return
                 }
 
-                var closesdStick = allianceSticks[0]
+                var closesdStick = yellowSticks[0]
                 var closesdStickL = Double.MAX_VALUE
 
-                for (i in allianceSticks) {
+                for (i in yellowSticks) {
                     val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
                     val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
                     val l = sqrt(catetX * catetX + catetY * catetY)
@@ -332,6 +340,12 @@ class IntakeManager : IRobotModule {
                         closesdStick = i
                         closesdStickL = l
                     }
+                }
+
+                if(closesdStickL > Configs.IntakeConfig.TRIGGER_CLOSES_STICK) {
+                    _lift.extensionTargetPosition = clamp(_lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP, 0.0, Configs.LiftConfig.MAX_EXTENSION_POS)
+
+                    return
                 }
 
                 val rot = closesdStick.angl.toDegree()
@@ -344,6 +358,13 @@ class IntakeManager : IRobotModule {
                             Configs.IntakeConfig.MAX_DIF_POS_Y
                         )
                     )
+
+                _lift.extensionTargetPosition += Configs.IntakeConfig.CLAMP_EXTENSION_STEP
+                _isAutoClamp = false
+
+                Timers.newTimer().start({!_lift.atTarget()}) {
+                    _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
+                }
             } else
                 _eventBus.invoke(Camera.SetStickDetectEnable(false))
         }

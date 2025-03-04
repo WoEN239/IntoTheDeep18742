@@ -251,7 +251,7 @@ object Configs {
 
         @JvmField
         var YELLOW_STICK_DETECT =
-            StickDetectConfig(0.0, 0.0, 0.0, 255.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.YELLOW, Color.GREEN)
+            StickDetectConfig(15.0, 0.0, 0.0, 29.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.YELLOW, Color.GREEN)
 
         @JvmField
         var DETECT_THREADS_COUNT = 3
@@ -266,6 +266,15 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
+        var CLAMP_EXTENSION_STEP = 160.0
+
+        @JvmField
+        var EXTENSION_STEP = 100.0
+
+        @JvmField
+        var TRIGGER_CLOSES_STICK = 500.0
+
+        @JvmField
         var MAX_DEFENDED_INTEGRATIOS = 2
 
         @JvmField
@@ -278,10 +287,10 @@ object Configs {
         var USE_CURRENT_SENSOR = true
 
         @JvmField
-        var CLAMP_CURRENT = 0.03
+        var CLAMP_CURRENT = 0.07
 
         @JvmField
-        var CLAMP_CURRENT_TWO = 0.6
+        var CLAMP_CURRENT_TWO = 1.0
 
         @JvmField
         var CAMERA_SENS = 8.0
@@ -311,7 +320,7 @@ object Configs {
         var MAX = 270.0
 
         @JvmField
-        var SERVO_CLAMP = 0.27
+        var SERVO_CLAMP = 0.28
 
         @JvmField
         var SERVO_UNCLAMP = 0.62
@@ -329,7 +338,7 @@ object Configs {
         var CAMERA_CLAMP_POS_X = 0.0
 
         @JvmField
-        var USE_CAMERA = false
+        var USE_CAMERA = true
 
         @JvmField
         var UP_BASKET_DOWN_TIME = 0.85

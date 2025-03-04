@@ -15,7 +15,10 @@ import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
+import org.opencv.core.Core.ROTATE_180
+import org.opencv.core.Core.ROTATE_90_CLOCKWISE
 import org.opencv.core.Core.inRange
+import org.opencv.core.Core.rotate
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
@@ -65,8 +68,11 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     private var _resizedFrame = Mat()
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
+        rotate(frame, frame, ROTATE_180)
+
         if (!enableDetect.get()) {
             allianceSticks.set(arrayOf())
+            yellowSticks.set(arrayOf())
 
             return frame
         }
@@ -114,8 +120,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             return res
         }
 
-        allianceSticks.set(getSticks(if (gameColor.get() == BaseCollector.GameColor.RED) Configs.CameraConfig.RED_STICK_DETECT else Configs.CameraConfig.BLUE_STICK_DETECT))
-        //yellowSticks.set(getSticks(Configs.CameraConfig.YELLOW_STICK_DETECT))
+        //allianceSticks.set(getSticks(if (gameColor.get() == BaseCollector.GameColor.RED) Configs.CameraConfig.RED_STICK_DETECT else Configs.CameraConfig.BLUE_STICK_DETECT))
+        yellowSticks.set(getSticks(Configs.CameraConfig.YELLOW_STICK_DETECT))
 
         val b = Bitmap.createBitmap(
             _drawFrame.width(),
@@ -160,10 +166,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
                 Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
             )
         )
-//
-//        if(parameters.CONTOUR_COLOR == Color.BLUE){
-//            _drawFrame = hsvFrame
-//        }
 
         val contours = arrayListOf<MatOfPoint>()
 

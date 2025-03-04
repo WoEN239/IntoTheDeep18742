@@ -46,6 +46,7 @@ open class LinearOpModeBase : LinearOpMode() {
 
         while (!isStarted()) {
             collector.initUpdate()
+            Thread.yield()
         }
 
         resetRuntime()

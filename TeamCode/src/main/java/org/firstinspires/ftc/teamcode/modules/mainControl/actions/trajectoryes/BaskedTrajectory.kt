@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ActionsRunner
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.AutoClampAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ClampAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.DifAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.FollowRRTrajectory
@@ -21,7 +22,11 @@ import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
 
 class BaskedTrajectory : ITrajectoryBuilder {
-    override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation, teammate: BaseCollector.TeammateSate) {
+    override fun runTrajectory(
+        eventBus: EventBus,
+        startOrientation: Orientation,
+        teammate: BaseCollector.TeammateSate
+    ) {
         val actions = arrayListOf<IAction>()
 
         fun runToBasket(startOrientation: Orientation): ArrayList<IAction> {
@@ -118,7 +123,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         WaitAction(0.1),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
-                                .strafeToLinearHeading(Vector2d(146.2, 119.6), toRadians(-90.0))
+                                .strafeToLinearHeading(Vector2d(144.2, 119.6), toRadians(-90.0))
                                 .build()
                         )
                     ), basket(750.0)
@@ -150,7 +155,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
         actions.addAll(clampStick(true))
         actions.addAll(runToBasket(getEndOrientation(actions)))
 
-        if(teammate.brick) {
+        if (teammate.brick) {
             actions.add(
                 ParallelActions(
                     arrayOf(
@@ -158,7 +163,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             WaitAction(0.1), FollowRRTrajectory(
                                 eventBus,
                                 newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
-                                    Vector2d(117.0, 132.3), toRadians(180.0)
+                                    Vector2d(117.0, 142.3), toRadians(180.0)
                                 ).build()
                             )
                         )
@@ -168,12 +173,33 @@ class BaskedTrajectory : ITrajectoryBuilder {
 
             actions.addAll(clampStick())
             actions.addAll(runToBasket(getEndOrientation(actions)))
-            actions.addAll(basket())
         }
-        else
-            actions.addAll(basket())
 
         actions.add(
+            ParallelActions(
+                arrayOf(
+                    basket(1.0), arrayListOf(
+                        WaitAction(0.1),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(
+                                getEndOrientation(actions)
+                            )
+                                .splineToLinearHeading(
+                                    Pose2d(60.0, 15.0, toRadians(180.0)),
+                                    toRadians(-90.0 - 45.0)
+                                ).build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(AutoClampAction(eventBus))
+
+        actions.addAll(runToBasket(getEndOrientation(actions)))
+        actions.addAll(basket())
+
+        /*actions.add(
             FollowRRTrajectory(
                 eventBus, newRRTrajectory(getEndOrientation(actions))
                     .setTangent(toRadians(180.0))
@@ -184,7 +210,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
 
         actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
         actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
-
+*/
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
     }
 }

@@ -219,3 +219,19 @@ class DifAction(val eventBus: EventBus, val dir: DifDirection) : IAction {
     }
 
 }
+
+class AutoClampAction(val eventBus: EventBus): IAction{
+    override fun update() {
+
+    }
+
+    override fun end() {
+
+    }
+
+    override fun isEnd() = eventBus.invoke(IntakeManager.RequestClampPosEvent()).pos == Intake.ClampPosition.SERVO_CLAMP
+
+    override fun start() {
+        eventBus.invoke(IntakeManager.AutoClamp())
+    }
+}
