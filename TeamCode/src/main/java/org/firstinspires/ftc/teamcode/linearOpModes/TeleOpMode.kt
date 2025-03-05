@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.gamepad.Gamepad
 @TeleOp
 class TeleOpMode : LinearOpModeBase() {
     override fun getOpModeSettings() = OpModeSettings(
-        isAutoStart = true,
+        isAutoStart = false,
         isPreInit = false
     )
 
