@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.units
 
-data class Orientation(var pos: Vec2, var angl: Angle) {
+data class Orientation(@JvmField var pos: Vec2, @JvmField var angl: Angle) {
     companion object{
         val ZERO = Orientation(0.0)
     }

@@ -82,7 +82,7 @@ class Lift {
 
         val targetDefencedAimPos: Double
 
-        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.EXTENSION_SENS) {
+        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS) {
             targetDefencedAimPos = targetAimPos
             _oldTargetAimPos = targetAimPos
         } else
@@ -90,7 +90,7 @@ class Lift {
 
         val targetDefencedExtensionPos: Double
 
-        if (abs(targetAimPos - aimPos) > Configs.LiftConfig.AIM_SENS)
+        if (abs(targetAimPos - aimPos) > Configs.LiftConfig.DEFENDED_AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
         else
             targetDefencedExtensionPos = targetExtensionPos

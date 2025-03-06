@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.configs.Configs.CameraConfig.StickDetectConfig
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
@@ -173,9 +174,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         val tasks = arrayListOf<Callable<RotatedRect?>>()
 
-        for (i in contours) {
+        for (i in contours)
             tasks.add { processContour(i) }
-        }
 
         val result = _executorService.invokeAll(tasks)
 
@@ -188,6 +188,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         rectColor: Scalar,
         textColor: Scalar
     ) {
+        //StaticTelemetry.addData("centerPos", Vec2(mat.size().width * 0.5, mat.size().height * 0.5))
+
         for (i in rects) {
             val points = Array<Point?>(4) { null }
 

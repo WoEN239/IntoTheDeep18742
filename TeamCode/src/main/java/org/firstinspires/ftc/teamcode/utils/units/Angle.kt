@@ -13,7 +13,7 @@ import kotlin.math.sign
  * @see Color
  * @author tikhonsmovzh
  */
-data class Angle(var angle: Double){
+data class Angle(@JvmField var angle: Double){
     companion object {
         fun chop(ang: Double): Double{
             var chopedAng = ang

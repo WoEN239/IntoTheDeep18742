@@ -96,6 +96,19 @@ class BaskedTrajectory : ITrajectoryBuilder {
             return acts
         }
 
+        fun paralelClamp(isDif: Boolean): ArrayList<IAction> {
+            val clampActions = arrayListOf(WaitLiftAction(eventBus), WaitAction(0.3))
+
+            clampActions.addAll(runToBasket(getEndOrientation(actions)))
+
+            return arrayListOf(
+                ParallelActions(
+                    arrayOf(clampStick(isDif), clampActions),
+                    ParallelActions.ExitType.AND
+                )
+            )
+        }
+
         actions.addAll(runToBasket(startOrientation))
 
         actions.add(
@@ -113,8 +126,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        actions.addAll(clampStick())
-        actions.addAll(runToBasket(getEndOrientation(actions)))
+        actions.addAll(paralelClamp(false))
 
         actions.add(
             ParallelActions(
@@ -131,8 +143,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        actions.addAll(clampStick())
-        actions.addAll(runToBasket(getEndOrientation(actions)))
+        actions.addAll(paralelClamp(false))
 
         actions.add(
             ParallelActions(
@@ -152,8 +163,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        actions.addAll(clampStick(true))
-        actions.addAll(runToBasket(getEndOrientation(actions)))
+        actions.addAll(paralelClamp(true))
 
         if (teammate.brick) {
             actions.add(
@@ -171,8 +181,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                 )
             )
 
-            actions.addAll(clampStick())
-            actions.addAll(runToBasket(getEndOrientation(actions)))
+            actions.addAll(paralelClamp(false))
         }
 
         actions.add(
@@ -199,18 +208,28 @@ class BaskedTrajectory : ITrajectoryBuilder {
         actions.addAll(runToBasket(getEndOrientation(actions)))
         actions.addAll(basket())
 
-        /*actions.add(
-            FollowRRTrajectory(
-                eventBus, newRRTrajectory(getEndOrientation(actions))
-                    .setTangent(toRadians(180.0))
-                    .splineToLinearHeading(Pose2d(61.0, 0.0, toRadians(0.0)), toRadians(180.0))
-                    .build()
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .setTangent(toRadians(180.0))
+                                .splineToLinearHeading(
+                                    Pose2d(61.0, 0.0, toRadians(0.0)),
+                                    toRadians(180.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER)
+                    )
+                ), ParallelActions.ExitType.AND
             )
         )
 
-        actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
-        actions.add(LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER))
-*/
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
     }
 }

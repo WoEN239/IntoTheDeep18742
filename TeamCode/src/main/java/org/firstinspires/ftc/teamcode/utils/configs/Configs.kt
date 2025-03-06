@@ -123,6 +123,18 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
+        var EXTENSION_DEFAULT_L = (173.0 / 10.5) * 38.5
+
+        @JvmField
+        var DEFENDED_AIM_SENS = 50.0
+
+        @JvmField
+        var DEFENDED_EXTENSION_SENS = 600.0
+
+        @JvmField
+        var CLAMP_CENTER_UP_L = 100.0
+
+        @JvmField
         var CLAMP_WALL_AIM_POS = 25.0
 
         @JvmField
@@ -180,7 +192,7 @@ object Configs {
         var AIM_PID = PIDConfig(0.7, d = 0.015)
 
         @JvmField
-        var EXTENSION_PID = PIDConfig(0.092)
+        var EXTENSION_PID = PIDConfig(0.06, d = 0.001)
 
         @JvmField
         var EXTENSION_SENS = 150.0
@@ -269,7 +281,7 @@ object Configs {
         var CLAMP_EXTENSION_STEP = 160.0
 
         @JvmField
-        var EXTENSION_STEP = 100.0
+        var EXTENSION_STEP = 50.0
 
         @JvmField
         var TRIGGER_CLOSES_STICK = 500.0
@@ -296,7 +308,7 @@ object Configs {
         var CAMERA_SENS = 8.0
 
         @JvmField
-        var CAMERA_UPDATE_HZ = 5.0
+        var CAMERA_UPDATE_HZ = 10.0
 
         @JvmField
         var CAMERA_ENABLE_TIMER = 0.5
@@ -332,10 +344,10 @@ object Configs {
         var CLAMP_WALL_UP_TIME = 0.1
 
         @JvmField
-        var CAMERA_CLAMP_POS_Y = 0.0
+        var CAMERA_CLAMP_POS_Y = 120.0
 
         @JvmField
-        var CAMERA_CLAMP_POS_X = 0.0
+        var CAMERA_CLAMP_POS_X = 160.0
 
         @JvmField
         var USE_CAMERA = true

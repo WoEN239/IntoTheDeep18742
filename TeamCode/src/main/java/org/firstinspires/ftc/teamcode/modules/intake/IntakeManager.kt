@@ -12,8 +12,10 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import java.lang.Math.toDegrees
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan
 import kotlin.math.sqrt
 
 class IntakeManager : IRobotModule {
@@ -37,7 +39,8 @@ class IntakeManager : IRobotModule {
         TRANSPORT,
         HUMAN_ADD,
         CLAMP_WALL,
-        LOW_BASKET
+        LOW_BASKET,
+        CLAMP_CENTER_UP
     }
 
     private lateinit var _eventBus: EventBus
@@ -47,13 +50,18 @@ class IntakeManager : IRobotModule {
     private val _intake = Intake()
     private val _lift = Lift()
 
+    private var _isAuto = false
+
     private var _liftPosition = LiftPosition.TRANSPORT
 
     override fun initUpdate() {
-        _lift.update()
+        if(_isAuto)
+            _lift.update()
     }
 
     override fun init(collector: BaseCollector, bus: EventBus) {
+        _isAuto = collector.isAuto
+
         _eventBus = bus
 
         _lift.init(collector)
@@ -138,7 +146,7 @@ class IntakeManager : IRobotModule {
                         isClampBusy = false
                     }
 
-                    LiftPosition.CLAMP_CENTER -> {
+                    LiftPosition.CLAMP_CENTER, LiftPosition.CLAMP_CENTER_UP -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
                         Timers.newTimer().start({ !_intake.atTarget() }) {
@@ -182,7 +190,7 @@ class IntakeManager : IRobotModule {
 
         bus.subscribe(EventSetExtensionVel::class)
         {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER || _liftPosition == LiftPosition.CLAMP_CENTER_UP) {
                 _lift.extensionVelocity = it.vel
             } else {
                 _lift.extensionVelocity = 0.0
@@ -200,7 +208,7 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(NextDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER || _liftPosition == LiftPosition.CLAMP_CENTER_UP)
                 _intake.setDifPos(
                     _intake.xPos,
                     clamp(
@@ -212,7 +220,7 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(PreviousDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER || _liftPosition == LiftPosition.CLAMP_CENTER_UP)
                 _intake.setDifPos(
                     _intake.xPos,
                     clamp(
@@ -225,7 +233,7 @@ class IntakeManager : IRobotModule {
 
         bus.subscribe(EventSetLiftPose::class) {
             if ((_lift.atTarget() || collector.isAuto) && !isClampBusy) {
-                if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                if (it.pos == LiftPosition.UP_BASKED && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && (_liftPosition == LiftPosition.TRANSPORT || _liftPosition == LiftPosition.LOW_BASKET)) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_BASKED_EXTENSION
                     _intake.setDifPos(
@@ -234,7 +242,17 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                } else if (it.pos == LiftPosition.LOW_BASKET && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
+                }
+                else if(it.pos == LiftPosition.CLAMP_CENTER_UP && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT){
+                    _lift.aimTargetPosition = 0.0
+                    _lift.extensionTargetPosition = 0.0
+                    _intake.setDifPos(
+                        xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
+                        yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
+                    )
+                    _liftPosition = it.pos
+                    _lift.deltaExtension = 0.0
+                } else if (it.pos == LiftPosition.LOW_BASKET && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && (_liftPosition == LiftPosition.TRANSPORT || _liftPosition == LiftPosition.UP_BASKED)) {
                     _lift.aimTargetPosition = Configs.LiftConfig.LOW_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.LOW_BASKED_EXTENSION
                     _intake.setDifPos(
@@ -308,7 +326,11 @@ class IntakeManager : IRobotModule {
     override fun update() {
         _lift.update()
 
-        StaticTelemetry.addData("lift at target", _lift.atTarget())
+        if(_liftPosition == LiftPosition.CLAMP_CENTER_UP){
+            StaticTelemetry.addData("aim angle", toDegrees(atan(Configs.LiftConfig.CLAMP_CENTER_UP_L / (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.LiftConfig.EXTENSION_DEFAULT_L))))
+        }
+
+        StaticTelemetry.addData("liftTargetExtensionPos", _lift.extensionTargetPosition + _lift.deltaExtension)
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
         if (Configs.IntakeConfig.USE_CAMERA && _isAutoClamp) {
