@@ -58,14 +58,17 @@ class Lift {
     var deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
+    var currentAimPos = 0.0
+        get private set
+
     fun getRawAimPos() = _aimPotentiometer.voltage /
             Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
             Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        val aimPos = getRawAimPos()
+        currentAimPos = getRawAimPos()
 
-        StaticTelemetry.addData("aimPos", aimPos)
+        StaticTelemetry.addData("aimPos", currentAimPos)
 
         deltaExtension += _deltaTime.seconds() * extensionVelocity
 
@@ -82,7 +85,7 @@ class Lift {
 
         val targetDefencedAimPos: Double
 
-        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS) {
+        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS || abs(currentAimPos - targetAimPos) < Configs.LiftConfig.AIM_DEFEND_TRIGGER_POS) {
             targetDefencedAimPos = targetAimPos
             _oldTargetAimPos = targetAimPos
         } else
@@ -90,16 +93,18 @@ class Lift {
 
         val targetDefencedExtensionPos: Double
 
-        if (abs(targetAimPos - aimPos) > Configs.LiftConfig.DEFENDED_AIM_SENS)
+        if (abs(targetAimPos - currentAimPos) > Configs.LiftConfig.DEFENDED_AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
         else
             targetDefencedExtensionPos = targetExtensionPos
 
-        _aimErr = targetDefencedAimPos - aimPos
+        StaticTelemetry.addData("targetAimLiftPos", targetDefencedAimPos)
+
+        _aimErr = targetDefencedAimPos - currentAimPos
         _extensionErr = (targetDefencedExtensionPos + deltaExtension) - getCurrentExtensionPos()
 
         val triggerMinPower =
-            if (aimPos > Configs.LiftConfig.TRIGET_SLOW_POS)
+            if (currentAimPos > Configs.LiftConfig.TRIGET_SLOW_POS)
                 Configs.LiftConfig.MAX_SPEED_DOWN
             else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
@@ -114,7 +119,7 @@ class Lift {
     }
 
     fun atTarget() =
-        abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_extensionErr) < Configs.LiftConfig.EXTENSION_SENS
+        abs(getRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS && abs(getCurrentExtensionPos() - (extensionTargetPosition + deltaExtension)) < Configs.LiftConfig.EXTENSION_SENS
 
     fun start() {
         _deltaTime.reset()

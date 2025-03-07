@@ -123,7 +123,16 @@ object Configs {
     @Config
     internal object LiftConfig {
         @JvmField
-        var EXTENSION_DEFAULT_L = (173.0 / 10.5) * 38.5
+        var AUTO_CLAMP_DRIVE_K = 0.004
+
+        @JvmField
+        var AIM_DEFEND_TRIGGER_POS = 20.0
+
+        @JvmField
+        var CLAMP_CENTER_UP_CLAMP_TIMER = 0.2
+
+        @JvmField
+        var EXTENSION_DEFAULT_L = (220.0 / 13.0) * (41.0)
 
         @JvmField
         var DEFENDED_AIM_SENS = 50.0
@@ -132,7 +141,7 @@ object Configs {
         var DEFENDED_EXTENSION_SENS = 600.0
 
         @JvmField
-        var CLAMP_CENTER_UP_L = 100.0
+        var CLAMP_CENTER_UP_L = 330.0
 
         @JvmField
         var CLAMP_WALL_AIM_POS = 25.0
@@ -189,7 +198,7 @@ object Configs {
         var UP_LAYER_EXTENSION = 0.0
 
         @JvmField
-        var AIM_PID = PIDConfig(0.7, d = 0.015)
+        var AIM_PID = PIDConfig(0.8, d = 0.015)
 
         @JvmField
         var EXTENSION_PID = PIDConfig(0.06, d = 0.001)
@@ -201,7 +210,7 @@ object Configs {
         var AIM_SENS = 25.0
 
         @JvmField
-        var TRIGET_SLOW_POS = 40.0
+        var TRIGET_SLOW_POS = 35.0
 
         @JvmField
         var MAX_TRIGGER_SPEED_DOWN = 0.0
@@ -263,13 +272,13 @@ object Configs {
 
         @JvmField
         var YELLOW_STICK_DETECT =
-            StickDetectConfig(15.0, 0.0, 0.0, 29.0, 255.0, 255.0, 20.0, 35.0, 37.0, Color.YELLOW, Color.GREEN)
+            StickDetectConfig(20.0, 130.0, 0.0, 30.0, 255.0, 255.0, 2.0, 6.0, 2.0, Color.YELLOW, Color.GREEN)
 
         @JvmField
         var DETECT_THREADS_COUNT = 3
 
         @JvmField
-        var MIN_STICK_AREA = 38000.0
+        var MIN_STICK_AREA = 1000.0
 
         @JvmField
         var COMPRESSION_COEF = 0.5
@@ -278,13 +287,13 @@ object Configs {
     @Config
     internal object IntakeConfig {
         @JvmField
-        var CLAMP_EXTENSION_STEP = 160.0
+        var CLAMP_EXTENSION_STEP = 180.0
 
         @JvmField
         var EXTENSION_STEP = 50.0
 
         @JvmField
-        var TRIGGER_CLOSES_STICK = 500.0
+        var TRIGGER_CLOSES_STICK = 57.0
 
         @JvmField
         var MAX_DEFENDED_INTEGRATIOS = 2

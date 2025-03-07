@@ -8,14 +8,21 @@ import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.camera.Camera.RequestAllianceDetectedSticks
+import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.timer.Timers
+import org.firstinspires.ftc.teamcode.utils.units.Angle
+import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import java.lang.Math.pow
 import java.lang.Math.toDegrees
+import java.lang.Math.toRadians
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 class IntakeManager : IRobotModule {
@@ -30,7 +37,7 @@ class IntakeManager : IRobotModule {
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
     class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
     class ClampDefendedEvent() : IEvent
-    class AutoClamp(): IEvent
+    class AutoClamp() : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -55,7 +62,7 @@ class IntakeManager : IRobotModule {
     private var _liftPosition = LiftPosition.TRANSPORT
 
     override fun initUpdate() {
-        if(_isAuto)
+        if (_isAuto)
             _lift.update()
     }
 
@@ -146,7 +153,27 @@ class IntakeManager : IRobotModule {
                         isClampBusy = false
                     }
 
-                    LiftPosition.CLAMP_CENTER, LiftPosition.CLAMP_CENTER_UP -> {
+                    LiftPosition.CLAMP_CENTER_UP -> {
+                        _lift.aimTargetPosition = 0.0
+                        _lift.extensionTargetPosition =
+                            (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.LiftConfig.EXTENSION_DEFAULT_L) /
+                                    cos(toRadians(_lift.currentAimPos)) - Configs.LiftConfig.EXTENSION_DEFAULT_L + Configs.IntakeConfig.CLAMP_EXTENSION_STEP
+                        _liftPosition = LiftPosition.TRANSPORT
+                        _lift.deltaExtension = 0.0
+
+                        Timers.newTimer().start({ !_lift.atTarget() }) {
+                            Timers.newTimer()
+                                .start(Configs.LiftConfig.CLAMP_CENTER_UP_CLAMP_TIMER) {
+                                    _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+                                    Timers.newTimer().start({ !_intake.atTarget() }) {
+                                        isClampBusy = false
+                                        setDownState()
+                                    }
+                                }
+                        }
+                    }
+
+                    LiftPosition.CLAMP_CENTER -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
                         Timers.newTimer().start({ !_intake.atTarget() }) {
@@ -242,16 +269,6 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                }
-                else if(it.pos == LiftPosition.CLAMP_CENTER_UP && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT){
-                    _lift.aimTargetPosition = 0.0
-                    _lift.extensionTargetPosition = 0.0
-                    _intake.setDifPos(
-                        xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
-                        yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
-                    )
-                    _liftPosition = it.pos
-                    _lift.deltaExtension = 0.0
                 } else if (it.pos == LiftPosition.LOW_BASKET && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && (_liftPosition == LiftPosition.TRANSPORT || _liftPosition == LiftPosition.UP_BASKED)) {
                     _lift.aimTargetPosition = Configs.LiftConfig.LOW_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.LOW_BASKED_EXTENSION
@@ -313,12 +330,19 @@ class IntakeManager : IRobotModule {
             it.target = _intake.atTarget() && !isClampBusy
         }
 
-        bus.subscribe(AutoClamp::class){
-            _isAutoClamp = true
+        bus.subscribe(AutoClamp::class) {
+            _liftPosition = LiftPosition.CLAMP_CENTER_UP
+            _lift.aimTargetPosition = 0.0
+            _lift.extensionTargetPosition = 0.0
+            _intake.setDifPos(
+                xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
+                yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
+            )
+            _liftPosition = LiftPosition.CLAMP_CENTER_UP
+            _lift.deltaExtension = 0.0
+            _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
         }
     }
-
-    private var _isAutoClamp = false
 
     private val _cameraUpdateTimer = ElapsedTime()
     private val _cameraEnableTimer = ElapsedTime()
@@ -326,51 +350,81 @@ class IntakeManager : IRobotModule {
     override fun update() {
         _lift.update()
 
-        if(_liftPosition == LiftPosition.CLAMP_CENTER_UP){
-            StaticTelemetry.addData("aim angle", toDegrees(atan(Configs.LiftConfig.CLAMP_CENTER_UP_L / (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.LiftConfig.EXTENSION_DEFAULT_L))))
-        }
-
-        StaticTelemetry.addData("liftTargetExtensionPos", _lift.extensionTargetPosition + _lift.deltaExtension)
+        StaticTelemetry.addData(
+            "liftTargetExtensionPos",
+            _lift.extensionTargetPosition + _lift.deltaExtension
+        )
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
-        if (Configs.IntakeConfig.USE_CAMERA && _isAutoClamp) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER) {
-                if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
-                    return
+        if (Configs.IntakeConfig.USE_CAMERA && _liftPosition == LiftPosition.CLAMP_CENTER_UP) {
+            _lift.aimTargetPosition =
+                toDegrees(atan(Configs.LiftConfig.CLAMP_CENTER_UP_L / (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.LiftConfig.EXTENSION_DEFAULT_L)))
 
-                _cameraUpdateTimer.reset()
+            if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
+                return
 
-                _eventBus.invoke(Camera.SetStickDetectEnable(true))
+            _cameraUpdateTimer.reset()
 
-                val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
-                val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+            _eventBus.invoke(Camera.SetStickDetectEnable(true))
 
-                if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
-                    _lift.extensionTargetPosition = clamp(_lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP, 0.0, Configs.LiftConfig.MAX_EXTENSION_POS)
+            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
+            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
 
-                    return
+            if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
+                _lift.extensionTargetPosition = clamp(
+                    _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
+                    0.0,
+                    Configs.LiftConfig.MAX_EXTENSION_POS
+                )
+
+                _eventBus.invoke(
+                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
+
+                return
+            }
+
+            var closesdStick = yellowSticks[0]
+            var closesdStickL = Double.MAX_VALUE
+
+            for (i in yellowSticks) {
+                val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
+                val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
+                val l = sqrt(catetX * catetX + catetY * catetY)
+                if (l < closesdStickL) {
+                    closesdStick = i
+                    closesdStickL = l
                 }
+            }
 
-                var closesdStick = yellowSticks[0]
-                var closesdStickL = Double.MAX_VALUE
+            val rot = closesdStick.angl.toDegree()
 
-                for (i in yellowSticks) {
-                    val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
-                    val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
-                    val l = sqrt(catetX * catetX + catetY * catetY)
-                    if (l < closesdStickL) {
-                        closesdStick = i
-                        closesdStickL = l
-                    }
+
+            if (closesdStickL > Configs.IntakeConfig.TRIGGER_CLOSES_STICK) {
+                val xErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_X - closesdStick.pos.x
+                val yErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_Y - closesdStick.pos.y
+
+                if(abs(yErr) > abs(xErr)) {
+                    _lift.extensionTargetPosition = clamp(
+                        _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
+                        0.0,
+                        Configs.LiftConfig.MAX_EXTENSION_POS
+                    )
+
+                    _eventBus.invoke(
+                        DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
                 }
-
-                if(closesdStickL > Configs.IntakeConfig.TRIGGER_CLOSES_STICK) {
-                    _lift.extensionTargetPosition = clamp(_lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP, 0.0, Configs.LiftConfig.MAX_EXTENSION_POS)
-
-                    return
-                }
-
-                val rot = closesdStick.angl.toDegree()
+                else
+                    _eventBus.invoke(
+                        DriveTrain.SetDrivePowerEvent(
+                            Vec2(
+                                0.0,
+                                xErr * Configs.LiftConfig.AUTO_CLAMP_DRIVE_K
+                            ), 0.0
+                        )
+                    )
+            } else {
+                _eventBus.invoke(
+                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
 
                 if (abs(rot) > Configs.IntakeConfig.CAMERA_SENS)
                     _intake.setDifPos(
@@ -381,15 +435,10 @@ class IntakeManager : IRobotModule {
                         )
                     )
 
-                _lift.extensionTargetPosition += Configs.IntakeConfig.CLAMP_EXTENSION_STEP
-                _isAutoClamp = false
-
-                Timers.newTimer().start({!_lift.atTarget()}) {
-                    _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
-                }
-            } else
-                _eventBus.invoke(Camera.SetStickDetectEnable(false))
-        }
+                _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
+            }
+        } else
+            _eventBus.invoke(Camera.SetStickDetectEnable(false))
     }
 
     fun setDownState() {

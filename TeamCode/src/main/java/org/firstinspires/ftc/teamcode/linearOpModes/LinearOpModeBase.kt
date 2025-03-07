@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import kotlin.math.abs
 
 /**
  * Класс для всех опмодов который запускает всю программу
@@ -18,11 +19,13 @@ open class LinearOpModeBase : LinearOpMode() {
     data class OpModeSettings(
         val isAutoStart: Boolean,
         val isPreInit: Boolean,
+        val gamepadStart: Boolean,
         val preInitOpModeName: String = "",
         val initTime: Double = 1.5
     )
 
-    protected open fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = false)
+    protected open fun getOpModeSettings() =
+        OpModeSettings(isAutoStart = false, isPreInit = false, gamepadStart = false)
 
     protected open fun getCollector() = BaseCollector(
         this,
@@ -47,6 +50,16 @@ open class LinearOpModeBase : LinearOpMode() {
         while (!isStarted()) {
             collector.initUpdate()
             Thread.yield()
+
+            if (gamepad1.options ||
+                abs(gamepad1.left_stick_x) > 0.01 ||
+                abs(gamepad1.left_stick_y) > 0.01 ||
+                abs(gamepad1.right_stick_x) > 0.01 ||
+                abs(gamepad1.right_stick_y) > 0.01 ||
+                gamepad1.touchpad
+            )
+                OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity())
+                    .startActiveOpMode()
         }
 
         resetRuntime()

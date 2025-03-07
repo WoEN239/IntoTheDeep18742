@@ -168,6 +168,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             )
         )
 
+        //hsvFrame.copyTo(_drawFrame)
+
         val contours = arrayListOf<MatOfPoint>()
 
         findContours(hsvFrame, contours, Mat(), RETR_TREE, CHAIN_APPROX_SIMPLE)
@@ -188,8 +190,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         rectColor: Scalar,
         textColor: Scalar
     ) {
-        //StaticTelemetry.addData("centerPos", Vec2(mat.size().width * 0.5, mat.size().height * 0.5))
-
         for (i in rects) {
             val points = Array<Point?>(4) { null }
 
@@ -218,9 +218,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         val points = MatOfPoint2f()
 
         points.fromArray(*contour.toArray())
-
-        if(contour.toArray().size <= 3)
-            return null
 
         val rect = minAreaRect(points)
 

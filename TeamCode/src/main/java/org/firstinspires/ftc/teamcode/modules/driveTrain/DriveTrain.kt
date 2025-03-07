@@ -77,6 +77,8 @@ class DriveTrain : IRobotModule {
         }
 
         bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
+
+
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
 
             driveSimpleDirection(Vec2(
