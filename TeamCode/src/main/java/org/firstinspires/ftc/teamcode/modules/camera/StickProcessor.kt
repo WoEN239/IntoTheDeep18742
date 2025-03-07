@@ -45,6 +45,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.math.abs
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
@@ -221,7 +222,9 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         val rect = minAreaRect(points)
 
-        if (rect.size.height * rect.size.width > Configs.CameraConfig.MIN_STICK_AREA)
+        val attitude = if(rect.size.width > rect.size.height) rect.size.width / rect.size.height else rect.size.height / rect.size.width
+
+        if (rect.size.height * rect.size.width > Configs.CameraConfig.MIN_STICK_AREA && abs(attitude - Configs.CameraConfig.STICK_ATTITUDE) < Configs.CameraConfig.STICK_ATTITUDE_SENS)
             return rect
 
         return null

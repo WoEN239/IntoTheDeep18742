@@ -282,6 +282,12 @@ object Configs {
 
         @JvmField
         var COMPRESSION_COEF = 0.5
+
+        @JvmField
+        var STICK_ATTITUDE = 2.0
+
+        @JvmField
+        var STICK_ATTITUDE_SENS = 0.3
     }
 
     @Config
