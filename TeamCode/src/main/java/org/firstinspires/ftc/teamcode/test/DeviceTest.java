@@ -10,6 +10,8 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.*;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine;
 import org.firstinspires.ftc.teamcode.utils.configs.Configs;
@@ -30,7 +32,7 @@ public class DeviceTest extends LinearOpMode {
     public static String deviceName = "";
 
     public enum DeviceType {
-        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE, CR_SERVO, LED_LINE, CURRENT_SENSOR
+        DC_MOTOR, DIGITAL_CHANNEL, ANALOG_INPUT, SERVO, GYRO, BATTERY_VOLTAGE, COLOR_SENSOR, DISTANCE_SENSOR, NONE, CR_SERVO, LED_LINE, CURRENT_SENSOR, CAMERA
     }
 
     public static DeviceType deviceType = DeviceType.NONE;
@@ -47,6 +49,7 @@ public class DeviceTest extends LinearOpMode {
         if (hardwareDevice instanceof ColorSensor) return COLOR_SENSOR;
         if (hardwareDevice instanceof DistanceSensor) return DISTANCE_SENSOR;
         if(hardwareDevice instanceof CRServo) return CR_SERVO;
+        if(hardwareDevice instanceof WebcamName) return CAMERA;
         return NONE;
     }
 

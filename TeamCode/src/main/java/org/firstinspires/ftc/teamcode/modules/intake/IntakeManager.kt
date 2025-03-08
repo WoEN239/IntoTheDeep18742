@@ -360,83 +360,90 @@ class IntakeManager : IRobotModule {
             _lift.aimTargetPosition =
                 toDegrees(atan(Configs.LiftConfig.CLAMP_CENTER_UP_L / (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.LiftConfig.EXTENSION_DEFAULT_L)))
 
-            if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
-                return
-
-            _cameraUpdateTimer.reset()
-
             _eventBus.invoke(Camera.SetStickDetectEnable(true))
-
-            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
-            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
-
-            if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
-                _lift.extensionTargetPosition = clamp(
-                    _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
-                    0.0,
-                    Configs.LiftConfig.MAX_EXTENSION_POS
-                )
-
-                _eventBus.invoke(
-                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
-
-                return
-            }
-
-            var closesdStick = yellowSticks[0]
-            var closesdStickL = Double.MAX_VALUE
-
-            for (i in yellowSticks) {
-                val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
-                val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
-                val l = sqrt(catetX * catetX + catetY * catetY)
-                if (l < closesdStickL) {
-                    closesdStick = i
-                    closesdStickL = l
-                }
-            }
-
-            val rot = closesdStick.angl.toDegree()
-
-
-            if (closesdStickL > Configs.IntakeConfig.TRIGGER_CLOSES_STICK) {
-                val xErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_X - closesdStick.pos.x
-                val yErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_Y - closesdStick.pos.y
-
-                if(abs(yErr) > abs(xErr)) {
-                    _lift.extensionTargetPosition = clamp(
-                        _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
-                        0.0,
-                        Configs.LiftConfig.MAX_EXTENSION_POS
-                    )
-
-                    _eventBus.invoke(
-                        DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
-                }
-                else
-                    _eventBus.invoke(
-                        DriveTrain.SetDrivePowerEvent(
-                            Vec2(
-                                0.0,
-                                xErr * Configs.LiftConfig.AUTO_CLAMP_DRIVE_K
-                            ), 0.0
-                        )
-                    )
-            } else {
-                _eventBus.invoke(
-                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
-
-                if (abs(rot) > Configs.IntakeConfig.CAMERA_SENS)
-                    _intake.setDifPos(
-                        Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, clamp(
-                            _intake.yPos + rot,
-                            -Configs.IntakeConfig.MAX_DIF_POS_Y,
-                            Configs.IntakeConfig.MAX_DIF_POS_Y
-                        )
-                    )
-
-                _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
-            }
+//
+//            if (_cameraUpdateTimer.seconds() < 1.0 / Configs.IntakeConfig.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.IntakeConfig.CAMERA_ENABLE_TIMER)
+//                return
+//
+//            _cameraUpdateTimer.reset()
+//
+//
+//            val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
+//            val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+//
+//            if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
+//                _lift.extensionTargetPosition = clamp(
+//                    _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
+//                    0.0,
+//                    Configs.LiftConfig.MAX_EXTENSION_POS
+//                )
+//
+//                if(_lift.extensionTargetPosition > 900.0)
+//                    _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
+//
+//                _eventBus.invoke(
+//                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
+//
+//                return
+//            }
+//
+//            var closesdStick = yellowSticks[0]
+//            var closesdStickL = Double.MAX_VALUE
+//
+//            for (i in yellowSticks) {
+//                val catetX = i.x - Configs.IntakeConfig.CAMERA_CLAMP_POS_X
+//                val catetY = i.y - Configs.IntakeConfig.CAMERA_CLAMP_POS_Y
+//                val l = sqrt(catetX * catetX + catetY * catetY)
+//                if (l < closesdStickL) {
+//                    closesdStick = i
+//                    closesdStickL = l
+//                }
+//            }
+//
+//            val rot = closesdStick.angl.toDegree()
+//
+//
+//            if (closesdStickL > Configs.IntakeConfig.TRIGGER_CLOSES_STICK) {
+//                val xErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_X - closesdStick.pos.x
+//                val yErr = Configs.IntakeConfig.CAMERA_CLAMP_POS_Y - closesdStick.pos.y
+//
+//                if(abs(yErr) > abs(xErr)) {
+//                    _lift.extensionTargetPosition = clamp(
+//                        _lift.extensionTargetPosition + Configs.IntakeConfig.EXTENSION_STEP,
+//                        0.0,
+//                        Configs.LiftConfig.MAX_EXTENSION_POS
+//                    )
+//
+//                    if(_lift.extensionTargetPosition > 900.0)
+//                        _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
+//
+//                    _eventBus.invoke(
+//                        DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
+//                }
+//                else
+//                    _eventBus.invoke(
+//                        DriveTrain.SetDrivePowerEvent(
+//                            Vec2(
+//                                0.0,
+//                                xErr * Configs.LiftConfig.AUTO_CLAMP_DRIVE_K
+//                            ), 0.0
+//                        )
+//                    )
+//            } else {
+//                _eventBus.invoke(
+//                    DriveTrain.SetDrivePowerEvent(Vec2.ZERO, 0.0))
+//
+//                if (abs(rot) > Configs.IntakeConfig.CAMERA_SENS)
+//                    _intake.setDifPos(
+//                        Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X, clamp(
+//                            _intake.yPos + rot,
+//                            -Configs.IntakeConfig.MAX_DIF_POS_Y,
+//                            Configs.IntakeConfig.MAX_DIF_POS_Y
+//                        )
+//                    )
+//
+//                _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
+//            }
         } else
             _eventBus.invoke(Camera.SetStickDetectEnable(false))
     }

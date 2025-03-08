@@ -87,6 +87,8 @@ open class BaseCollector(val robot: LinearOpMode, private val gameSettings: Game
             i.init(this, _eventBus)
 
         _updateHandler.init(InitContext(devices.battery))
+
+        devices.teamLED.power = 0.9
     }
 
     fun start() {

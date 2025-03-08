@@ -39,7 +39,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
                                     .strafeToLinearHeading(
-                                        Vector2d(134.2, 131.5),
+                                        Vector2d(131.2, 133.5),
                                         toRadians(-90.0 - 45.0)
                                     )
                                     .build()
@@ -47,7 +47,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         ),
                         arrayListOf(
                             WaitLiftAction(eventBus),
-                            WaitAction(0.1),
+                            WaitAction(0.2),
                             LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
                         )
                     ),
@@ -81,11 +81,11 @@ class BaskedTrajectory : ITrajectoryBuilder {
         fun clampStick(isDif: Boolean = false): ArrayList<IAction> {
             val acts = arrayListOf<IAction>()
 
-            acts.add(WaitLiftAction(eventBus))
-
             if (isDif)
                 for (i in 0..2)
                     acts.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
+
+            acts.add(WaitLiftAction(eventBus))
 
             acts.add(WaitAction(0.2))
 
@@ -97,7 +97,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
         }
 
         fun paralelClamp(isDif: Boolean): ArrayList<IAction> {
-            val clampActions = arrayListOf(WaitLiftAction(eventBus), WaitAction(0.3))
+            val clampActions = arrayListOf(WaitLiftAction(eventBus), WaitAction(if(isDif) 0.7 else 0.4))
 
             clampActions.addAll(runToBasket(getEndOrientation(actions)))
 
@@ -115,7 +115,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             ParallelActions(
                 arrayOf(
                     basket(950.0), arrayListOf(
-                        WaitAction(0.1),
+                        WaitAction(0.2),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(Vector2d(121.6, 126.9), toRadians(-90.0))
@@ -132,16 +132,18 @@ class BaskedTrajectory : ITrajectoryBuilder {
             ParallelActions(
                 arrayOf(
                     arrayListOf(
-                        WaitAction(0.1),
+                        WaitAction(0.2),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(Vector2d(144.2, 119.6), toRadians(-90.0))
                                 .build()
                         )
-                    ), basket(750.0)
+                    ), basket(740.0)
                 ), ParallelActions.ExitType.AND
             )
         )
+
+        actions.add(WaitAction(0.1))
 
         actions.addAll(paralelClamp(false))
 
@@ -149,7 +151,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             ParallelActions(
                 arrayOf(
                     arrayListOf(
-                        WaitAction(0.1),
+                        WaitAction(0.2),
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
@@ -163,6 +165,8 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
+        actions.add(WaitAction(0.2))
+
         actions.addAll(paralelClamp(true))
 
         if (teammate.brick) {
@@ -170,7 +174,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                 ParallelActions(
                     arrayOf(
                         basket(1000.0), arrayListOf(
-                            WaitAction(0.1), FollowRRTrajectory(
+                            WaitAction(0.2), FollowRRTrajectory(
                                 eventBus,
                                 newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
                                     Vector2d(117.0, 142.3), toRadians(180.0)
@@ -193,8 +197,9 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(
                                 getEndOrientation(actions)
                             )
+                                .setTangent(toRadians(-90.0))
                                 .splineToLinearHeading(
-                                    Pose2d(60.0, 15.0, toRadians(180.0)),
+                                    Pose2d(60.0, 6.0, toRadians(180.0)),
                                     toRadians(-90.0 - 45.0)
                                 ).build()
                         )
@@ -204,9 +209,39 @@ class BaskedTrajectory : ITrajectoryBuilder {
         )
 
         actions.add(AutoClampAction(eventBus))
+        actions.add(WaitAction(0.1))
 
         actions.addAll(runToBasket(getEndOrientation(actions)))
-        actions.addAll(basket())
+
+        if(!teammate.brick){
+            actions.add(
+                ParallelActions(
+                    arrayOf(
+                        basket(1.0), arrayListOf(
+                            WaitAction(0.1),
+                            FollowRRTrajectory(
+                                eventBus, newRRTrajectory(
+                                    getEndOrientation(actions)
+                                )
+                                    .setTangent(toRadians(-90.0))
+                                    .splineToLinearHeading(
+                                        Pose2d(60.0, -6.0, toRadians(180.0)),
+                                        toRadians(-90.0 - 45.0)
+                                    ).build()
+                            )
+                        )
+                    ), ParallelActions.ExitType.AND
+                )
+            )
+
+            actions.add(AutoClampAction(eventBus))
+            actions.add(WaitAction(0.1))
+
+            actions.addAll(runToBasket(getEndOrientation(actions)))
+            actions.addAll(basket())
+        }
+        else
+            actions.addAll(basket())
 
         actions.add(
             ParallelActions(
@@ -216,7 +251,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(180.0))
                                 .splineToLinearHeading(
-                                    Pose2d(61.0, 0.0, toRadians(0.0)),
+                                    Pose2d(50.0, 0.0, toRadians(0.0)),
                                     toRadians(180.0)
                                 )
                                 .build()

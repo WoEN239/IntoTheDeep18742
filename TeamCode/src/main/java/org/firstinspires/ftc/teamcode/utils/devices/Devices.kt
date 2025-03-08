@@ -71,4 +71,6 @@ class Devices(hardMap: HardwareMap)  {
     val rightLight = LEDLine(hardMap.get("rightLEDLine") as Servo)
 
     val clampCurrentSensor = CurrentSensor(hardMap.get("clampCurrentSensor") as AnalogInput)
+
+    val teamLED = LEDLine(hardMap.get("teamLED") as Servo)
 }

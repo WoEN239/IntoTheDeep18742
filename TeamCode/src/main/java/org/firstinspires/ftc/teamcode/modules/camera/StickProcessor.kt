@@ -224,7 +224,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         val attitude = if(rect.size.width > rect.size.height) rect.size.width / rect.size.height else rect.size.height / rect.size.width
 
-        if (rect.size.height * rect.size.width > Configs.CameraConfig.MIN_STICK_AREA && abs(attitude - Configs.CameraConfig.STICK_ATTITUDE) < Configs.CameraConfig.STICK_ATTITUDE_SENS)
+        if (rect.size.height * rect.size.width > Configs.CameraConfig.MIN_STICK_AREA.get() && abs(attitude - Configs.CameraConfig.STICK_ATTITUDE.get()) < Configs.CameraConfig.STICK_ATTITUDE_SENS.get())
             return rect
 
         return null
