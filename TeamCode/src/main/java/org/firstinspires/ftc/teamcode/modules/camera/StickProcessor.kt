@@ -146,28 +146,28 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             Scalar(parameters.H_MAX, parameters.S_MAX, parameters.V_MAX),
             hsvFrame
         )
-
-        erodeDilate(hsvFrame, parameters.ERODE_DILATE)
-
-        erode(
-            hsvFrame,
-            hsvFrame,
-            getStructuringElement(
-                MORPH_ERODE,
-                Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
-            )
-        )
-
-        dilateErode(hsvFrame, parameters.DILATE_ERODE)
-
-        dilate(
-            hsvFrame,
-            hsvFrame,
-            getStructuringElement(
-                MORPH_ERODE,
-                Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
-            )
-        )
+//
+//        erodeDilate(hsvFrame, parameters.ERODE_DILATE)
+//
+//        erode(
+//            hsvFrame,
+//            hsvFrame,
+//            getStructuringElement(
+//                MORPH_ERODE,
+//                Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
+//            )
+//        )
+//
+//        dilateErode(hsvFrame, parameters.DILATE_ERODE)
+//
+//        dilate(
+//            hsvFrame,
+//            hsvFrame,
+//            getStructuringElement(
+//                MORPH_ERODE,
+//                Size(parameters.PRECOMPRESSION, parameters.PRECOMPRESSION)
+//            )
+//        )
 
         //hsvFrame.copyTo(_drawFrame)
 
