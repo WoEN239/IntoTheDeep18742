@@ -39,7 +39,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
                                     .strafeToLinearHeading(
-                                        Vector2d(131.2, 133.5),
+                                        Vector2d(131.1, 133.4),
                                         toRadians(-90.0 - 45.0)
                                     )
                                     .build()
@@ -138,12 +138,12 @@ class BaskedTrajectory : ITrajectoryBuilder {
                                 .strafeToLinearHeading(Vector2d(144.2, 119.6), toRadians(-90.0))
                                 .build()
                         )
-                    ), basket(740.0)
+                    ), basket(780.0)
                 ), ParallelActions.ExitType.AND
             )
         )
 
-        actions.add(WaitAction(0.1))
+        actions.add(WaitAction(0.2))
 
         actions.addAll(paralelClamp(false))
 
@@ -155,7 +155,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(137.7, 106.7),
+                                    Vector2d(137.7, 105.7),
                                     toRadians(-90.0 + 39.5)
                                 )
                                 .build()
@@ -165,7 +165,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             )
         )
 
-        actions.add(WaitAction(0.2))
+        actions.add(WaitAction(0.3))
 
         actions.addAll(paralelClamp(true))
 
@@ -225,7 +225,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                                 )
                                     .setTangent(toRadians(-90.0))
                                     .splineToLinearHeading(
-                                        Pose2d(60.0, -6.0, toRadians(180.0)),
+                                        Pose2d(50.0, -6.0, toRadians(180.0)),
                                         toRadians(-90.0 - 45.0)
                                     ).build()
                             )

@@ -51,12 +51,12 @@ open class LinearOpModeBase : LinearOpMode() {
             collector.initUpdate()
             Thread.yield()
 
-            if (gamepad1.options ||
+            if ((gamepad1.options ||
                 abs(gamepad1.left_stick_x) > 0.01 ||
                 abs(gamepad1.left_stick_y) > 0.01 ||
                 abs(gamepad1.right_stick_x) > 0.01 ||
                 abs(gamepad1.right_stick_y) > 0.01 ||
-                gamepad1.touchpad
+                gamepad1.touchpad) && settings.gamepadStart
             )
                 OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity())
                     .startActiveOpMode()
