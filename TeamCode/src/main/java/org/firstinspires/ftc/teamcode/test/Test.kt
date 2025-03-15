@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
-import org.firstinspires.ftc.teamcode.modules.camera.StickProcessor
 import org.firstinspires.ftc.teamcode.modules.intake.Lift
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.contServo.ContServo
