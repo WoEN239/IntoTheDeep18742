@@ -414,7 +414,7 @@ class IntakeManager : IRobotModule {
                         Configs.LiftConfig.MAX_EXTENSION_POS
                     )
 
-                    if(_lift.extensionTargetPosition > 900.0)
+                    if(_lift.extensionTargetPosition > Configs.AutoClamp.MAX_EXTENSION_POS)
                         _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
 
                     _eventBus.invoke(
