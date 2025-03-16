@@ -369,7 +369,7 @@ class IntakeManager : IRobotModule {
             val allianceSticks = _eventBus.invoke(RequestAllianceDetectedSticks()).sticks!!
             val yellowSticks = _eventBus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
 
-            if (allianceSticks.isEmpty() && yellowSticks.isEmpty()) {
+            if (allianceSticks.isEmpty() || yellowSticks.isEmpty()) {
                 _lift.extensionTargetPosition = clamp(
                     _lift.extensionTargetPosition + Configs.AutoClamp.EXTENSION_STEP,
                     0.0,

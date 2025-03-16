@@ -52,7 +52,7 @@ class Camera : IRobotModule {
         _visionPortal = _visionPortalBuilder.build()
 
         if (Configs.TelemetryConfig.ENABLE)
-            FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
+            FtcDashboard.getInstance().startCameraStream(_processor, 15.0)
     }
 
     override fun stop() {

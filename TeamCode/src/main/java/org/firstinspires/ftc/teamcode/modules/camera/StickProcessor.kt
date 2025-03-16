@@ -17,12 +17,14 @@ import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import org.opencv.core.Core
 import org.opencv.core.Core.add
 import org.opencv.core.Core.bitwise_and
 import org.opencv.core.Core.inRange
 import org.opencv.core.Core.split
 import org.opencv.core.Core.subtract
 import org.opencv.core.CvType.CV_32F
+import org.opencv.core.CvType.CV_8U
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
@@ -45,12 +47,12 @@ import kotlin.math.abs
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
-    val allianceSticks = AtomicReference<Array<Orientation>>(arrayOf())
-    val yellowSticks = AtomicReference<Array<Orientation>>(arrayOf())
+    var allianceSticks = AtomicReference<Array<Orientation>>(arrayOf())
+    var yellowSticks = AtomicReference<Array<Orientation>>(arrayOf())
 
-    val gameColor = AtomicReference(BaseCollector.GameColor.BLUE)
+    var gameColor = AtomicReference(BaseCollector.GameColor.BLUE)
 
-    private val _isOneFrame = AtomicReference(false)
+    private var _isOneFrame = AtomicReference(false)
 
     private var lastFrame: AtomicReference<Bitmap> =
         AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
@@ -64,8 +66,8 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     override fun processFrame(frm: Mat?, captureTimeNanos: Long): Any {
         val frame = frm!!.clone()
 
-        if (!_isOneFrame.get())
-            return frm
+//        if (!_isOneFrame.get())
+//            return frm
 
         resize(
             frame,
@@ -86,7 +88,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             Size(Configs.CameraConfig.BLUR_SIZE, Configs.CameraConfig.BLUR_SIZE)
         )
 
-        val colors = listOf<Mat>()
+        val colors = mutableListOf<Mat>()
 
         split(frame, colors)
 
@@ -201,18 +203,20 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         val uG = Mat()
         val uB = Mat()
 
-        multiply(r, Mat(r.size(), CV_32F, Scalar(kr)), uR)
-        multiply(g, Mat(g.size(), CV_32F, Scalar(kg)), uG)
-        multiply(b, Mat(b.size(), CV_32F, Scalar(kb)), uB)
+        val matOfOnes = Mat.ones(r.size(), CV_8U)
+
+        multiply(r, matOfOnes, uR, kr)
+        multiply(g, matOfOnes, uG, kg)
+        multiply(b, matOfOnes, uB, kb)
 
         val combined = Mat()
 
         add(uR, uB, combined)
         add(combined, uG, combined)
 
-        multiply(r, Mat(r.size(), CV_32F, Scalar(1.0 - kr)), uR)
-        multiply(g, Mat(g.size(), CV_32F, Scalar(1.0 - kg)), uG)
-        multiply(b, Mat(b.size(), CV_32F, Scalar(1.0 - kb)), uB)
+        multiply(r, matOfOnes, uR, 1.0 - kr)
+        multiply(g, matOfOnes, uG, 1.0 - kg)
+        multiply(b, matOfOnes, uB, 1.0 - kb)
 
         subtract(combined, uR, uR)
         subtract(combined, uG, uG)
@@ -227,13 +231,14 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         erodeDilate(combined, Configs.CameraConfig.ERODE_DILATE_K)
 
-        val contours = listOf<MatOfPoint>()
+        val contours = mutableListOf<MatOfPoint>()
 
         findContours(combined, contours, Mat(), RETR_TREE, CHAIN_APPROX_SIMPLE)
 
         val points = MatOfPoint2f()
 
-        return List<RotatedRect?>(contours.size) {
+
+        return MutableList(contours.size) {
             points.fromArray(*contours[it].toArray())
             val rect = minAreaRect(points)
 
@@ -289,6 +294,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     }
 
     override fun getFrameBitmap(continuation: Continuation<out org.firstinspires.ftc.robotcore.external.function.Consumer<Bitmap?>?>?) {
-        continuation!!.dispatch { bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()) }
+        continuation!!.dispatch { bitmapConsumer -> bitmapConsumer?.accept(lastFrame.get()) }
     }
 }
