@@ -54,8 +54,8 @@ class Test: LinearOpMode() {
                 val x = xRot + 135.0
                 val y = yRot * Configs.IntakeConfig.GEAR_RATIO
 
-                _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.MAX, 0.0, 1.0)
-                _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.MAX, 0.0, 1.0)
+                _servoDifRight.position = clamp((y + x) / Configs.IntakeConfig.SERVO_MAX, 0.0, 1.0)
+                _servoDifLeft.position = clamp(1.0 - (x - y) / Configs.IntakeConfig.SERVO_MAX, 0.0, 1.0)
             }
 
             handler.init(BaseCollector.InitContext(battery))

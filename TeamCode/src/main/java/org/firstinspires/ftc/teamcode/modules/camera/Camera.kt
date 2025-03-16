@@ -14,8 +14,8 @@ import org.firstinspires.ftc.vision.VisionProcessor
 class Camera : IRobotModule {
     class RequestAllianceDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
     class RequestYellowDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
-    class SetStickDetectEnable(val enable: Boolean) : IEvent
     class AddCameraProcessor(val processor: VisionProcessor) : IEvent
+    class WaitFrameProcessed: IEvent
 
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
@@ -23,6 +23,10 @@ class Camera : IRobotModule {
     private var _visionPortalBuilder = VisionPortal.Builder()
 
     override fun init(collector: BaseCollector, bus: EventBus) {
+        bus.subscribe(WaitFrameProcessed::class){
+            _processor.waitFrame()
+        }
+
         bus.subscribe(RequestAllianceDetectedSticks::class) {
             it.sticks = _processor.allianceSticks.get()
         }
@@ -31,9 +35,6 @@ class Camera : IRobotModule {
             it.sticks = _processor.yellowSticks.get()
         }
 
-        bus.subscribe(SetStickDetectEnable::class) {
-            _processor.enableDetect.set(it.enable)
-        }
 
         bus.subscribe(AddCameraProcessor::class) {
             _visionPortalBuilder.addProcessor(it.processor)
@@ -52,8 +53,6 @@ class Camera : IRobotModule {
 
         if (Configs.TelemetryConfig.ENABLE)
             FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
-
-        _processor.enableDetect.set(false)
     }
 
     override fun stop() {

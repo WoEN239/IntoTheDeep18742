@@ -360,8 +360,6 @@ class IntakeManager : IRobotModule {
             _lift.aimTargetPosition =
                 toDegrees(atan(Configs.AutoClamp.AUTO_CLAMP_CENTER_L / (_lift.extensionTargetPosition + _lift.deltaExtension + Configs.AutoClamp.EXTENSION_DEFAULT_L)))
 
-            _eventBus.invoke(Camera.SetStickDetectEnable(true))
-
             if (_cameraUpdateTimer.seconds() < 1.0 / Configs.AutoClamp.CAMERA_UPDATE_HZ || _cameraEnableTimer.seconds() < Configs.AutoClamp.CAMERA_ENABLE_TIMER)
                 return
 
@@ -444,8 +442,7 @@ class IntakeManager : IRobotModule {
 
                 _eventBus.invoke(EventSetClampPose(Intake.ClampPosition.SERVO_CLAMP))
             }
-        } else
-            _eventBus.invoke(Camera.SetStickDetectEnable(false))
+        }
     }
 
     fun setDownState() {

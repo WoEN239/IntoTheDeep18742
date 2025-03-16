@@ -134,7 +134,7 @@ class TrajectorySegmentRunner : IRobotModule {
         val headingVelU =
             if (abs(velHeadingErr) > Configs.RoadRunnerConfig.HEADING_VEL_SENS) velHeadingErr * Configs.RoadRunnerConfig.HEADING_VEL_P else 0.0
 
-        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.CLAMP_CENTER_UP)
+        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.AUTO_CLAMP_CENTER)
             _eventBus.invoke(
                 DriveTrain.SetDriveCmEvent(
                     localizedTransVelocity + uPos + uPosVel,

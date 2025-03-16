@@ -45,11 +45,12 @@ import kotlin.math.abs
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
-    var allianceSticks = AtomicReference<Array<Orientation>>(arrayOf())
-    var yellowSticks = AtomicReference<Array<Orientation>>(arrayOf())
+    val allianceSticks = AtomicReference<Array<Orientation>>(arrayOf())
+    val yellowSticks = AtomicReference<Array<Orientation>>(arrayOf())
 
-    var enableDetect = AtomicReference(false)
-    var gameColor = AtomicReference(BaseCollector.GameColor.BLUE)
+    val gameColor = AtomicReference(BaseCollector.GameColor.BLUE)
+
+    private val _isOneFrame = AtomicReference(false)
 
     private var lastFrame: AtomicReference<Bitmap> =
         AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
@@ -62,6 +63,9 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
     override fun processFrame(frm: Mat?, captureTimeNanos: Long): Any {
         val frame = frm!!.clone()
+
+        if (!_isOneFrame.get())
+            return frm
 
         resize(
             frame,
@@ -76,71 +80,66 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         frame.copyTo(_drawFrame)
 
-        if (!enableDetect.get()) {
-            allianceSticks.set(arrayOf())
-            yellowSticks.set(arrayOf())
-        } else {
-            blur(
-                frame,
-                frame,
-                Size(Configs.CameraConfig.BLUR_SIZE, Configs.CameraConfig.BLUR_SIZE)
-            )
+        blur(
+            frame,
+            frame,
+            Size(Configs.CameraConfig.BLUR_SIZE, Configs.CameraConfig.BLUR_SIZE)
+        )
 
-            val colors = listOf<Mat>()
+        val colors = listOf<Mat>()
 
-            split(frame, colors)
+        split(frame, colors)
 
-            val r = colors[0]
-            val g = colors[1]
-            val b = colors[2]
+        val r = colors[0]
+        val g = colors[1]
+        val b = colors[2]
 
-            val yellowRects = detectElements(
-                r, g, b,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KR,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KG,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KB,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.THREASHOLD
-            )
+        val yellowRects = detectElements(
+            r, g, b,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KR,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KG,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KB,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.THREASHOLD
+        )
 
-            val gameCol = gameColor.get()
+        val gameCol = gameColor.get()
 
-            val allianceRects = detectElements(
-                r, g, b,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KR
-                else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KR,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KG
-                else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KG,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KB
-                else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KB,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.THREASHOLD
-                else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.THREASHOLD
-            )
+        val allianceRects = detectElements(
+            r, g, b,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KR
+            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KR,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KG
+            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KG,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KB
+            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KB,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.THREASHOLD
+            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.THREASHOLD
+        )
 
-            drawRotatedRects(
-                _drawFrame, yellowRects,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.CONTOUR_COLOR,
-                Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.TEXT_COLOR
-            )
+        drawRotatedRects(
+            _drawFrame, yellowRects,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.CONTOUR_COLOR,
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.TEXT_COLOR
+        )
 
-            drawRotatedRects(
-                _drawFrame, allianceRects,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.CONTOUR_COLOR
-                else
-                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.CONTOUR_COLOR,
-                if (gameCol == BaseCollector.GameColor.BLUE)
-                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.TEXT_COLOR
-                else
-                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.TEXT_COLOR
-            )
+        drawRotatedRects(
+            _drawFrame, allianceRects,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.CONTOUR_COLOR
+            else
+                Configs.CameraConfig.RED_STICK_DETECT_CONFIG.CONTOUR_COLOR,
+            if (gameCol == BaseCollector.GameColor.BLUE)
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.TEXT_COLOR
+            else
+                Configs.CameraConfig.RED_STICK_DETECT_CONFIG.TEXT_COLOR
+        )
 
-            yellowSticks.set(rotatedRectToOrientation(yellowRects))
-            allianceSticks.set(rotatedRectToOrientation(allianceRects))
-        }
+        yellowSticks.set(rotatedRectToOrientation(yellowRects))
+        allianceSticks.set(rotatedRectToOrientation(allianceRects))
 
         val bitmap = Bitmap.createBitmap(
             _drawFrame.width(),
@@ -150,7 +149,15 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         Utils.matToBitmap(_drawFrame, bitmap)
         lastFrame.set(bitmap)
 
+        _isOneFrame.set(false)
+
         return frm
+    }
+
+    fun waitFrame(){
+        _isOneFrame.set(true)
+
+        while(_isOneFrame.get());
     }
 
     override fun onDrawFrame(

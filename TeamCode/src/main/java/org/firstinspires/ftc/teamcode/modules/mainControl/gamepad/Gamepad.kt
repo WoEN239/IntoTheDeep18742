@@ -39,7 +39,7 @@ class Gamepad : IRobotModule {
     private var _oldPreviousDifPos = false
 
     override fun update() {
-        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.CLAMP_CENTER_UP)
+        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.AUTO_CLAMP_CENTER)
             _eventBus.invoke(
                 SetDrivePowerEvent(
                     Vec2(

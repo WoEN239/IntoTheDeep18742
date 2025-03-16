@@ -18,13 +18,10 @@ class CameraTest: LinearOpMode() {
 
         FtcDashboard.getInstance().startCameraStream(processor, 15.0)
 
-        processor.enableDetect.set(false)
         processor.gameColor.set(BaseCollector.GameColor.RED)
 
         waitForStart()
         resetRuntime()
-
-        processor.enableDetect.set(true)
 
         while (opModeIsActive()){
             FtcDashboard.getInstance().telemetry.update()
