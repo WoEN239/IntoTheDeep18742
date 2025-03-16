@@ -13,10 +13,12 @@ import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc.blur
 import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
+import org.opencv.calib3d.Calib3d.undistort
 import org.opencv.core.Core
 import org.opencv.core.Core.add
 import org.opencv.core.Core.bitwise_and
@@ -64,10 +66,12 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     private var _drawFrame = Mat()
 
     override fun processFrame(frm: Mat?, captureTimeNanos: Long): Any {
+        //StaticTelemetry.addData("frameSize", frm!!.size())
+
         val frame = frm!!.clone()
 
-//        if (!_isOneFrame.get())
-//            return frm
+        if (!_isOneFrame.get())
+            return frm
 
         resize(
             frame,
@@ -79,6 +83,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         )
 
         rotate(frame, frame, ROTATE_180)
+
 
         frame.copyTo(_drawFrame)
 
