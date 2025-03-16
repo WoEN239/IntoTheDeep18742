@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.modules.camera.StickProcessor
 import org.firstinspires.ftc.vision.VisionPortal
 
@@ -15,10 +16,15 @@ class CameraTest: LinearOpMode() {
         val visionPortalBuilder =
             VisionPortal.Builder().addProcessor(processor).setCamera(hardwareMap.get("Webcam 1") as WebcamName).build()
 
-        FtcDashboard.getInstance().startCameraStream(processor, 30.0)
+        FtcDashboard.getInstance().startCameraStream(processor, 15.0)
+
+        processor.enableDetect.set(false)
+        processor.gameColor.set(BaseCollector.GameColor.RED)
 
         waitForStart()
         resetRuntime()
+
+        processor.enableDetect.set(true)
 
         while (opModeIsActive()){
             FtcDashboard.getInstance().telemetry.update()
