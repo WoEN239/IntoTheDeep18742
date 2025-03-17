@@ -20,7 +20,8 @@ class Intake{
     private lateinit var _leftLED: LEDLine
     private lateinit var _rightLED: LEDLine
 
-    fun atTarget() = _servoClamp.isEnd && _servoDifLeft.isEnd && _servoDifRight.isEnd
+    fun difAtTarget() = _servoDifLeft.isEnd && _servoDifRight.isEnd
+    fun clampAtTarget() = _servoClamp.isEnd
 
     var xPos = 0.0
     var yPos = 0.0

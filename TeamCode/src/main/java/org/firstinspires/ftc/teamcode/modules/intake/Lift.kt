@@ -59,7 +59,8 @@ class Lift {
     private var _oldTargetAimPos = 0.0
 
     var currentAimPos = 0.0
-        get private set
+        get
+        private set
 
     fun getRawAimPos() = _aimPotentiometer.voltage /
             Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
@@ -85,7 +86,10 @@ class Lift {
 
         val targetDefencedAimPos: Double
 
-        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS || abs(currentAimPos - targetAimPos) < Configs.LiftConfig.AIM_DEFEND_TRIGGER_POS) {
+        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS || abs(
+                currentAimPos - targetAimPos
+            ) < Configs.LiftConfig.AIM_DEFEND_TRIGGER_POS
+        ) {
             targetDefencedAimPos = targetAimPos
             _oldTargetAimPos = targetAimPos
         } else
@@ -109,8 +113,10 @@ class Lift {
             else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
         val aimPower =
-            _battery.voltageToPower(_aimPID.update(_aimErr)
-                .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
+            _battery.voltageToPower(
+                _aimPID.update(_aimErr)
+                    .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP)
+            )
 
         val extensionPower = _battery.voltageToPower(_extensionPID.update(_extensionErr))
 
@@ -119,7 +125,8 @@ class Lift {
     }
 
     fun atTarget() =
-        abs(getRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS && abs(getCurrentExtensionPos() - (extensionTargetPosition + deltaExtension)) < Configs.LiftConfig.EXTENSION_SENS
+        abs(getRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS &&
+                abs(getCurrentExtensionPos() - (extensionTargetPosition + deltaExtension)) < Configs.LiftConfig.EXTENSION_SENS
 
     fun start() {
         _deltaTime.reset()

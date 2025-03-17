@@ -119,7 +119,7 @@ class IntakeManager : IRobotModule {
                     LiftPosition.CLAMP_WALL -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
-                        Timers.newTimer().start({ !_intake.atTarget() }) {
+                        Timers.newTimer().start({ !_intake.clampAtTarget() }) {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if (_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT ||
                                     !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto ||
@@ -167,7 +167,7 @@ class IntakeManager : IRobotModule {
                             Timers.newTimer()
                                 .start(Configs.AutoClamp.AUTO_CLAMP_CENTER_CLAMP_TIMER) {
                                     _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
-                                    Timers.newTimer().start({ !_intake.atTarget() }) {
+                                    Timers.newTimer().start({ !_intake.clampAtTarget() }) {
                                         isClampBusy = false
                                         setDownState()
                                     }
@@ -178,7 +178,7 @@ class IntakeManager : IRobotModule {
                     LiftPosition.CLAMP_CENTER -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
-                        Timers.newTimer().start({ !_intake.atTarget() }) {
+                        Timers.newTimer().start({ !_intake.clampAtTarget() }) {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
                                             && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
@@ -202,7 +202,7 @@ class IntakeManager : IRobotModule {
                     LiftPosition.UP_BASKED, LiftPosition.LOW_BASKET -> {
                         _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-                        Timers.newTimer().start({ !_intake.atTarget() }) {
+                        Timers.newTimer().start({ !_intake.clampAtTarget() }) {
                             Timers.newTimer().start(Configs.LiftConfig.BASKET_DELAY) {
                                 setDownState()
                                 isClampBusy = false
@@ -339,63 +339,65 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(RequestIntakeAtTarget::class) {
-            it.target = _intake.atTarget() && !isClampBusy
+            it.target = _intake.clampAtTarget() && _intake.difAtTarget() && !isClampBusy
         }
 
         bus.subscribe(AutoClamp::class) {
-            _liftPosition = LiftPosition.AUTO_CLAMP_CENTER
-            _lift.aimTargetPosition = 45.0
-            _lift.extensionTargetPosition = 0.0
-            _intake.setDifPos(
-                xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
-                yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
-            )
+            if(!isClampBusy) {
+                isClampBusy = true
+                _liftPosition = LiftPosition.AUTO_CLAMP_CENTER
+                _lift.aimTargetPosition = 45.0
+                _lift.extensionTargetPosition = 0.0
+                _intake.setDifPos(
+                    xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
+                    yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
+                )
 
-            _liftPosition = LiftPosition.AUTO_CLAMP_CENTER
-            _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
+                _liftPosition = LiftPosition.AUTO_CLAMP_CENTER
+                _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-            _isCameraDetected = false
+                _isCameraDetected = false
 
-            Timers.newTimer().start({ !_lift.atTarget() }) {
-                Timers.newTimer().start(Configs.AutoClamp.CAMERA_ENABLE_TIMER) {
-                    bus.invoke(Camera.WaitFrameProcessed())
+                Timers.newTimer().start({ !_lift.atTarget() }) {
+                    Timers.newTimer().start(Configs.AutoClamp.CAMERA_ENABLE_TIMER) {
+                        bus.invoke(Camera.WaitFrameProcessed())
 
-                    val yellowSticks = bus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
-                    val allianceSticks = bus.invoke(RequestAllianceDetectedSticks()).sticks!!
+                        val yellowSticks = bus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
+                        val allianceSticks = bus.invoke(RequestAllianceDetectedSticks()).sticks!!
 
-                    val sticks = yellowSticks + allianceSticks
+                        val sticks = yellowSticks + allianceSticks
 
-                    var minX = Double.MAX_VALUE
-                    var minY = Double.MAX_VALUE
+                        var closesStickL = Double.MAX_VALUE
 
-                    var closesStickL = Double.MAX_VALUE
+                        for (i in sticks) {
+                            val yAngle =
+                                90.0 - (180.0 - 90.0 - _lift.currentAimPos) + (Configs.AutoClamp.FRAME_SIZE.y / 2.0 - i.y) * Configs.AutoClamp.PIXEL_TO_ANGLE
+                            val xAngle =
+                                (Configs.AutoClamp.FRAME_SIZE.x / 2.0 - i.x) * Configs.AutoClamp.PIXEL_TO_ANGLE
 
-                    for (i in sticks) {
-                        val yAngle =
-                            90.0 - (180.0 - 90.0 - _lift.currentAimPos) + (Configs.AutoClamp.FRAME_SIZE.y / 2.0 - i.y) * Configs.AutoClamp.PIXEL_TO_ANGLE
-                        val xAngle =
-                            (Configs.AutoClamp.FRAME_SIZE.x / 2.0 - i.x) * Configs.AutoClamp.PIXEL_TO_ANGLE
+                            val cameraH =
+                                sin(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT + Configs.AutoClamp.LIFT_H
+                            val cameraX =
+                                cos(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT
 
-                        val cameraH =
-                            sin(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT + Configs.AutoClamp.LIFT_H
-                        val cameraX =
-                            cos(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT
+                            val xPos = cameraH * tan(toRadians(yAngle)) + cameraX
+                            val yPos = cameraH * tan(toRadians(xAngle))
 
-                        val xPos = cameraH * tan(toRadians(yAngle)) + cameraX
-                        val yPos = cameraH * tan(toRadians(xAngle))
+                            val l = sqrt(xPos * xPos + yPos * yPos)
 
-                        val l = sqrt(xPos * xPos + yPos * yPos)
+                            if (closesStickL > l) {
+                                closesStickL = l
 
-                        if (closesStickL > l) {
-                            closesStickL = l
-
-                            _closesStickPos = Vec2(xPos, yPos)
+                                _closesStickPos = Vec2(xPos, yPos)
+                            }
                         }
+
+                        _clampStartRot =
+                            _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!
+
+                        _isCameraDetected = true
+                        isClampBusy = false
                     }
-
-                    _clampStartRot = _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!
-
-                    _isCameraDetected = true
                 }
             }
         }

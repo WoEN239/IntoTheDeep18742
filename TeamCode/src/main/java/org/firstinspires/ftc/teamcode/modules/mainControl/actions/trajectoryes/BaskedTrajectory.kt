@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ITransportActi
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.LiftAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ParallelActions
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitAction
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitLiftAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitIntakeAction
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner.Companion.newRRTrajectory
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
@@ -46,7 +46,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
                             )
                         ),
                         arrayListOf(
-                            WaitLiftAction(eventBus),
+                            WaitIntakeAction(eventBus),
                             WaitAction(0.2),
                             LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
                         )
@@ -63,7 +63,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
 
             acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
 
-            acts.add(WaitLiftAction(eventBus))
+            acts.add(WaitIntakeAction(eventBus))
 
             if (extension > 0.0)
                 acts.add(
@@ -84,19 +84,19 @@ class BaskedTrajectory : ITrajectoryBuilder {
             if (isDif)
                 acts.add(DifAction(eventBus, 40.0))
 
-            acts.add(WaitLiftAction(eventBus))
+            acts.add(WaitIntakeAction(eventBus))
 
             acts.add(WaitAction(0.2))
 
             acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
 
-            acts.add(WaitLiftAction(eventBus))
+            acts.add(WaitIntakeAction(eventBus))
 
             return acts
         }
 
         fun paralelClamp(isDif: Boolean): ArrayList<IAction> {
-            val clampActions = arrayListOf(WaitLiftAction(eventBus), WaitAction(if(isDif) 0.7 else 0.4))
+            val clampActions = arrayListOf(WaitIntakeAction(eventBus), WaitAction(if(isDif) 0.7 else 0.4))
 
             clampActions.addAll(runToBasket(getEndOrientation(actions)))
 

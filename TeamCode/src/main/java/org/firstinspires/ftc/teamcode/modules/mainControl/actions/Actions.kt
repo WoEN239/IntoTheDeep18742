@@ -13,13 +13,13 @@ import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
 interface IAction {
-    fun update()
+    fun update(){}
 
-    fun end()
+    fun end(){}
 
-    fun isEnd(): Boolean
+    fun isEnd(): Boolean = true
 
-    fun start()
+    fun start(){}
 }
 
 interface ITransportAction : IAction {
@@ -41,10 +41,6 @@ class FollowRRTrajectory(private val _eventBus: EventBus, trajectory: List<Traje
     ITransportAction {
     private val _segment = RRTrajectorySegment(trajectory)
 
-    override fun update() {}
-
-    override fun end() {}
-
     override fun isEnd() =
         _eventBus.invoke(TrajectorySegmentRunner.RequestIsEndTrajectoryEvent()).isEnd
 
@@ -60,10 +56,6 @@ class TurnAction(private val _eventBus: EventBus, startOrientation: Orientation,
     private val _segment =
         TurnSegment((endAngle - startOrientation.angl).angle, startOrientation)
 
-    override fun update() {}
-
-    override fun end() {}
-
     override fun isEnd() =
         _eventBus.invoke(TrajectorySegmentRunner.RequestIsEndTrajectoryEvent()).isEnd
 
@@ -77,14 +69,6 @@ class TurnAction(private val _eventBus: EventBus, startOrientation: Orientation,
 class WaitAction(private val _secTime: Double) : IAction {
     private val _timer = ElapsedTime()
 
-    override fun update() {
-
-    }
-
-    override fun end() {
-
-    }
-
     override fun isEnd() = _timer.seconds() > _secTime
 
     override fun start() {
@@ -95,17 +79,11 @@ class WaitAction(private val _secTime: Double) : IAction {
 class LiftAction(
     private val _eventBus: EventBus,
     val pos: IntakeManager.LiftPosition,
-    val extensionPos: Double = 0.0
+    val extensionPos: Double = 0.0,
+    val waitEnd: Boolean = true
 ) : IAction {
-    override fun update() {
-
-    }
-
-    override fun end() {
-
-    }
-
-    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
+    override fun isEnd() = (_eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!! &&
+            _eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!) || !waitEnd
 
     override fun start() {
         _eventBus.invoke(IntakeManager.EventSetLiftPose(pos))
@@ -113,30 +91,21 @@ class LiftAction(
     }
 }
 
-class ClampAction(private val _eventBus: EventBus, val pos: Intake.ClampPosition) : IAction {
-    override fun update() {
-
-    }
-
-    override fun end() {
-
-    }
-
-    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
+class ClampAction(
+    private val _eventBus: EventBus, val pos: Intake.ClampPosition,
+    val waitEnd: Boolean = true
+) : IAction {
+    override fun isEnd() = (_eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!! &&
+            _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!) || !waitEnd
 
     override fun start() {
         _eventBus.invoke(IntakeManager.EventSetClampPose(pos))
     }
 }
 
-class WaitLiftAction(private val _eventBus: EventBus) : IAction {
-    override fun update() {}
-
-    override fun end() {}
-
-    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
-
-    override fun start() {}
+class WaitIntakeAction(private val _eventBus: EventBus) : IAction {
+    override fun isEnd() = _eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!! &&
+            _eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
 }
 
 class ParallelActions(
@@ -175,10 +144,6 @@ class ParallelActions(
         }
     }
 
-    override fun end() {
-
-    }
-
     override fun isEnd(): Boolean {
         for (i in _actions)
             if (_exitType == ExitType.OR && i.isEmpty())
@@ -197,13 +162,6 @@ class ParallelActions(
 }
 
 class DifAction(val eventBus: EventBus, val pos: Double) : IAction {
-    override fun update() {
-
-    }
-
-    override fun end() {
-    }
-
     override fun isEnd() = eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
 
     override fun start() {
@@ -212,16 +170,9 @@ class DifAction(val eventBus: EventBus, val pos: Double) : IAction {
 
 }
 
-class AutoClampAction(val eventBus: EventBus): IAction{
-    override fun update() {
-
-    }
-
-    override fun end() {
-
-    }
-
-    override fun isEnd() = eventBus.invoke(IntakeManager.RequestClampPosEvent()).pos == Intake.ClampPosition.SERVO_CLAMP
+class AutoClampAction(val eventBus: EventBus) : IAction {
+    override fun isEnd() =
+        eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.AUTO_CLAMP_CENTER
 
     override fun start() {
         eventBus.invoke(IntakeManager.AutoClamp())
