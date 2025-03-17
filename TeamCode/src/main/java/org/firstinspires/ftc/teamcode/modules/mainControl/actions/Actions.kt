@@ -196,12 +196,7 @@ class ParallelActions(
     }
 }
 
-class DifAction(val eventBus: EventBus, val dir: DifDirection) : IAction {
-    enum class DifDirection {
-        NEXT,
-        PREVIOUS
-    }
-
+class DifAction(val eventBus: EventBus, val pos: Double) : IAction {
     override fun update() {
 
     }
@@ -212,10 +207,7 @@ class DifAction(val eventBus: EventBus, val dir: DifDirection) : IAction {
     override fun isEnd() = eventBus.invoke(IntakeManager.RequestIntakeAtTarget()).target!!
 
     override fun start() {
-        if (dir == DifDirection.NEXT)
-            eventBus.invoke(IntakeManager.NextDifPos())
-        else
-            eventBus.invoke(IntakeManager.PreviousDifPos())
+        eventBus.invoke(IntakeManager.SetDifPosEvent(pos))
     }
 
 }

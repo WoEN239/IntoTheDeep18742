@@ -82,8 +82,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
             val acts = arrayListOf<IAction>()
 
             if (isDif)
-                for (i in 0..2)
-                    acts.add(DifAction(eventBus, DifAction.DifDirection.NEXT))
+                acts.add(DifAction(eventBus, 40.0))
 
             acts.add(WaitLiftAction(eventBus))
 

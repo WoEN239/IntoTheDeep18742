@@ -43,6 +43,7 @@ class IntakeManager : IRobotModule {
     class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
     class ClampDefendedEvent() : IEvent
     class AutoClamp() : IEvent
+    class SetDifPosEvent(val pos: Double) : IEvent
 
     enum class LiftPosition {
         CLAMP_CENTER,
@@ -212,6 +213,17 @@ class IntakeManager : IRobotModule {
             }
         }
 
+        bus.subscribe(SetDifPosEvent::class) {
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
+                _intake.setDifPos(
+                    _intake.xPos,
+                    clamp(
+                        it.pos, -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                        Configs.IntakeConfig.MAX_DIF_POS_Y
+                    )
+                )
+        }
+
         bus.subscribe(RequestClampPosEvent::class) {
             it.pos = _intake.clamp
         }
@@ -236,7 +248,7 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(NextDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER || _liftPosition == LiftPosition.AUTO_CLAMP_CENTER)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
                 _intake.setDifPos(
                     _intake.xPos,
                     clamp(
@@ -248,7 +260,7 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(PreviousDifPos::class) {
-            if (_liftPosition == LiftPosition.CLAMP_CENTER || _liftPosition == LiftPosition.AUTO_CLAMP_CENTER)
+            if (_liftPosition == LiftPosition.CLAMP_CENTER)
                 _intake.setDifPos(
                     _intake.xPos,
                     clamp(
@@ -406,7 +418,8 @@ class IntakeManager : IRobotModule {
 
         if (Configs.AutoClamp.ENABLE_AUTO_CLAMP && _liftPosition == LiftPosition.AUTO_CLAMP_CENTER && _isCameraDetected) {
             val targetAngle = Angle(kotlin.math.atan2(_closesStickPos.y, _closesStickPos.x))
-            val err = (targetAngle - (_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!! - _clampStartRot)).angle
+            val err =
+                (targetAngle - (_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!! - _clampStartRot)).angle
 
             _eventBus.invoke(
                 DriveTrain.SetDriveCmEvent(
@@ -416,7 +429,8 @@ class IntakeManager : IRobotModule {
             )
 
             _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
-            _lift.extensionTargetPosition = (_closesStickPos.length() - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0)
+            _lift.extensionTargetPosition =
+                (_closesStickPos.length() - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0)
         }
     }
 
