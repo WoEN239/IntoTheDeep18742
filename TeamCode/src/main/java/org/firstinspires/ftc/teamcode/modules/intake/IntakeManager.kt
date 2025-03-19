@@ -370,8 +370,8 @@ class IntakeManager : IRobotModule {
                             .toTypedArray()
 
                         if (sticks.isNotEmpty()) {
-                            var closesStickL = Double.MAX_VALUE
-                            var closesStickRot = Double.MAX_VALUE
+                            for(i in _closesSticks.indices)
+                                _closesSticks[i] = Pair(Orientation.ZERO, Double.MAX_VALUE)
 
                             for (i in sticks) {
                                 val yAngle =
@@ -390,11 +390,11 @@ class IntakeManager : IRobotModule {
 
                                 val l = sqrt(xPos * xPos + yPos * yPos)
 
-                                if (closesStickL > l) {
-                                    closesStickL = l
-
-                                    _closesStickPos = Vec2(xPos, yPos)
-                                    closesStickRot = i.angl.toDegree()
+                                for(j in _closesSticks.indices){
+                                    if(_closesSticks[j].second > l) {
+                                        _closesSticks[j] = Pair(i, l)
+                                        break
+                                    }
                                 }
                             }
 
@@ -403,7 +403,7 @@ class IntakeManager : IRobotModule {
 
                             _intake.setDifPos(
                                 _intake.xPos, clamp(
-                                    closesStickRot, -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                                    _closesSticks[0].first.angl.toDegree(), -Configs.IntakeConfig.MAX_DIF_POS_Y,
                                     Configs.IntakeConfig.MAX_DIF_POS_Y
                                 )
                             )
@@ -420,14 +420,13 @@ class IntakeManager : IRobotModule {
         }
     }
 
-    private var _closesStickPos = Vec2.ZERO
+    val _closesSticks = Array<Pair<Orientation, Double>>(Configs.AutoClamp.NON_FOTO_INTEGRATIONS){ Pair(
+        Orientation.ZERO, Double.MAX_VALUE) }
     private var _isCameraDetected = false
     private var _clampStartRot = Angle.ZERO
     private var _targetTime = ElapsedTime()
 
     override fun update() {
-        StaticTelemetry.addData("closes stick", _closesStickPos)
-
         _lift.update()
 
         StaticTelemetry.addData(
@@ -437,7 +436,7 @@ class IntakeManager : IRobotModule {
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
         if (Configs.AutoClamp.ENABLE_AUTO_CLAMP && _liftPosition == LiftPosition.AUTO_CLAMP_CENTER && _isCameraDetected) {
-            val targetAngle = Angle(kotlin.math.atan2(_closesStickPos.y, _closesStickPos.x))
+            val targetAngle = Angle(kotlin.math.atan2(_closesSticks[0].first.y, _closesSticks[0].first.x))
             val err =
                 (targetAngle - (_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!! - _clampStartRot)).angle
 
@@ -451,7 +450,7 @@ class IntakeManager : IRobotModule {
             _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
             _lift.extensionTargetPosition =
                 clamp(
-                    (_closesStickPos.length() + Configs.AutoClamp.LIFT_CENTER_POS - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0),
+                    (_closesSticks[0].second + Configs.AutoClamp.LIFT_CENTER_POS - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0),
                     0.0,
                     Configs.LiftConfig.MAX_EXTENSION_POS
                 )
