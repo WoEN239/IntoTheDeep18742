@@ -423,6 +423,7 @@ class IntakeManager : IRobotModule {
     private var _closesStickPos = Vec2.ZERO
     private var _isCameraDetected = false
     private var _clampStartRot = Angle.ZERO
+    private var _targetTime = ElapsedTime()
 
     override fun update() {
         StaticTelemetry.addData("closes stick", _closesStickPos)
@@ -456,16 +457,20 @@ class IntakeManager : IRobotModule {
                 )
 
             if(_lift.atTarget() && _intake.difAtTarget() && abs(err) < Configs.AutoClamp.ROTATE_SENS){
-                _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+                if(_targetTime.seconds() > Configs.AutoClamp.TARGET_DELAY) {
+                    _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
-                if(_intake.clampAtTarget()) {
-                    Timers.newTimer().start(Configs.AutoClamp.CLAMP_DELAY) {
-                        setDownState()
+                    if (_intake.clampAtTarget()) {
+                        Timers.newTimer().start(Configs.AutoClamp.CLAMP_DELAY) {
+                            setDownState()
+                        }
+
+                        _isCameraDetected = false
                     }
-
-                    _isCameraDetected = false
                 }
             }
+            else
+                _targetTime.reset()
         }
     }
 

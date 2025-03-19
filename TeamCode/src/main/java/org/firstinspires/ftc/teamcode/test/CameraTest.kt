@@ -25,6 +25,8 @@ class CameraTest: LinearOpMode() {
 
         while (opModeIsActive()){
             FtcDashboard.getInstance().telemetry.update()
+
+            processor.waitFrame()
         }
 
         FtcDashboard.getInstance().stopCameraStream()
