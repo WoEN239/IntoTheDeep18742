@@ -343,11 +343,12 @@ class IntakeManager : IRobotModule {
         }
 
         bus.subscribe(AutoClamp::class) {
-            if(!isClampBusy) {
+            if (!isClampBusy) {
                 isClampBusy = true
                 _liftPosition = LiftPosition.AUTO_CLAMP_CENTER
                 _lift.aimTargetPosition = 45.0
                 _lift.extensionTargetPosition = 0.0
+                _lift.deltaExtension = 0.0
                 _intake.setDifPos(
                     xRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_X,
                     yRot = Configs.IntakeConfig.CLAMP_CENTER_DIF_POS_Y
@@ -365,37 +366,53 @@ class IntakeManager : IRobotModule {
                         val yellowSticks = bus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
                         val allianceSticks = bus.invoke(RequestAllianceDetectedSticks()).sticks!!
 
-                        val sticks = yellowSticks + allianceSticks
+                        val sticks = (yellowSticks + allianceSticks).filter { Configs.AutoClamp.FRAME_SIZE.y - it.y > Configs.AutoClamp.MIN_ELEMENT_Y }
+                            .toTypedArray()
 
-                        var closesStickL = Double.MAX_VALUE
+                        if (sticks.isNotEmpty()) {
+                            var closesStickL = Double.MAX_VALUE
+                            var closesStickRot = Double.MAX_VALUE
 
-                        for (i in sticks) {
-                            val yAngle =
-                                90.0 - (180.0 - 90.0 - _lift.currentAimPos) + (Configs.AutoClamp.FRAME_SIZE.y / 2.0 - i.y) * Configs.AutoClamp.PIXEL_TO_ANGLE
-                            val xAngle =
-                                (Configs.AutoClamp.FRAME_SIZE.x / 2.0 - i.x) * Configs.AutoClamp.PIXEL_TO_ANGLE
+                            for (i in sticks) {
+                                val yAngle =
+                                    90.0 - (180.0 - 90.0 - _lift.currentAimPos) + (Configs.AutoClamp.FRAME_SIZE.y / 2.0 - i.y) * Configs.AutoClamp.PIXEL_TO_ANGLE
+                                val xAngle =
+                                    (Configs.AutoClamp.FRAME_SIZE.x / 2.0 - i.x) * Configs.AutoClamp.PIXEL_TO_ANGLE
 
-                            val cameraH =
-                                sin(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT + Configs.AutoClamp.LIFT_H
-                            val cameraX =
-                                cos(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT
+                                val cameraH =
+                                    sin(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT + Configs.AutoClamp.LIFT_H
+                                val cameraX =
+                                    cos(toRadians(_lift.currentAimPos)) * Configs.AutoClamp.EXTENSION_LENGHT
 
-                            val xPos = cameraH * tan(toRadians(yAngle)) + cameraX
-                            val yPos = cameraH * tan(toRadians(xAngle))
+                                val xPos =
+                                    cameraH * tan(toRadians(yAngle)) + cameraX - Configs.AutoClamp.LIFT_CENTER_POS
+                                val yPos = cameraH * tan(toRadians(xAngle))
 
-                            val l = sqrt(xPos * xPos + yPos * yPos)
+                                val l = sqrt(xPos * xPos + yPos * yPos)
 
-                            if (closesStickL > l) {
-                                closesStickL = l
+                                if (closesStickL > l) {
+                                    closesStickL = l
 
-                                _closesStickPos = Vec2(xPos, yPos)
+                                    _closesStickPos = Vec2(xPos, yPos)
+                                    closesStickRot = i.angl.toDegree()
+                                }
                             }
+
+                            _clampStartRot =
+                                _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!
+
+                            _intake.setDifPos(
+                                _intake.xPos, clamp(
+                                    closesStickRot, -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                                    Configs.IntakeConfig.MAX_DIF_POS_Y
+                                )
+                            )
+
+                            _isCameraDetected = true
                         }
+                        else
+                            setDownState()
 
-                        _clampStartRot =
-                            _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!
-
-                        _isCameraDetected = true
                         isClampBusy = false
                     }
                 }
@@ -432,7 +449,23 @@ class IntakeManager : IRobotModule {
 
             _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
             _lift.extensionTargetPosition =
-                (_closesStickPos.length() - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0)
+                clamp(
+                    (_closesStickPos.length() + Configs.AutoClamp.LIFT_CENTER_POS - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0),
+                    0.0,
+                    Configs.LiftConfig.MAX_EXTENSION_POS
+                )
+
+            if(_lift.atTarget() && _intake.difAtTarget() && abs(err) < Configs.AutoClamp.ROTATE_SENS){
+                _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
+
+                if(_intake.clampAtTarget()) {
+                    Timers.newTimer().start(Configs.AutoClamp.CLAMP_DELAY) {
+                        setDownState()
+                    }
+
+                    _isCameraDetected = false
+                }
+            }
         }
     }
 
