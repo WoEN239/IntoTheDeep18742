@@ -253,7 +253,7 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
                 else
                     rect.size.height / rect.size.width
 
-            if (abs(attitude - Configs.CameraConfig.STICK_ATTITUDE) < Configs.CameraConfig.STICK_ATTITUDE_SENS)
+            if (abs(attitude - Configs.CameraConfig.STICK_ATTITUDE) < Configs.CameraConfig.STICK_ATTITUDE_SENS && rect.size.area() < Configs.CameraConfig.MIN_STICK_AREA)
                 rect
             else
                 null

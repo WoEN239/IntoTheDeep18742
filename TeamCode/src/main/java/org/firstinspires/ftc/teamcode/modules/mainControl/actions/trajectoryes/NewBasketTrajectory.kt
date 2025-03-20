@@ -41,7 +41,7 @@ class NewBasketTrajectory : ITrajectoryBuilder {
                             FollowRRTrajectory(
                                 eventBus, newRRTrajectory(startOrientation)
                                     .strafeToLinearHeading(
-                                        Vector2d(129.9, 132.2),
+                                        Vector2d(130.1, 132.5),//хуй
                                         toRadians(-90.0 - 45.0)
                                     )
                                     .build()
@@ -124,7 +124,7 @@ class NewBasketTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .strafeToLinearHeading(
-                                    Vector2d(129.7, 103.7),
+                                    Vector2d(129.7, 104.7),
                                     toRadians(-90.0 + 39.5)
                                 )
                                 .build()
@@ -145,10 +145,10 @@ class NewBasketTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus,
                             newRRTrajectory(getEndOrientation(actions))
-                                .setTangent(-90.0)
+                                .setTangent(toRadians(-90.0))
                                 .splineToLinearHeading(
-                                    Pose2d(45.0, 0.0, toRadians(180.0)),
-                                    toRadians(-90.0 - 45.0)
+                                    Pose2d(47.0, 10.0, toRadians(180.0)),
+                                    toRadians(180.0)
                                 ).build()
                         )
                     )
@@ -158,7 +158,70 @@ class NewBasketTrajectory : ITrajectoryBuilder {
 
         actions.add(AutoClampAction(eventBus))
 
-        actions.addAll(runToBasket())
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .setReversed(true)
+                                .splineToLinearHeading(
+                                    Pose2d(91.0, 149.0, toRadians(-90.0 - 45.0)),
+                                    toRadians(90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        WaitIntakeAction(eventBus),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    basket(), arrayListOf(
+                        WaitAction(basketDelay),
+                        FollowRRTrajectory(
+                            eventBus,
+                            newRRTrajectory(getEndOrientation(actions))
+                                .setTangent(toRadians(-90.0))
+                                .splineToLinearHeading(
+                                    Pose2d(20.0, 30.0, toRadians(180.0)),
+                                    toRadians(180.0)
+                                ).build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(AutoClampAction(eventBus))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .setReversed(true)
+                                .splineToLinearHeading(
+                                    Pose2d(63.0, 155.0, toRadians(-90.0 - 45.0)),
+                                    toRadians(90.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        WaitIntakeAction(eventBus),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
         actions.addAll(basket())
 
         eventBus.invoke(ActionsRunner.RunActionsEvent(actions))

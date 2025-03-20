@@ -392,7 +392,7 @@ class IntakeManager : IRobotModule {
 
                                 for(j in _closesSticks.indices){
                                     if(_closesSticks[j].second > l) {
-                                        _closesSticks[j] = Pair(i, l)
+                                        _closesSticks[j] = Pair(Orientation(Vec2(xPos, yPos), i.angl), l)
                                         break
                                     }
                                 }
