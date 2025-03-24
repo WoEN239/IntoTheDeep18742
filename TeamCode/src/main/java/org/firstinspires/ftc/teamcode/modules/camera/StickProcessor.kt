@@ -46,6 +46,8 @@ import org.opencv.imgproc.Imgproc.putText
 import org.opencv.imgproc.Imgproc.resize
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
@@ -182,10 +184,17 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         val rectsList = rects.toList()
 
         return Array(rectsList.size) {
-            val pos = rectsList[it].center
+            val pos = Vec2(rectsList[it].center.x, rectsList[it].center.y) - Configs.AutoClamp.FRAME_SIZE / 2.0
+
+            var polL = pos.length()
+            val polA = atan2(pos.y, pos.x)
+
+            polL += polL * polL * polL * Configs.CameraConfig.FIX_K
+
+            val fixedPos = Vec2(polL, 0.0).setRot(polA) + Configs.AutoClamp.FRAME_SIZE / 2.0
 
             Orientation(
-                Vec2(pos.x, pos.y), Angle.ofDeg(
+                fixedPos, Angle.ofDeg(
                     (if (rectsList[it].size.width < rectsList[it].size.height)
                         rectsList[it].angle
                     else

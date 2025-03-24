@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.linearOpModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector.GameStartPosition
+import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ActionsRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 
@@ -15,7 +16,7 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
                 startPosition = startPos,
             ),
             isAuto = true,
-            mutableListOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner())
+            mutableListOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner(), Camera())
         )
 
         return collector

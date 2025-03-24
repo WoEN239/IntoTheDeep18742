@@ -67,6 +67,8 @@ class IntakeManager : IRobotModule {
 
     private var _liftPosition = LiftPosition.TRANSPORT
 
+    private var _defendedIntegrations = 0
+
     override fun initUpdate() {
         if (_isAuto)
             _lift.update()
@@ -83,7 +85,6 @@ class IntakeManager : IRobotModule {
         _clampCurrentSensor = collector.devices.clampCurrentSensor
 
         var isClampBusy = false
-        var integrations = 0
 
         if (collector.isAuto)
             _lift.aimTargetPosition = Configs.LiftConfig.INIT_POS
@@ -123,7 +124,7 @@ class IntakeManager : IRobotModule {
                             Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
                                 if (_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT ||
                                     !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto ||
-                                    integrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
+                                    _defendedIntegrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
                                 ) {
 
                                     _lift.aimTargetPosition =
@@ -147,7 +148,7 @@ class IntakeManager : IRobotModule {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
                                     isClampBusy = false
-                                    integrations++
+                                    _defendedIntegrations++
                                 }
                             }
                         }
@@ -183,13 +184,13 @@ class IntakeManager : IRobotModule {
                                 if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
                                             && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
                                     !Configs.IntakeConfig.USE_CURRENT_SENSOR || collector.isAuto ||
-                                    integrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
+                                    _defendedIntegrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
                                 )
                                     setDownState()
                                 else {
                                     _intake.clamp = Intake.ClampPosition.SERVO_UNCLAMP
 
-                                    integrations++
+                                    _defendedIntegrations++
 
                                     bus.invoke(ClampDefendedEvent())
                                 }
@@ -282,6 +283,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.LOW_BASKET && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && (_liftPosition == LiftPosition.TRANSPORT || _liftPosition == LiftPosition.UP_BASKED)) {
                     _lift.aimTargetPosition = Configs.LiftConfig.LOW_BASKED_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.LOW_BASKED_EXTENSION
@@ -291,6 +293,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.UP_LAYER && _intake.clamp == Intake.ClampPosition.SERVO_CLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.UP_LAYER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.UP_LAYER_EXTENSION
@@ -300,6 +303,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.CLAMP_CENTER && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_CENTER_EXTENSION
@@ -309,7 +313,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                    integrations = 0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.CLAMP_WALL && _liftPosition == LiftPosition.TRANSPORT && _intake.clamp == Intake.ClampPosition.SERVO_UNCLAMP) {
                     _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_WALL_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.CLAMP_WALL_EXTENSION_POS
@@ -319,7 +323,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
-                    integrations = 0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.HUMAN_ADD && _liftPosition == LiftPosition.TRANSPORT) {
                     _lift.aimTargetPosition = Configs.LiftConfig.HUMAN_ADD_AIM_POS
                     _lift.extensionTargetPosition = Configs.LiftConfig.HUMAN_ADD_EXTENSION_POS
@@ -329,6 +333,7 @@ class IntakeManager : IRobotModule {
                     )
                     _liftPosition = it.pos
                     _lift.deltaExtension = 0.0
+                    _defendedIntegrations = 0
                 } else if (it.pos == LiftPosition.TRANSPORT)
                     setDownState()
             }
@@ -366,11 +371,12 @@ class IntakeManager : IRobotModule {
                         val yellowSticks = bus.invoke(Camera.RequestYellowDetectedSticks()).sticks!!
                         val allianceSticks = bus.invoke(RequestAllianceDetectedSticks()).sticks!!
 
-                        val sticks = (yellowSticks + allianceSticks).filter { Configs.AutoClamp.FRAME_SIZE.y - it.y > Configs.AutoClamp.MIN_ELEMENT_Y }
-                            .toTypedArray()
+                        val sticks =
+                            (yellowSticks + allianceSticks).filter { Configs.AutoClamp.FRAME_SIZE.y - it.y > Configs.AutoClamp.MIN_ELEMENT_Y }
+                                .toTypedArray()
 
                         if (sticks.isNotEmpty()) {
-                            for(i in _closesSticks.indices)
+                            for (i in _closesSticks.indices)
                                 _closesSticks[i] = Pair(Orientation.ZERO, Double.MAX_VALUE)
 
                             for (i in sticks) {
@@ -390,9 +396,10 @@ class IntakeManager : IRobotModule {
 
                                 val l = sqrt(xPos * xPos + yPos * yPos)
 
-                                for(j in _closesSticks.indices){
-                                    if(_closesSticks[j].second > l) {
-                                        _closesSticks[j] = Pair(Orientation(Vec2(xPos, yPos), i.angl), l)
+                                for (j in _closesSticks.indices) {
+                                    if (_closesSticks[j].second > l) {
+                                        _closesSticks[j] =
+                                            Pair(Orientation(Vec2(xPos, yPos), i.angl), l)
                                         break
                                     }
                                 }
@@ -403,14 +410,14 @@ class IntakeManager : IRobotModule {
 
                             _intake.setDifPos(
                                 _intake.xPos, clamp(
-                                    _closesSticks[0].first.angl.toDegree(), -Configs.IntakeConfig.MAX_DIF_POS_Y,
+                                    _closesSticks[0].first.angl.toDegree(),
+                                    -Configs.IntakeConfig.MAX_DIF_POS_Y,
                                     Configs.IntakeConfig.MAX_DIF_POS_Y
                                 )
                             )
 
                             _isCameraDetected = true
-                        }
-                        else
+                        } else
                             setDownState()
 
                         isClampBusy = false
@@ -420,8 +427,11 @@ class IntakeManager : IRobotModule {
         }
     }
 
-    val _closesSticks = Array<Pair<Orientation, Double>>(Configs.AutoClamp.NON_FOTO_INTEGRATIONS){ Pair(
-        Orientation.ZERO, Double.MAX_VALUE) }
+    val _closesSticks = Array(Configs.AutoClamp.NON_FOTO_INTEGRATIONS) {
+        Pair(
+            Orientation.ZERO, Double.MAX_VALUE
+        )
+    }
     private var _isCameraDetected = false
     private var _clampStartRot = Angle.ZERO
     private var _targetTime = ElapsedTime()
@@ -436,7 +446,8 @@ class IntakeManager : IRobotModule {
         StaticTelemetry.addData("clamp current", _clampCurrentSensor.current)
 
         if (Configs.AutoClamp.ENABLE_AUTO_CLAMP && _liftPosition == LiftPosition.AUTO_CLAMP_CENTER && _isCameraDetected) {
-            val targetAngle = Angle(kotlin.math.atan2(_closesSticks[0].first.y, _closesSticks[0].first.x))
+            val targetAngle =
+                Angle(kotlin.math.atan2(_closesSticks[0].first.y, _closesSticks[0].first.x))
             val err =
                 (targetAngle - (_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!! - _clampStartRot)).angle
 
@@ -450,25 +461,32 @@ class IntakeManager : IRobotModule {
             _lift.aimTargetPosition = Configs.LiftConfig.CLAMP_CENTER_AIM
             _lift.extensionTargetPosition =
                 clamp(
-                    (_closesSticks[0].second + Configs.AutoClamp.LIFT_CENTER_POS - Configs.AutoClamp.EXTENSION_LENGHT) / Configs.AutoClamp.LIFT_CIRCLE_R / PI * (Configs.AutoClamp.MOTOR_TICKS / 2.0),
+                    (_closesSticks[0].second + Configs.AutoClamp.LIFT_CENTER_POS - Configs.AutoClamp.EXTENSION_LENGHT) / (Configs.AutoClamp.LIFT_CIRCLE_R * PI * 2.0) * Configs.AutoClamp.MOTOR_TICKS,
                     0.0,
                     Configs.LiftConfig.MAX_EXTENSION_POS
                 )
 
-            if(_lift.atTarget() && _intake.difAtTarget() && abs(err) < Configs.AutoClamp.ROTATE_SENS){
-                if(_targetTime.seconds() > Configs.AutoClamp.TARGET_DELAY) {
+            if (_lift.atTarget() && _intake.difAtTarget() && abs(err) < Configs.AutoClamp.ROTATE_SENS) {
+                if (_targetTime.seconds() > Configs.AutoClamp.TARGET_DELAY) {
                     _intake.clamp = Intake.ClampPosition.SERVO_CLAMP
 
                     if (_intake.clampAtTarget()) {
-                        Timers.newTimer().start(Configs.AutoClamp.CLAMP_DELAY) {
-                            setDownState()
+                        Timers.newTimer().start(Configs.IntakeConfig.CURRENT_SENSOR_DELAY) {
+                            if ((_clampCurrentSensor.current > Configs.IntakeConfig.CLAMP_CURRENT
+                                        && _clampCurrentSensor.current < Configs.IntakeConfig.CLAMP_CURRENT_TWO) ||
+                                !Configs.IntakeConfig.USE_CURRENT_SENSOR || _defendedIntegrations >= Configs.IntakeConfig.MAX_DEFENDED_INTEGRATIOS
+                            )
+                                setDownState()
+                            else {
+                                _defendedIntegrations++
+                                _eventBus.invoke(AutoClamp())
+                            }
                         }
 
                         _isCameraDetected = false
                     }
                 }
-            }
-            else
+            } else
                 _targetTime.reset()
         }
     }
@@ -498,6 +516,8 @@ class IntakeManager : IRobotModule {
         _liftPosition = LiftPosition.TRANSPORT
 
         _lift.deltaExtension = 0.0
+
+        _defendedIntegrations = 0
     }
 
     override fun start() {

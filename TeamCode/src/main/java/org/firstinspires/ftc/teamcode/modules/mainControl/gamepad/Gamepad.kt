@@ -79,9 +79,9 @@ class Gamepad : IRobotModule {
 
         if (!_lowBasketOld && _gamepad.cross)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.LOW_BASKET))
-
-        if (!_autoClampOld && _gamepad.ps)
-            _eventBus.invoke(IntakeManager.AutoClamp())
+//
+//        if (!_autoClampOld && _gamepad.ps)
+//            _eventBus.invoke(IntakeManager.AutoClamp())
 
         _upBasketOld = _gamepad.dpad_up
         _lowBasketOld = _gamepad.cross

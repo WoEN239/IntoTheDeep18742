@@ -18,7 +18,7 @@ class CameraTest: LinearOpMode() {
 
         FtcDashboard.getInstance().startCameraStream(processor, 15.0)
 
-        processor.gameColor.set(BaseCollector.GameColor.RED)
+        processor.gameColor.set(BaseCollector.GameColor.BLUE)
 
         waitForStart()
         resetRuntime()
