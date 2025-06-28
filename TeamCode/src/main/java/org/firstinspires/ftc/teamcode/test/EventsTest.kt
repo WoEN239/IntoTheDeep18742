@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 
 @Disabled
 @TeleOp
-class EventsTest: LinearOpMode() {
-    class A(val str: String): IEvent
+class EventsTest : LinearOpMode() {
+    class A(val str: String) : IEvent
 
     override fun runOpMode() {
         StaticTelemetry.setPhoneTelemetry(telemetry)
@@ -26,7 +26,7 @@ class EventsTest: LinearOpMode() {
 
         bus.invoke(A("work"))
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             StaticTelemetry.update()
         }
     }

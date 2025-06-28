@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.modules.driveTrain
 
-import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -17,9 +16,7 @@ import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import kotlin.math.abs
-import kotlin.math.cos
 import kotlin.math.max
-import kotlin.math.sin
 
 class DriveTrain : IRobotModule {
     private lateinit var _leftForwardDrive: DcMotorEx
@@ -56,40 +53,52 @@ class DriveTrain : IRobotModule {
         _rightBackDrive.direction = DcMotorSimple.Direction.REVERSE
         _rightForwardDrive.direction = DcMotorSimple.Direction.REVERSE
 
-        bus.subscribe(SetDrivePowerEvent::class){
+        bus.subscribe(SetDrivePowerEvent::class) {
             var dir = it.direction
             var rot = it.rotate
 
-            if(_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT) {
+            if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT) {
                 dir *= Configs.DriveTrainConfig.LIFT_MAX_SPEED_K
                 rot *= Configs.DriveTrainConfig.LIFT_MAX_ROTATE_SPEED_K
             }
 
-            bus.invoke(SetDriveCmEvent(
-                dir * Vec2(Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY),
-                rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY)
+            bus.invoke(
+                SetDriveCmEvent(
+                    dir * Vec2(
+                        Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY,
+                        Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY
+                    ),
+                    rot * Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY
+                )
             )
         }
 
-        bus.subscribe(SetDriveCmEvent::class){
-            var clampedDirLength = clamp(it.direction.length(), 0.0, Configs.DriveTrainConfig.MAX_TRANSLATION_VELOCITY)
-            val dirRot = it.direction.rot()
-
-            _targetDirectionVelocity = Vec2(clampedDirLength, 0.0).setRot(dirRot)
-            _targetRotateVelocity = clamp(
-                it.rotate,
-                -Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY,
-                Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY
-            )
+        bus.subscribe(SetDriveCmEvent::class) {
+            _targetDirectionVelocity = it.direction
+            _targetRotateVelocity = it.rotate
         }
 
-        bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class){
+        bus.subscribe(MergeOdometry.UpdateMergeOdometryEvent::class) {
+
+
             val gyro = bus.invoke(MergeGyro.RequestMergeGyroEvent())
 
-            driveSimpleDirection(Vec2(
-                _velocityPidfForward.update(_targetDirectionVelocity.x - it.velocity.x, _targetDirectionVelocity.x),
-                _velocityPidfSide.update(_targetDirectionVelocity.y - it.velocity.y, _targetDirectionVelocity.y)),
-                _velocityPidfRotate.update(_targetRotateVelocity - gyro.velocity!!, _targetRotateVelocity))
+            driveSimpleDirection(
+                Vec2(
+                    _velocityPidfForward.update(
+                        _targetDirectionVelocity.x - it.velocity.x,
+                        _targetDirectionVelocity.x
+                    ),
+                    _velocityPidfSide.update(
+                        _targetDirectionVelocity.y - it.velocity.y,
+                        _targetDirectionVelocity.y
+                    )
+                ),
+                _velocityPidfRotate.update(
+                    _targetRotateVelocity - gyro.velocity!!,
+                    _targetRotateVelocity
+                )
+            )
 
             StaticTelemetry.addData("targetXVel", _targetDirectionVelocity.x)
             StaticTelemetry.addData("currentXVel", it.velocity.x)
@@ -103,19 +112,26 @@ class DriveTrain : IRobotModule {
     }
 
     private fun driveSimpleDirection(direction: Vec2, rotate: Double) {
-        val leftFrontVoltage = (direction.x - direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
-        val rightBackVoltage = (direction.x - direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
-        val leftBackVoltage = (direction.x + direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
-        val rightForwardVoltage = (direction.x + direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val leftFrontVoltage =
+            (direction.x - direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val rightBackVoltage =
+            (direction.x - direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val leftBackVoltage =
+            (direction.x + direction.y - rotate) * Configs.DriveTrainConfig.BELT_RATIO
+        val rightForwardVoltage =
+            (direction.x + direction.y + rotate) * Configs.DriveTrainConfig.BELT_RATIO
 
         var leftFrontPower = _battery.voltageToPower(leftFrontVoltage)
         var rightBackPower = _battery.voltageToPower(rightBackVoltage)
         var leftBackPower = _battery.voltageToPower(leftBackVoltage)
         var rightForwardPower = _battery.voltageToPower(rightForwardVoltage)
 
-        val max = max(abs(leftFrontPower), max(abs(rightBackPower), max(abs(leftBackPower), abs(rightForwardPower))))
+        val max = max(
+            abs(leftFrontPower),
+            max(abs(rightBackPower), max(abs(leftBackPower), abs(rightForwardPower)))
+        )
 
-        if(max > 1.0){
+        if (max > 1.0) {
             leftFrontPower /= max
             rightBackPower /= max
             leftBackPower /= max
@@ -136,6 +152,6 @@ class DriveTrain : IRobotModule {
         _targetRotateVelocity = 0.0
     }
 
-    class SetDrivePowerEvent(val direction: Vec2, val rotate: Double): IEvent
-    class SetDriveCmEvent(val direction: Vec2, val rotate: Double): IEvent
+    class SetDrivePowerEvent(val direction: Vec2, val rotate: Double) : IEvent
+    class SetDriveCmEvent(val direction: Vec2, val rotate: Double) : IEvent
 }

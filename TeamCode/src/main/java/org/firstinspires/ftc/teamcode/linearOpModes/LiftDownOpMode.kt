@@ -8,11 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 
 @TeleOp
-class LiftDownOpMode: LinearOpMode() {
+class LiftDownOpMode : LinearOpMode() {
     override fun runOpMode() {
         val motor = hardwareMap.get("liftExtensionMotor") as DcMotorEx
 
-        OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode()
+        OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().activity)
+            .startActiveOpMode()
 
         waitForStart()
         resetRuntime()

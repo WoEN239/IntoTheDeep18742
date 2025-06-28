@@ -24,9 +24,15 @@ interface ITrajectorySegment {
     fun duration(): Double
 }
 
-class TurnSegment(angle: Double, private val _startOrientation: Orientation): ITrajectorySegment{
-    private val _turn = TimeTurn(Pose2d(_startOrientation.x, _startOrientation.y, _startOrientation.angl.angle), angle,
-        TurnConstraints(Configs.DriveTrainConfig.MAX_ROTATE_VELOCITY, -Configs.DriveTrainConfig.ROTATE_ACCEL, Configs.DriveTrainConfig.ROTATE_ACCEL))
+class TurnSegment(angle: Double, private val _startOrientation: Orientation) : ITrajectorySegment {
+    private val _turn = TimeTurn(
+        Pose2d(_startOrientation.x, _startOrientation.y, _startOrientation.angl.angle), angle,
+        TurnConstraints(
+            Configs.RoadRunnerConfig.ROAD_RUNNER_ROTATE_VELOCITY,
+            -Configs.RoadRunnerConfig.ROAD_RUNNER_ROTATE_VELOCITY,
+            Configs.DriveTrainConfig.ROTATE_ACCEL
+        )
+    )
 
     override fun isEnd(time: Double) = time > duration()
 
@@ -34,19 +40,21 @@ class TurnSegment(angle: Double, private val _startOrientation: Orientation): IT
 
     override fun turnVelocity(time: Double) = _turn[time].velocity().angVel.value()
 
-    override fun targetOrientation(time: Double) = Orientation(_startOrientation.pos, Angle(_turn[time].value().heading.toDouble()))
+    override fun targetOrientation(time: Double) =
+        Orientation(_startOrientation.pos, Angle(_turn[time].value().heading.toDouble()))
 
     override fun duration() = _turn.duration
 }
 
-class RRTrajectorySegment(rawBuildedTrajectory: List<Trajectory>): ITrajectorySegment{
-    private val _trajectory = Array(rawBuildedTrajectory.size){TimeTrajectory(rawBuildedTrajectory[it])}
+class RRTrajectorySegment(rawBuildedTrajectory: List<Trajectory>) : ITrajectorySegment {
+    private val _trajectory =
+        Array(rawBuildedTrajectory.size) { TimeTrajectory(rawBuildedTrajectory[it]) }
 
     private fun getPoseTime(time: Double): Pose2dDual<Time> {
         var sumDuration = 0.0
 
-        for(i in _trajectory){
-            if(i.duration + sumDuration > time)
+        for (i in _trajectory) {
+            if (i.duration + sumDuration > time)
                 return i[time - sumDuration]
 
             sumDuration += i.duration
@@ -61,6 +69,10 @@ class RRTrajectorySegment(rawBuildedTrajectory: List<Trajectory>): ITrajectorySe
 
     override fun turnVelocity(time: Double) = getPoseTime(time).velocity().angVel.value()
 
-    override fun targetOrientation(time: Double) = Orientation(Vec2(getPoseTime(time).position.value()), Angle(getPoseTime(time).heading.value().toDouble()))
+    override fun targetOrientation(time: Double) = Orientation(
+        Vec2(getPoseTime(time).position.value()),
+        Angle(getPoseTime(time).heading.value().toDouble())
+    )
+
     override fun duration() = _trajectory.sumOf { it.duration }
 }

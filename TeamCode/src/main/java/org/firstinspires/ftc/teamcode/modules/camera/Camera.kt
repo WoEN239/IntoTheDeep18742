@@ -5,16 +5,17 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 
 
 class Camera : IRobotModule {
-    class RequestAllianceDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
-    class RequestYellowDetectedSticks(var sticks: Array<Orientation>? = null): IEvent
-    class SetStickDetectEnable(val enable: Boolean): IEvent
-    class AddCameraProcessor(val processor: VisionProcessor): IEvent
+    class RequestAllianceDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
+    class RequestYellowDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
+    class AddCameraProcessor(val processor: VisionProcessor) : IEvent
+    class WaitFrameProcessed : IEvent
 
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
@@ -22,19 +23,20 @@ class Camera : IRobotModule {
     private var _visionPortalBuilder = VisionPortal.Builder()
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        bus.subscribe(RequestAllianceDetectedSticks::class){
+        bus.subscribe(WaitFrameProcessed::class) {
+            _processor.waitFrame()
+        }
+
+        bus.subscribe(RequestAllianceDetectedSticks::class) {
             it.sticks = _processor.allianceSticks.get()
         }
 
-        bus.subscribe(RequestYellowDetectedSticks::class){
+        bus.subscribe(RequestYellowDetectedSticks::class) {
             it.sticks = _processor.yellowSticks.get()
         }
 
-        bus.subscribe(SetStickDetectEnable::class){
-            _processor.enableDetect.set(it.enable)
-        }
 
-        bus.subscribe(AddCameraProcessor::class){
+        bus.subscribe(AddCameraProcessor::class) {
             _visionPortalBuilder.addProcessor(it.processor)
         }
 
@@ -42,17 +44,24 @@ class Camera : IRobotModule {
 
         _processor.gameColor.set(collector.parameters.oldStartPosition.color)
 
-        _visionPortalBuilder = _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
+        _visionPortalBuilder =
+            _visionPortalBuilder.addProcessor(_processor).setCamera(collector.devices.camera)
     }
 
     override fun start() {
         _visionPortal = _visionPortalBuilder.build()
-        FtcDashboard.getInstance().startCameraStream(_processor, 30.0)
-        _processor.enableDetect.set(true)
+
+        if (Configs.TelemetryConfig.ENABLE)
+            FtcDashboard.getInstance().startCameraStream(_processor, 15.0)
     }
 
     override fun stop() {
-        _visionPortal.stopStreaming()
-        FtcDashboard.getInstance().stopCameraStream()
+        if (Configs.TelemetryConfig.ENABLE)
+            try {
+                _visionPortal.stopStreaming()
+                FtcDashboard.getInstance().stopCameraStream()
+            } catch (_: Exception) {
+
+            }
     }
 }

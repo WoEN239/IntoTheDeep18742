@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
-import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagMetadata
@@ -43,14 +42,16 @@ class CVOdometry : IRobotModule {
                             0.0,
                             0.0,
                             0.0,
-                            0),
+                            0
+                        ),
                         YawPitchRollAngles(
                             AngleUnit.RADIANS,
                             toRadians(90.0),
                             toRadians(0.0),
                             toRadians(0.0),
                             0
-                        ))
+                        )
+                    )
                     .setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
                     .setTagLibrary(AprilTagGameDatabase.getIntoTheDeepTagLibrary())
                     .build()
@@ -62,7 +63,8 @@ class CVOdometry : IRobotModule {
     override fun update() {
         if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos != IntakeManager.LiftPosition.TRANSPORT ||
             !Configs.CVOdometryConfig.USE_CAMERA ||
-            !_eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!)
+            !_eventBus.invoke(IntakeManager.RequestLiftAtTargetEvent()).target!!
+        )
             return
 
         val detections = _aprilTagProcessor.detections
@@ -76,7 +78,7 @@ class CVOdometry : IRobotModule {
         var normalDetections = 0
 
         for (i in detections) {
-            if(i.rawPose == null)
+            if (i.rawPose == null)
                 continue
 
             // Считать позицию тэга относительно камеры и записать её в VectorF
@@ -104,9 +106,13 @@ class CVOdometry : IRobotModule {
             // Повернуть относительное положение на угол между тегом и полем
             val rotatedPosVector = fieldTagQ.applyToVector(rawTagPoseVector)
 
-            val dist = sqrt(rotatedPosVector.get(0) * rotatedPosVector.get(0) + rotatedPosVector.get(1) * rotatedPosVector.get(1))
+            val dist = sqrt(
+                rotatedPosVector.get(0) * rotatedPosVector.get(0) + rotatedPosVector.get(1) * rotatedPosVector.get(
+                    1
+                )
+            )
 
-            if(dist > Configs.CVOdometryConfig.DETECT_DIST)
+            if (dist > Configs.CVOdometryConfig.DETECT_DIST)
                 continue
 
             val fieldCameraPos = fieldTagPos.subtracted(rotatedPosVector)
@@ -119,10 +125,14 @@ class CVOdometry : IRobotModule {
             normalDetections++
         }
 
-        if(normalDetections == 0)
+        if (normalDetections == 0)
             return
 
-        _eventBus.invoke(UpdateCVOdometryEvent((posSum / normalDetections.toDouble()) -
-                Configs.CVOdometryConfig.CAMERA_POSITION.turn(_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)))
+        _eventBus.invoke(
+            UpdateCVOdometryEvent(
+                (posSum / normalDetections.toDouble()) -
+                        Configs.CVOdometryConfig.CAMERA_POSITION.turn(_eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle)
+            )
+        )
     }
 }

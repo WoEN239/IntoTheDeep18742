@@ -1,0 +1,269 @@
+package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectories
+
+import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.Vector2d
+import org.firstinspires.ftc.teamcode.collectors.BaseCollector
+import org.firstinspires.ftc.teamcode.collectors.events.EventBus
+import org.firstinspires.ftc.teamcode.modules.intake.Intake
+import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ActionsRunner
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.AutoClampAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ClampAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.DifAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.FollowRRTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.IAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ITransportAction.Companion.getEndOrientation
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.LiftAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ParallelActions
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.WaitIntakeAction
+import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner.Companion.newRRTrajectory
+import org.firstinspires.ftc.teamcode.utils.units.Orientation
+import java.lang.Math.toRadians
+
+class BasketTrajectory : ITrajectoryBuilder {
+    override fun runTrajectory(
+        eventBus: EventBus,
+        startOrientation: Orientation,
+        teammate: BaseCollector.TeammateSate
+    ) {
+        val actions = arrayListOf<IAction>()
+
+        fun runToBasket(startOrientation: Orientation): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
+
+            acts.add(
+                ParallelActions(
+                    arrayOf(
+                        arrayListOf(
+                            FollowRRTrajectory(
+                                eventBus, newRRTrajectory(startOrientation)
+                                    .strafeToLinearHeading(
+                                        Vector2d(131.1, 133.4),
+                                        toRadians(-90.0 - 45.0)
+                                    )
+                                    .build()
+                            )
+                        ),
+                        arrayListOf(
+                            WaitIntakeAction(eventBus),
+                            WaitAction(0.2),
+                            LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
+                        )
+                    ),
+                    ParallelActions.ExitType.AND
+                )
+            )
+
+            return acts
+        }
+
+        fun basket(extension: Double = -1.0): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
+
+            acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP))
+
+            acts.add(WaitIntakeAction(eventBus))
+
+            if (extension > 0.0)
+                acts.add(
+                    LiftAction(
+                        eventBus,
+                        IntakeManager.LiftPosition.CLAMP_CENTER,
+                        extension
+                    )
+                )
+
+            return acts
+        }
+
+
+        fun clampStick(isDif: Boolean = false): ArrayList<IAction> {
+            val acts = arrayListOf<IAction>()
+
+            if (isDif)
+                acts.add(DifAction(eventBus, 40.0))
+
+            acts.add(WaitIntakeAction(eventBus))
+
+            acts.add(WaitAction(0.2))
+
+            acts.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP))
+
+            acts.add(WaitIntakeAction(eventBus))
+
+            return acts
+        }
+
+        fun paralelClamp(isDif: Boolean): ArrayList<IAction> {
+            val clampActions =
+                arrayListOf(WaitIntakeAction(eventBus), WaitAction(if (isDif) 0.7 else 0.4))
+
+            clampActions.addAll(runToBasket(getEndOrientation(actions)))
+
+            return arrayListOf(
+                ParallelActions(
+                    arrayOf(clampStick(isDif), clampActions),
+                    ParallelActions.ExitType.AND
+                )
+            )
+        }
+
+        actions.addAll(runToBasket(startOrientation))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    basket(950.0), arrayListOf(
+                        WaitAction(0.2),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(Vector2d(121.6, 126.9), toRadians(-90.0))
+                                .build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.addAll(paralelClamp(false))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        WaitAction(0.2),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(Vector2d(144.2, 119.6), toRadians(-90.0))
+                                .build()
+                        )
+                    ), basket(780.0)
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(WaitAction(0.2))
+
+        actions.addAll(paralelClamp(false))
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        WaitAction(0.2),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(137.7, 105.7),
+                                    toRadians(-90.0 + 39.5)
+                                )
+                                .build()
+                        )
+                    ), basket(780.0)
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(WaitAction(0.3))
+
+        actions.addAll(paralelClamp(true))
+
+        if (teammate.brick) {
+            actions.add(
+                ParallelActions(
+                    arrayOf(
+                        basket(1000.0), arrayListOf(
+                            WaitAction(0.2), FollowRRTrajectory(
+                                eventBus,
+                                newRRTrajectory(getEndOrientation(actions)).strafeToLinearHeading(
+                                    Vector2d(117.0, 142.3), toRadians(180.0)
+                                ).build()
+                            )
+                        )
+                    ), ParallelActions.ExitType.AND
+                )
+            )
+
+            actions.addAll(paralelClamp(false))
+        }
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    basket(1.0), arrayListOf(
+                        WaitAction(0.1),
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(
+                                getEndOrientation(actions)
+                            )
+                                .setTangent(toRadians(-90.0))
+                                .splineToLinearHeading(
+                                    Pose2d(60.0, 6.0, toRadians(180.0)),
+                                    toRadians(-90.0 - 45.0)
+                                ).build()
+                        )
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        actions.add(AutoClampAction(eventBus))
+        actions.add(WaitAction(0.1))
+
+        actions.addAll(runToBasket(getEndOrientation(actions)))
+
+        if (!teammate.brick) {
+            actions.add(
+                ParallelActions(
+                    arrayOf(
+                        basket(1.0), arrayListOf(
+                            WaitAction(0.1),
+                            FollowRRTrajectory(
+                                eventBus, newRRTrajectory(
+                                    getEndOrientation(actions)
+                                )
+                                    .setTangent(toRadians(-90.0))
+                                    .splineToLinearHeading(
+                                        Pose2d(50.0, -6.0, toRadians(180.0)),
+                                        toRadians(-90.0 - 45.0)
+                                    ).build()
+                            )
+                        )
+                    ), ParallelActions.ExitType.AND
+                )
+            )
+
+            actions.add(AutoClampAction(eventBus))
+            actions.add(WaitAction(0.1))
+
+            actions.addAll(runToBasket(getEndOrientation(actions)))
+            actions.addAll(basket())
+        } else
+            actions.addAll(basket())
+
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .setTangent(toRadians(180.0))
+                                .splineToLinearHeading(
+                                    Pose2d(50.0, 0.0, toRadians(0.0)),
+                                    toRadians(180.0)
+                                )
+                                .build()
+                        )
+                    ),
+                    arrayListOf(
+                        ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP),
+                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_LAYER)
+                    )
+                ), ParallelActions.ExitType.AND
+            )
+        )
+
+        eventBus.invoke(ActionsRunner.RunActionsEvent(actions))
+    }
+}

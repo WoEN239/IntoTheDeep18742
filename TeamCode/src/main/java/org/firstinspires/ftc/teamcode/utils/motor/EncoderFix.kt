@@ -31,7 +31,7 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
     val realPosition
         get() = calculateRealPosition(position.toDouble())
 
-    init{
+    init {
         UpdateHandler.addHandler(this)
 
         reset()
@@ -50,7 +50,8 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
             _oldPosition = position
         }
 
-        velocity = hardwareSpeed + ((_lastMathSpeed - hardwareSpeed) / (1 shl 16).toDouble()).roundToInt() * (1 shl 16).toDouble()
+        velocity =
+            hardwareSpeed + ((_lastMathSpeed - hardwareSpeed) / (1 shl 16).toDouble()).roundToInt() * (1 shl 16).toDouble()
     }
 
     override fun start() {
@@ -58,10 +59,11 @@ class EncoderFix(val encoder: DcMotorEx, val calculateRealPosition: (Double) -> 
         _oldPosition = position
     }
 
-    fun reset(){
-        if(encoder !is EncoderOnly) {
+    fun reset() {
+        if (encoder !is EncoderOnly) {
             encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
+        } else
+            encoder.reset()
     }
 }

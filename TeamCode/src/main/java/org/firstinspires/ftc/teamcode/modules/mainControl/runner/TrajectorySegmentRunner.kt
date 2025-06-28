@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.mainControl.runner
 
 import com.acmerobotics.roadrunner.AngularVelConstraint
-import com.acmerobotics.roadrunner.HolonomicController
 import com.acmerobotics.roadrunner.MinVelConstraint
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.ProfileAccelConstraint
@@ -14,6 +13,7 @@ import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.driveTrain.DriveTrain
+import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.modules.navigation.odometry.MergeOdometry
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -133,12 +133,13 @@ class TrajectorySegmentRunner : IRobotModule {
         val headingVelU =
             if (abs(velHeadingErr) > Configs.RoadRunnerConfig.HEADING_VEL_SENS) velHeadingErr * Configs.RoadRunnerConfig.HEADING_VEL_P else 0.0
 
-        _eventBus.invoke(
-            DriveTrain.SetDriveCmEvent(
-                localizedTransVelocity + uPos + uPosVel,
-                _targetHeadingVelocity + headingU + headingVelU
+        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.AUTO_CLAMP_CENTER)
+            _eventBus.invoke(
+                DriveTrain.SetDriveCmEvent(
+                    localizedTransVelocity + uPos + uPosVel,
+                    _targetHeadingVelocity + headingU + headingVelU
+                )
             )
-        )
 
         StaticTelemetry.drawRect(
             _targetOrientation.pos,

@@ -7,11 +7,12 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 
 @TeleOp
-class DisableTelemetry: LinearOpMode() {
+class DisableTelemetry : LinearOpMode() {
     override fun runOpMode() {
         Configs.TelemetryConfig.ENABLE = false
 
-        OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode()
+        OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().activity)
+            .startActiveOpMode()
 
         waitForStart()
 

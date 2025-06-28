@@ -3,34 +3,32 @@ package org.firstinspires.ftc.teamcode.collectors.events
 import kotlin.reflect.KClass
 
 class EventBus {
-    private val _events = mutableMapOf<KClass<*>, ArrayList<(IEvent) -> Unit>>()
+    private val _events = hashMapOf<KClass<*>, ArrayList<(IEvent) -> Unit>>()
+    private val _anyCallbacks = mutableListOf<(IEvent) -> Unit>()
 
-    fun <T: IEvent> subscribe(event: KClass<T>, callback: (T) -> Unit){
-        if(_events[event] == null)
+    fun <T : IEvent> subscribe(event: KClass<T>, callback: (T) -> Unit) {
+        if (_events[event] == null)
             _events[event] = arrayListOf()
 
         _events[event]?.add(callback as (IEvent) -> Unit)
     }
 
-    fun <T: IEvent> invoke(event: T): T{
-        if(_events[Any::class] != null){
-            for(i in _events[Any::class]!!)
-                i.invoke(event)
-        }
+    fun <T : IEvent> invoke(event: T): T {
+        for (i in _anyCallbacks)
+            i.invoke(event)
 
-        if(_events[event::class] == null)
+        val callbacks = _events[event::class]
+
+        if (callbacks == null)
             return event
 
-        for(i in _events[event::class]!!)
+        for (i in callbacks)
             i.invoke(event)
 
         return event
     }
 
-    fun anySubscribe(callback: (IEvent) -> Unit){
-        if(_events[Any::class] == null)
-            _events[Any::class] = arrayListOf()
-
-        _events[Any::class]?.add(callback)
+    fun anySubscribe(callback: (IEvent) -> Unit) {
+        _anyCallbacks.add(callback)
     }
 }

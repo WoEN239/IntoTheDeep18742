@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
@@ -34,6 +33,8 @@ class Lift {
     var aimTargetPosition = 0.0
     var extensionTargetPosition = 0.0
 
+    private var _isResetExtension = false
+
     fun init(collector: BaseCollector) {
         _battery = collector.devices.battery
 
@@ -45,10 +46,7 @@ class Lift {
         _aimMotor.zeroPowerBehavior = BRAKE
         _extensionMotor.zeroPowerBehavior = BRAKE
 
-        if (collector.isAuto) {
-            _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
+        _isResetExtension = collector.isAuto
     }
 
     fun getCurrentExtensionPos() = _extensionMotor.currentPosition.toDouble()
@@ -58,12 +56,17 @@ class Lift {
     var deltaExtension = 0.0
     private var _oldTargetAimPos = 0.0
 
-    fun getAimPos() = _aimPotentiometer.voltage /
+    var currentAimPos = 0.0
+        private set
+
+    fun readRawAimPos() = _aimPotentiometer.voltage /
             Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
             Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        StaticTelemetry.addData("aim pos", getAimPos())
+        currentAimPos = readRawAimPos()
+
+        StaticTelemetry.addData("aimPos", currentAimPos)
 
         deltaExtension += _deltaTime.seconds() * extensionVelocity
 
@@ -80,7 +83,10 @@ class Lift {
 
         val targetDefencedAimPos: Double
 
-        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.EXTENSION_SENS) {
+        if (abs(Configs.LiftConfig.MIN_EXTENSION_POS - getCurrentExtensionPos()) < Configs.LiftConfig.DEFENDED_EXTENSION_SENS || abs(
+                currentAimPos - targetAimPos
+            ) < Configs.LiftConfig.AIM_DEFEND_TRIGGER_POS
+        ) {
             targetDefencedAimPos = targetAimPos
             _oldTargetAimPos = targetAimPos
         } else
@@ -88,22 +94,26 @@ class Lift {
 
         val targetDefencedExtensionPos: Double
 
-        if (abs(targetAimPos - getAimPos()) > Configs.LiftConfig.AIM_SENS)
+        if (abs(targetAimPos - currentAimPos) > Configs.LiftConfig.DEFENDED_AIM_SENS)
             targetDefencedExtensionPos = Configs.LiftConfig.MIN_EXTENSION_POS
         else
             targetDefencedExtensionPos = targetExtensionPos
 
-        _aimErr = targetDefencedAimPos - getAimPos()
+        StaticTelemetry.addData("targetAimLiftPos", targetDefencedAimPos)
+
+        _aimErr = targetDefencedAimPos - currentAimPos
         _extensionErr = (targetDefencedExtensionPos + deltaExtension) - getCurrentExtensionPos()
 
         val triggerMinPower =
-            if (getAimPos() > Configs.LiftConfig.TRIGET_SLOW_POS)
+            if (currentAimPos > Configs.LiftConfig.TRIGET_SLOW_POS)
                 Configs.LiftConfig.MAX_SPEED_DOWN
             else Configs.LiftConfig.MAX_TRIGGER_SPEED_DOWN
 
         val aimPower =
-            _battery.voltageToPower(_aimPID.update(_aimErr)
-                .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP))
+            _battery.voltageToPower(
+                _aimPID.update(_aimErr)
+                    .coerceAtLeast(triggerMinPower).coerceAtMost(Configs.LiftConfig.MIN_SPEED_UP)
+            )
 
         val extensionPower = _battery.voltageToPower(_extensionPID.update(_extensionErr))
 
@@ -112,9 +122,15 @@ class Lift {
     }
 
     fun atTarget() =
-        abs(_aimErr) < Configs.LiftConfig.AIM_SENS && abs(_extensionErr) < Configs.LiftConfig.EXTENSION_SENS
+        abs(readRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS &&
+                abs(getCurrentExtensionPos() - (extensionTargetPosition + deltaExtension)) < Configs.LiftConfig.EXTENSION_SENS
 
     fun start() {
         _deltaTime.reset()
+
+        if (_isResetExtension) {
+            _extensionMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            _extensionMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
     }
 }

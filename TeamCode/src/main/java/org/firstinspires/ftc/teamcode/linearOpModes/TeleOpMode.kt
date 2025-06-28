@@ -8,8 +8,9 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.gamepad.Gamepad
 @TeleOp
 class TeleOpMode : LinearOpModeBase() {
     override fun getOpModeSettings() = OpModeSettings(
-        isAutoStart = true,
-        isPreInit = false
+        isAutoStart = false,
+        isPreInit = false,
+        gamepadStart = true
     )
 
     override fun getCollector(): BaseCollector {
@@ -19,7 +20,7 @@ class TeleOpMode : LinearOpModeBase() {
                 startPosition = BaseCollector.GameStartPosition.NONE
             ),
             isAuto = false,
-            mutableListOf(/*ся модули для телеопа*/Gamepad(), Hook())
+            mutableListOf(Gamepad(), Hook())
         )
 
         return collector

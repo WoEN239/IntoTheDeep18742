@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
-import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
@@ -15,18 +13,19 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
+import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
 import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
 
-class Battery (private val _voltageSensor: VoltageSensor){
+class Battery(private val _voltageSensor: VoltageSensor) {
     var currentVoltage = 1.0
 
     val _oldUpdateTime = ElapsedTime()
 
     fun voltageToPower(voltage: Double) = voltage / currentVoltage
 
-    fun update(){
-        if(_oldUpdateTime.seconds() > Configs.ChargeConfig.BATTERY_UPDATE_SEC) {
+    fun update() {
+        if (_oldUpdateTime.seconds() > 1.0 / Configs.ChargeConfig.BATTERY_UPDATE_HZ) {
             currentVoltage = _voltageSensor.voltage
 
             _oldUpdateTime.reset()
@@ -34,7 +33,7 @@ class Battery (private val _voltageSensor: VoltageSensor){
     }
 }
 
-class Devices(hardMap: HardwareMap)  {
+class Devices(hardMap: HardwareMap) {
     val imu = hardMap.get("imu") as IMU
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))
@@ -59,7 +58,7 @@ class Devices(hardMap: HardwareMap)  {
     val liftAimMotor = MotorOnly(hardMap.get("rightOdometer") as DcMotorEx)
     val liftExtensionMotor = hardMap.get("liftExtensionMotor") as DcMotorEx
 
-    val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
+    //val liftExtensionEndingDown = hardMap.get("liftExtensionEndingDown") as DigitalChannel
 
     val servoHookLeft = hardMap.get("servoHookLeft") as CRServo
     val servoHookRight = hardMap.get("servoHookRight") as CRServo
@@ -68,4 +67,8 @@ class Devices(hardMap: HardwareMap)  {
 
     val leftLight = LEDLine(hardMap.get("leftLEDLine") as Servo)
     val rightLight = LEDLine(hardMap.get("rightLEDLine") as Servo)
+
+    val clampCurrentSensor = CurrentSensor(hardMap.get("clampCurrentSensor") as AnalogInput)
+
+    val teamLED = LEDLine(hardMap.get("teamLED") as Servo)
 }

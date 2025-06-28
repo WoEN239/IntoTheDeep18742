@@ -9,7 +9,7 @@ class Bulk(val devices: Devices) {
             i.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
     }
 
-    fun update(){
+    fun update() {
         for (i in devices.hubs)
             i.bulkData
     }

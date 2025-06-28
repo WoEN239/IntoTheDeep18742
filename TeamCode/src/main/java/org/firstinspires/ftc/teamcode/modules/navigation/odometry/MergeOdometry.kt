@@ -8,11 +8,10 @@ import org.firstinspires.ftc.teamcode.modules.navigation.gyro.MergeGyro
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
-import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
-class MergeOdometry: IRobotModule {
+class MergeOdometry : IRobotModule {
     private var _oldOdometrPos = Vec2.ZERO
 
     private val _mergeFilterX = ExponentialFilter(Configs.CVOdometryConfig.MERGE_COEF)
@@ -25,12 +24,12 @@ class MergeOdometry: IRobotModule {
         _oldOdometrPos = collector.parameters.oldStartPosition.position
         _position = collector.parameters.oldStartPosition.position
 
-        bus.subscribe(CVOdometry.UpdateCVOdometryEvent::class){
+        bus.subscribe(CVOdometry.UpdateCVOdometryEvent::class) {
             _position.x = _mergeFilterX.update(_position.x, it.pos.x)
             _position.y = _mergeFilterY.update(_position.y, it.pos.y)
         }
 
-        bus.subscribe(OdometersOdometry.UpdateOdometersOdometryEvent::class){
+        bus.subscribe(OdometersOdometry.UpdateOdometersOdometryEvent::class) {
             val deltaPos = it.position - _oldOdometrPos
             _oldOdometrPos = it.position
 
@@ -41,7 +40,7 @@ class MergeOdometry: IRobotModule {
             StaticTelemetry.addData("odometerPosition", it.position)
         }
 
-        bus.subscribe(RequestMergePositionEvent::class){
+        bus.subscribe(RequestMergePositionEvent::class) {
             it.position = _position
             it.velocity = _velocity
         }
@@ -51,12 +50,17 @@ class MergeOdometry: IRobotModule {
         _mergeFilterX.coef = Configs.CVOdometryConfig.MERGE_COEF
         _mergeFilterY.coef = Configs.CVOdometryConfig.MERGE_COEF
 
-        StaticTelemetry.drawRect(_position, Configs.TelemetryConfig.ROBOT_SIZE, _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle, Color.BLUE)
+        StaticTelemetry.drawRect(
+            _position,
+            Configs.TelemetryConfig.ROBOT_SIZE,
+            _eventBus.invoke(MergeGyro.RequestMergeGyroEvent()).rotation!!.angle,
+            Color.BLUE
+        )
     }
 
     private var _position = Vec2.ZERO
     private var _velocity = Vec2.ZERO
 
-    class UpdateMergeOdometryEvent(val position: Vec2, val velocity: Vec2): IEvent
-    class RequestMergePositionEvent(var position: Vec2? = null, var velocity: Vec2? = null): IEvent
+    class UpdateMergeOdometryEvent(val position: Vec2, val velocity: Vec2) : IEvent
+    class RequestMergePositionEvent(var position: Vec2? = null, var velocity: Vec2? = null) : IEvent
 }

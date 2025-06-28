@@ -18,27 +18,34 @@ class Gamepad : IRobotModule {
     override fun init(collector: BaseCollector, bus: EventBus) {
         _gamepad = collector.robot.gamepad1
         _eventBus = bus
+
+        bus.subscribe(IntakeManager.ClampDefendedEvent::class) {
+            _gamepad.rumble(Configs.IntakeConfig.GAMEPAD_DEFENDED_RUMPLE_MS)
+        }
     }
 
     private var _oldClamp = false
 
-    private var _basketOld = false
+    private var _upBasketOld = false
+    private var _lowBasketOld = false
     private var _centerOld = false
     private var _layerOld = false
     private var _clampWallOld = false
+    private var _autoClampOld = false
 
     private var _oldNextDifPos = false
     private var _oldPreviousDifPos = false
 
     override fun update() {
-        _eventBus.invoke(
-            SetDrivePowerEvent(
-                Vec2(
-                    (-_gamepad.left_stick_y).toDouble(),
-                    (-_gamepad.left_stick_x).toDouble()
-                ), (-_gamepad.right_stick_x).toDouble()
+        if (_eventBus.invoke(IntakeManager.RequestLiftPosEvent()).pos!! != IntakeManager.LiftPosition.AUTO_CLAMP_CENTER)
+            _eventBus.invoke(
+                SetDrivePowerEvent(
+                    Vec2(
+                        (-_gamepad.left_stick_y).toDouble(),
+                        (-_gamepad.left_stick_x).toDouble()
+                    ), (-_gamepad.right_stick_x).toDouble()
+                )
             )
-        )
 
         if (_gamepad.circle && !_oldClamp) {
             if (_eventBus.invoke(IntakeManager.RequestClampPosEvent()).pos == ClampPosition.SERVO_UNCLAMP)
@@ -56,7 +63,7 @@ class Gamepad : IRobotModule {
         else
             _eventBus.invoke(Hook.HookStop())
 
-        if (!_basketOld && _gamepad.dpad_up)
+        if (!_upBasketOld && _gamepad.dpad_up)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.UP_BASKED))
 
         if (!_centerOld && _gamepad.dpad_down)
@@ -68,17 +75,26 @@ class Gamepad : IRobotModule {
         if (!_clampWallOld && _gamepad.dpad_left)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.CLAMP_WALL))
 
-        _basketOld = _gamepad.dpad_up
+        if (!_lowBasketOld && _gamepad.cross)
+            _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.LOW_BASKET))
+
+        _upBasketOld = _gamepad.dpad_up
+        _lowBasketOld = _gamepad.cross
         _centerOld = _gamepad.dpad_down
         _layerOld = _gamepad.dpad_right
         _clampWallOld = _gamepad.dpad_left
+        _autoClampOld = _gamepad.ps
 
-        _eventBus.invoke(IntakeManager.EventSetExtensionVel((_gamepad.right_trigger - _gamepad.left_trigger).toDouble() * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS))
+        _eventBus.invoke(
+            IntakeManager.EventSetExtensionVel(
+                (_gamepad.right_trigger - _gamepad.left_trigger) * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS
+            )
+        )
 
-        if(_gamepad.right_bumper && !_oldNextDifPos)
+        if (_gamepad.right_bumper && !_oldNextDifPos)
             _eventBus.invoke(IntakeManager.NextDifPos())
 
-        if(_gamepad.left_bumper && !_oldPreviousDifPos)
+        if (_gamepad.left_bumper && !_oldPreviousDifPos)
             _eventBus.invoke(IntakeManager.PreviousDifPos())
 
         _oldNextDifPos = _gamepad.right_bumper

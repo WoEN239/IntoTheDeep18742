@@ -12,7 +12,7 @@ import java.util.Locale
  *
  * @author tikhonsmovzh
  */
-data class Color(var r: Int, var g: Int, var b: Int) {
+data class Color(@JvmField var r: Int, @JvmField var g: Int, @JvmField var b: Int) {
     companion object {
         val RED: Color = Color(255, 0, 0)
         val BLUE: Color = Color(0, 0, 255)
@@ -23,7 +23,7 @@ data class Color(var r: Int, var g: Int, var b: Int) {
         val YELLOW: Color = Color(255, 255, 0)
         val ORANGE: Color = Color(255, 128, 0)
     }
-    
+
     override fun toString(): String {
         if (r > 255 || g > 255 || b > 255) throw RuntimeException("color more 255")
 

@@ -19,7 +19,7 @@ data class Vec2(@JvmField var x: Double, @JvmField var y: Double) {
         val ZERO = Vec2(0.0, 0.0)
     }
 
-    constructor(rrVec: Vector2d) : this(rrVec.x, rrVec.y);
+    constructor(rrVec: Vector2d) : this(rrVec.x, rrVec.y)
     constructor(x: Double) : this(x, x)
 
     fun length() = sqrt(x * x + y * y)
