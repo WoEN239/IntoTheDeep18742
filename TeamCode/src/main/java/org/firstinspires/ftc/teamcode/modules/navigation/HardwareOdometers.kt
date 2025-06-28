@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules.navigation
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE
-import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderFix
-import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import kotlin.math.PI
 
 class HardwareOdometers : IRobotModule {
@@ -45,10 +42,17 @@ class HardwareOdometers : IRobotModule {
 
         _eventBus.invoke(
             UpdateHardwareOdometersEvent(
-                currentLeftPosition, currentRightPosition, currentSidePosition,
-                _oldPositionLeft, _oldPositionRight, _oldPositionSide,
-                _forwardOdometerLeft.realVelocity, _forwardOdometerRight.realVelocity, _sideOdometer.realVelocity
-            ))
+                currentLeftPosition,
+                currentRightPosition,
+                currentSidePosition,
+                _oldPositionLeft,
+                _oldPositionRight,
+                _oldPositionSide,
+                _forwardOdometerLeft.realVelocity,
+                _forwardOdometerRight.realVelocity,
+                _sideOdometer.realVelocity
+            )
+        )
 
         _oldPositionLeft = currentLeftPosition
         _oldPositionRight = currentRightPosition
@@ -69,5 +73,5 @@ class HardwareOdometers : IRobotModule {
         val leftPosition: Double, val rightPosition: Double, val sidePosition: Double,
         val leftPositionOld: Double, val rightPositionOld: Double, val sidePositionOld: Double,
         val leftVelocity: Double, val rightVelocity: Double, val sideVelocity: Double
-    ): IEvent
+    ) : IEvent
 }

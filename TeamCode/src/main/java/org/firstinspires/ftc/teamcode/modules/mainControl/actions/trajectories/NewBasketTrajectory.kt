@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes
+package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectories
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
@@ -138,7 +138,7 @@ class NewBasketTrajectory : ITrajectoryBuilder {
         actions.add(WaitAction(0.1))
         actions.addAll(runToBasket())
 
-        if(teammate.brick){
+        if (teammate.brick) {
             actions.add(
                 ParallelActions(
                     arrayOf(
@@ -157,25 +157,27 @@ class NewBasketTrajectory : ITrajectoryBuilder {
 
             actions.add(ClampAction(eventBus, Intake.ClampPosition.SERVO_CLAMP, false))
             actions.add(WaitAction(0.1))
-            actions.add(ParallelActions(
-                arrayOf(
-                    arrayListOf(
-                        FollowRRTrajectory(
-                            eventBus, newRRTrajectory(startOrientation)
-                                .strafeToLinearHeading(
-                                    Vector2d(130.1, 122.5),
-                                    toRadians(-90.0 - 45.0)
-                                )
-                                .build()
+            actions.add(
+                ParallelActions(
+                    arrayOf(
+                        arrayListOf(
+                            FollowRRTrajectory(
+                                eventBus, newRRTrajectory(startOrientation)
+                                    .strafeToLinearHeading(
+                                        Vector2d(130.1, 122.5),
+                                        toRadians(-90.0 - 45.0)
+                                    )
+                                    .build()
+                            )
+                        ),
+                        arrayListOf(
+                            WaitIntakeAction(eventBus),
+                            LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
                         )
                     ),
-                    arrayListOf(
-                        WaitIntakeAction(eventBus),
-                        LiftAction(eventBus, IntakeManager.LiftPosition.UP_BASKED)
-                    )
-                ),
-                ParallelActions.ExitType.AND
-            ))
+                    ParallelActions.ExitType.AND
+                )
+            )
         }
 
         actions.add(

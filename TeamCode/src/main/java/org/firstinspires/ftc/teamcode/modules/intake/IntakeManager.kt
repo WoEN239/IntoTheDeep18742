@@ -17,15 +17,10 @@ import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
-import java.lang.Math.atan2
-import java.lang.Math.pow
-import java.lang.Math.toDegrees
 import java.lang.Math.toRadians
 import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.atan
 import kotlin.math.cos
-import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
@@ -41,8 +36,8 @@ class IntakeManager : IRobotModule {
     class EventSetExtensionPosition(val pos: Double) : IEvent
     class RequestLiftAtTargetEvent(var target: Boolean? = null) : IEvent
     class RequestIntakeAtTarget(var target: Boolean? = null) : IEvent
-    class ClampDefendedEvent() : IEvent
-    class AutoClamp() : IEvent
+    class ClampDefendedEvent : IEvent
+    class AutoClamp : IEvent
     class SetDifPosEvent(val pos: Double) : IEvent
 
     enum class LiftPosition {

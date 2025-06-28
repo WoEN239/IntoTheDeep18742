@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.modules.hook.Hook
 import org.firstinspires.ftc.teamcode.modules.intake.Intake.ClampPosition
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
-import org.firstinspires.ftc.teamcode.utils.timer.Timers
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
 
 class Gamepad : IRobotModule {
@@ -79,9 +77,6 @@ class Gamepad : IRobotModule {
 
         if (!_lowBasketOld && _gamepad.cross)
             _eventBus.invoke(IntakeManager.EventSetLiftPose(IntakeManager.LiftPosition.LOW_BASKET))
-//
-//        if (!_autoClampOld && _gamepad.ps)
-//            _eventBus.invoke(IntakeManager.AutoClamp())
 
         _upBasketOld = _gamepad.dpad_up
         _lowBasketOld = _gamepad.cross
@@ -90,7 +85,11 @@ class Gamepad : IRobotModule {
         _clampWallOld = _gamepad.dpad_left
         _autoClampOld = _gamepad.ps
 
-        _eventBus.invoke(IntakeManager.EventSetExtensionVel(((_gamepad.right_trigger - _gamepad.left_trigger) * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS)))
+        _eventBus.invoke(
+            IntakeManager.EventSetExtensionVel(
+                (_gamepad.right_trigger - _gamepad.left_trigger) * Configs.LiftConfig.GAMEPAD_EXTENSION_SENS
+            )
+        )
 
         if (_gamepad.right_bumper && !_oldNextDifPos)
             _eventBus.invoke(IntakeManager.NextDifPos())

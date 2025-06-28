@@ -20,7 +20,7 @@ class TeleOpMode : LinearOpModeBase() {
                 startPosition = BaseCollector.GameStartPosition.NONE
             ),
             isAuto = false,
-            mutableListOf(/*ся модули для телеопа*/Gamepad(), Hook())
+            mutableListOf(Gamepad(), Hook())
         )
 
         return collector

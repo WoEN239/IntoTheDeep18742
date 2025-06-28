@@ -7,16 +7,22 @@ import org.firstinspires.ftc.teamcode.modules.camera.Camera
 import org.firstinspires.ftc.teamcode.modules.mainControl.actions.ActionsRunner
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegmentRunner
 
-open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
-    override fun getOpModeSettings() = OpModeSettings(isAutoStart = false, isPreInit = true, preInitOpModeName = "TeleOpMode", gamepadStart = false)
+open class AutoOpMode(val startPos: GameStartPosition) : LinearOpModeBase() {
+    override fun getOpModeSettings() = OpModeSettings(
+        isAutoStart = false,
+        isPreInit = true,
+        preInitOpModeName = "TeleOpMode",
+        gamepadStart = false
+    )
 
     override fun getCollector(): BaseCollector {
-        val collector = BaseCollector(this,
+        val collector = BaseCollector(
+            this,
             BaseCollector.GameSettings(
                 startPosition = startPos,
             ),
             isAuto = true,
-            mutableListOf(/*ся модули для автонома*/ TrajectorySegmentRunner(), ActionsRunner(), Camera())
+            mutableListOf(TrajectorySegmentRunner(), ActionsRunner(), Camera())
         )
 
         return collector
@@ -24,19 +30,19 @@ open class AutoOpMode(val startPos: GameStartPosition): LinearOpModeBase() {
 }
 
 @Autonomous
-class AutoOpModeRedBasket: AutoOpMode(GameStartPosition.RED_BASKET)
+class AutoOpModeRedBasket : AutoOpMode(GameStartPosition.RED_BASKET)
 
 @Autonomous
-class AutoOpModeRedBasketBrick: AutoOpMode(GameStartPosition.RED_BASKET_BRICK)
+class AutoOpModeRedBasketBrick : AutoOpMode(GameStartPosition.RED_BASKET_BRICK)
 
 @Autonomous
-class AutoOpModeRedHuman: AutoOpMode(GameStartPosition.RED_HUMAN)
+class AutoOpModeRedHuman : AutoOpMode(GameStartPosition.RED_HUMAN)
 
 @Autonomous
-class AutoOpModeBlueHuman: AutoOpMode(GameStartPosition.BLUE_HUMAN)
+class AutoOpModeBlueHuman : AutoOpMode(GameStartPosition.BLUE_HUMAN)
 
 @Autonomous
-class AutoOpModeBlueBasket: AutoOpMode(GameStartPosition.BLUE_BASKET)
+class AutoOpModeBlueBasket : AutoOpMode(GameStartPosition.BLUE_BASKET)
 
 @Autonomous
-class AutoOpModeBlueBasketBrick: AutoOpMode(GameStartPosition.BLUE_BASKET_BRICK)
+class AutoOpModeBlueBasketBrick : AutoOpMode(GameStartPosition.BLUE_BASKET_BRICK)

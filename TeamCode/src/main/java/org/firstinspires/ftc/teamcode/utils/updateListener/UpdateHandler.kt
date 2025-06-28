@@ -27,8 +27,8 @@ class UpdateHandler {
         _handlers.clear()
     }
 
-    fun init(context: BaseCollector.InitContext){
-        for(i in _handlers)
+    fun init(context: BaseCollector.InitContext) {
+        for (i in _handlers)
             i.init(context)
     }
 

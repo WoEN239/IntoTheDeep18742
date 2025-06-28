@@ -1,32 +1,28 @@
 package org.firstinspires.ftc.teamcode.modules.camera
 
 import android.graphics.Bitmap
+import androidx.core.graphics.createBitmap
+import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
-import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.vision.VisionProcessor
-import org.opencv.android.Utils
-import org.opencv.core.Core.ROTATE_180
-import org.opencv.core.Core.multiply
-import org.opencv.core.Core.rotate
-import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc.blur
-import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
-import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
+import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Color
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import org.firstinspires.ftc.teamcode.utils.units.Vec2
-import org.opencv.calib3d.Calib3d.undistort
-import org.opencv.core.Core
+import org.firstinspires.ftc.vision.VisionProcessor
+import org.opencv.android.Utils
+import org.opencv.core.Core.ROTATE_180
 import org.opencv.core.Core.add
 import org.opencv.core.Core.bitwise_and
 import org.opencv.core.Core.inRange
+import org.opencv.core.Core.multiply
+import org.opencv.core.Core.rotate
 import org.opencv.core.Core.split
 import org.opencv.core.Core.subtract
-import org.opencv.core.CvType.CV_32F
 import org.opencv.core.CvType.CV_8U
+import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
@@ -36,6 +32,7 @@ import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc.CHAIN_APPROX_SIMPLE
 import org.opencv.imgproc.Imgproc.MORPH_ERODE
 import org.opencv.imgproc.Imgproc.RETR_TREE
+import org.opencv.imgproc.Imgproc.blur
 import org.opencv.imgproc.Imgproc.dilate
 import org.opencv.imgproc.Imgproc.erode
 import org.opencv.imgproc.Imgproc.findContours
@@ -47,7 +44,6 @@ import org.opencv.imgproc.Imgproc.resize
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.sqrt
 
 
 class StickProcessor : VisionProcessor, CameraStreamSource {
@@ -68,8 +64,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
     private var _drawFrame = Mat()
 
     override fun processFrame(frm: Mat?, captureTimeNanos: Long): Any {
-        //StaticTelemetry.addData("frameSize", frm!!.size())
-
         val frame = frm!!.clone()
 
         if (!_isOneFrame.get())
@@ -108,26 +102,28 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KR,
             Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KG,
             Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.KB,
-            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.THREASHOLD
+            Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.THRESHOLD
         )
 
         val gameCol = gameColor.get()
 
-        val allianceRects = detectElements(
-            r, g, b,
+        val allianceRects =
             if (gameCol == BaseCollector.GameColor.BLUE)
-                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KR
-            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KR,
-            if (gameCol == BaseCollector.GameColor.BLUE)
-                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KG
-            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KG,
-            if (gameCol == BaseCollector.GameColor.BLUE)
-                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KB
-            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KB,
-            if (gameCol == BaseCollector.GameColor.BLUE)
-                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.THREASHOLD
-            else Configs.CameraConfig.RED_STICK_DETECT_CONFIG.THREASHOLD
-        )
+                detectElements(
+                    r, g, b,
+                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KR,
+                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KG,
+                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.KB,
+                    Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.THRESHOLD
+                )
+            else
+                detectElements(
+                    r, g, b,
+                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KR,
+                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KG,
+                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.KB,
+                    Configs.CameraConfig.RED_STICK_DETECT_CONFIG.THRESHOLD
+                )
 
         drawRotatedRects(
             _drawFrame, yellowRects,
@@ -135,26 +131,24 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
             Configs.CameraConfig.YELLOW_STICK_DETECT_CONFIG.TEXT_COLOR
         )
 
-        drawRotatedRects(
-            _drawFrame, allianceRects,
-            if (gameCol == BaseCollector.GameColor.BLUE)
-                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.CONTOUR_COLOR
-            else
-                Configs.CameraConfig.RED_STICK_DETECT_CONFIG.CONTOUR_COLOR,
-            if (gameCol == BaseCollector.GameColor.BLUE)
+        if (gameCol == BaseCollector.GameColor.BLUE)
+            drawRotatedRects(
+                _drawFrame, allianceRects,
+                Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.CONTOUR_COLOR,
                 Configs.CameraConfig.BLUE_STICK_DETECT_CONFIG.TEXT_COLOR
-            else
+            )
+        else
+            drawRotatedRects(
+                _drawFrame, allianceRects,
+                Configs.CameraConfig.RED_STICK_DETECT_CONFIG.CONTOUR_COLOR,
                 Configs.CameraConfig.RED_STICK_DETECT_CONFIG.TEXT_COLOR
-        )
+            )
 
         yellowSticks.set(rotatedRectToOrientation(yellowRects))
         allianceSticks.set(rotatedRectToOrientation(allianceRects))
 
-        val bitmap = Bitmap.createBitmap(
-            _drawFrame.width(),
-            _drawFrame.height(),
-            Bitmap.Config.RGB_565
-        )
+        val bitmap = createBitmap(_drawFrame.width(), _drawFrame.height(), Bitmap.Config.RGB_565)
+
         Utils.matToBitmap(_drawFrame, bitmap)
         lastFrame.set(bitmap)
 
@@ -163,10 +157,10 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         return frm
     }
 
-    fun waitFrame(){
+    fun waitFrame() {
         _isOneFrame.set(true)
 
-        while(_isOneFrame.get());
+        while (_isOneFrame.get());
     }
 
     override fun onDrawFrame(
@@ -180,11 +174,14 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
     }
 
-    fun rotatedRectToOrientation(rects: List<RotatedRect>): Array<Orientation> {
+    private fun rotatedRectToOrientation(rects: List<RotatedRect>): Array<Orientation> {
         val rectsList = rects.toList()
 
         return Array(rectsList.size) {
-            val pos = Vec2(rectsList[it].center.x, rectsList[it].center.y) - Configs.AutoClamp.FRAME_SIZE / 2.0
+            val pos = Vec2(
+                rectsList[it].center.x,
+                rectsList[it].center.y
+            ) - Configs.AutoClamp.FRAME_SIZE / 2.0
 
             var polL = pos.length()
             val polA = atan2(pos.y, pos.x)
@@ -251,7 +248,6 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
 
         val points = MatOfPoint2f()
 
-
         return MutableList(contours.size) {
             points.fromArray(*contours[it].toArray())
             val rect = minAreaRect(points)
@@ -269,12 +265,12 @@ class StickProcessor : VisionProcessor, CameraStreamSource {
         }.filterNotNull()
     }
 
-    fun erodeDilate(mat: Mat, kSize: Double) {
+    private fun erodeDilate(mat: Mat, kSize: Double) {
         erode(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
         dilate(mat, mat, getStructuringElement(MORPH_ERODE, Size(kSize, kSize)))
     }
 
-    fun drawRotatedRects(
+    private fun drawRotatedRects(
         mat: Mat,
         rects: Collection<RotatedRect>,
         rectColor: Color,

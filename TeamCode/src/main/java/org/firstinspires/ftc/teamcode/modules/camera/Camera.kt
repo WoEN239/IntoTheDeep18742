@@ -15,7 +15,7 @@ class Camera : IRobotModule {
     class RequestAllianceDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
     class RequestYellowDetectedSticks(var sticks: Array<Orientation>? = null) : IEvent
     class AddCameraProcessor(val processor: VisionProcessor) : IEvent
-    class WaitFrameProcessed: IEvent
+    class WaitFrameProcessed : IEvent
 
     private lateinit var _processor: StickProcessor
     private lateinit var _visionPortal: VisionPortal
@@ -23,7 +23,7 @@ class Camera : IRobotModule {
     private var _visionPortalBuilder = VisionPortal.Builder()
 
     override fun init(collector: BaseCollector, bus: EventBus) {
-        bus.subscribe(WaitFrameProcessed::class){
+        bus.subscribe(WaitFrameProcessed::class) {
             _processor.waitFrame()
         }
 

@@ -23,7 +23,7 @@ data class Color(@JvmField var r: Int, @JvmField var g: Int, @JvmField var b: In
         val YELLOW: Color = Color(255, 255, 0)
         val ORANGE: Color = Color(255, 128, 0)
     }
-    
+
     override fun toString(): String {
         if (r > 255 || g > 255 || b > 255) throw RuntimeException("color more 255")
 

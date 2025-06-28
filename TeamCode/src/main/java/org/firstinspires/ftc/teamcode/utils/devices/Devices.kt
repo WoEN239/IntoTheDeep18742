@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.utils.devices
 
-import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.hardware.Servo
@@ -19,15 +17,15 @@ import org.firstinspires.ftc.teamcode.utils.currentSensor.CurrentSensor
 import org.firstinspires.ftc.teamcode.utils.motor.EncoderOnly
 import org.firstinspires.ftc.teamcode.utils.motor.MotorOnly
 
-class Battery (private val _voltageSensor: VoltageSensor){
+class Battery(private val _voltageSensor: VoltageSensor) {
     var currentVoltage = 1.0
 
     val _oldUpdateTime = ElapsedTime()
 
     fun voltageToPower(voltage: Double) = voltage / currentVoltage
 
-    fun update(){
-        if(_oldUpdateTime.seconds() > 1.0 / Configs.ChargeConfig.BATTERY_UPDATE_HZ) {
+    fun update() {
+        if (_oldUpdateTime.seconds() > 1.0 / Configs.ChargeConfig.BATTERY_UPDATE_HZ) {
             currentVoltage = _voltageSensor.voltage
 
             _oldUpdateTime.reset()
@@ -35,7 +33,7 @@ class Battery (private val _voltageSensor: VoltageSensor){
     }
 }
 
-class Devices(hardMap: HardwareMap)  {
+class Devices(hardMap: HardwareMap) {
     val imu = hardMap.get("imu") as IMU
 
     val battery = Battery(hardMap.get(VoltageSensor::class.java, "Control Hub"))

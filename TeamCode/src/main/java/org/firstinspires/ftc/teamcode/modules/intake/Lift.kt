@@ -6,12 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
-import org.firstinspires.ftc.teamcode.utils.exponentialFilter.ExponentialFilter
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
 import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import kotlin.math.abs
@@ -59,15 +57,14 @@ class Lift {
     private var _oldTargetAimPos = 0.0
 
     var currentAimPos = 0.0
-        get
         private set
 
-    fun getRawAimPos() = _aimPotentiometer.voltage /
+    fun readRawAimPos() = _aimPotentiometer.voltage /
             Configs.LiftConfig.MAX_POTENTIOMETER_VOLTAGE * Configs.LiftConfig.MAX_POTENTIOMETER_ANGLE +
             Configs.LiftConfig.AIM_POTENTIOMETER_DIFFERENCE
 
     fun update() {
-        currentAimPos = getRawAimPos()
+        currentAimPos = readRawAimPos()
 
         StaticTelemetry.addData("aimPos", currentAimPos)
 
@@ -125,7 +122,7 @@ class Lift {
     }
 
     fun atTarget() =
-        abs(getRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS &&
+        abs(readRawAimPos() - aimTargetPosition) < Configs.LiftConfig.AIM_SENS &&
                 abs(getCurrentExtensionPos() - (extensionTargetPosition + deltaExtension)) < Configs.LiftConfig.EXTENSION_SENS
 
     fun start() {

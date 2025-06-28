@@ -2,16 +2,12 @@ package org.firstinspires.ftc.teamcode.modules.intake
 
 import com.acmerobotics.roadrunner.clamp
 import com.qualcomm.robotcore.hardware.PwmControl
-import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.hardware.ServoImplEx
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.BaseCollector
-import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.utils.LEDLine.LEDLine
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.softServo.SoftServo
 
-class Intake{
+class Intake {
     private lateinit var _servoClamp: SoftServo
 
     private lateinit var _servoDifLeft: SoftServo
@@ -27,7 +23,7 @@ class Intake{
     var yPos = 0.0
 
     fun init(collector: BaseCollector) {
-        if(collector.isAuto)
+        if (collector.isAuto)
             collector.devices.servoClamp.position = Configs.IntakeConfig.SERVO_CLAMP
 
         _servoClamp = SoftServo(collector.devices.servoClamp, Configs.IntakeConfig.SERVO_CLAMP)
@@ -49,8 +45,7 @@ class Intake{
 
                 _leftLED.power = Configs.Lighting.ON_POWER
                 _rightLED.power = Configs.Lighting.ON_POWER
-            }
-            else {
+            } else {
                 _servoClamp.targetPosition = Configs.IntakeConfig.SERVO_UNCLAMP
 
                 _leftLED.power = Configs.Lighting.OFF_POWER
@@ -60,8 +55,7 @@ class Intake{
             field = value
         }
 
-    fun setDifPos(xRot: Double, yRot: Double)
-    {
+    fun setDifPos(xRot: Double, yRot: Double) {
         xPos = xRot
         yPos = yRot
 
@@ -69,11 +63,11 @@ class Intake{
         val y = (yRot + Configs.IntakeConfig.DIF_DIFFERENCE_Y) * Configs.IntakeConfig.GEAR_RATIO
 
         _servoDifRight.targetPosition = clamp((y + x) / Configs.IntakeConfig.SERVO_MAX, 0.0, 1.0)
-        _servoDifLeft.targetPosition = clamp(1.0 - (x - y) / Configs.IntakeConfig.SERVO_MAX, 0.0, 1.0)
+        _servoDifLeft.targetPosition =
+            clamp(1.0 - (x - y) / Configs.IntakeConfig.SERVO_MAX, 0.0, 1.0)
     }
 
-    enum class ClampPosition
-    {
+    enum class ClampPosition {
         SERVO_CLAMP,
         SERVO_UNCLAMP
     }

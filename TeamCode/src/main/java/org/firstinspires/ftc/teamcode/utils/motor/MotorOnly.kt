@@ -17,11 +17,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
  * @see Motor
  * @see EncoderOnly
  */
-class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
+class MotorOnly(private val _motor: DcMotorEx) : DcMotorEx {
     init {
         _motor.direction = Direction.FORWARD
-        _motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        _motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        _motor.mode = RunMode.STOP_AND_RESET_ENCODER
+        _motor.mode = RunMode.RUN_WITHOUT_ENCODER
     }
 
     private var _direction = Direction.FORWARD
@@ -42,24 +42,24 @@ class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
         _motor.close()
     }
 
-    override fun setDirection(direction: Direction?){
+    override fun setDirection(direction: Direction?) {
         _direction = direction!!
     }
 
     override fun getDirection() = _direction
 
     override fun setPower(power: Double) {
-        if(_direction == Direction.FORWARD) {
+        if (_direction == Direction.FORWARD) {
             _motor.power = power
-            
+
             return
         }
-        
+
         _motor.power = -power
     }
 
     override fun getPower(): Double {
-        if(_direction == Direction.FORWARD)
+        if (_direction == Direction.FORWARD)
             return _motor.power
 
         return -_motor.power
@@ -106,7 +106,7 @@ class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
         throw Exception("motorOnly not support mode")
     }
 
-    override fun getMode(): RunMode{
+    override fun getMode(): RunMode {
         throw Exception("motorOnly not support mode")
     }
 
@@ -138,11 +138,11 @@ class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
         throw Exception("motorOnly not support velocity")
     }
 
-    override fun setPIDCoefficients(mode: DcMotor.RunMode?, pidCoefficients: PIDCoefficients?) {
+    override fun setPIDCoefficients(mode: RunMode?, pidCoefficients: PIDCoefficients?) {
         throw Exception("motorOnly not support pid")
     }
 
-    override fun setPIDFCoefficients(mode: DcMotor.RunMode?, pidfCoefficients: PIDFCoefficients?) {
+    override fun setPIDFCoefficients(mode: RunMode?, pidfCoefficients: PIDFCoefficients?) {
         throw Exception("motorOnly not support pid")
     }
 
@@ -154,11 +154,11 @@ class MotorOnly(private val _motor: DcMotorEx): DcMotorEx {
         throw Exception("motorOnly not support pid")
     }
 
-    override fun getPIDCoefficients(mode: DcMotor.RunMode?): PIDCoefficients {
+    override fun getPIDCoefficients(mode: RunMode?): PIDCoefficients {
         throw Exception("motorOnly not support pid")
     }
 
-    override fun getPIDFCoefficients(mode: DcMotor.RunMode?): PIDFCoefficients {
+    override fun getPIDFCoefficients(mode: RunMode?): PIDFCoefficients {
         throw Exception("motorOnly not support pid")
     }
 

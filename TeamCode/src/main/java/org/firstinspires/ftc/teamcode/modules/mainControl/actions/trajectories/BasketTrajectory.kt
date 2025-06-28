@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes
+package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectories
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.modules.mainControl.runner.TrajectorySegme
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
 
-class BaskedTrajectory : ITrajectoryBuilder {
+class BasketTrajectory : ITrajectoryBuilder {
     override fun runTrajectory(
         eventBus: EventBus,
         startOrientation: Orientation,
@@ -96,7 +96,8 @@ class BaskedTrajectory : ITrajectoryBuilder {
         }
 
         fun paralelClamp(isDif: Boolean): ArrayList<IAction> {
-            val clampActions = arrayListOf(WaitIntakeAction(eventBus), WaitAction(if(isDif) 0.7 else 0.4))
+            val clampActions =
+                arrayListOf(WaitIntakeAction(eventBus), WaitAction(if (isDif) 0.7 else 0.4))
 
             clampActions.addAll(runToBasket(getEndOrientation(actions)))
 
@@ -212,7 +213,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
 
         actions.addAll(runToBasket(getEndOrientation(actions)))
 
-        if(!teammate.brick){
+        if (!teammate.brick) {
             actions.add(
                 ParallelActions(
                     arrayOf(
@@ -238,8 +239,7 @@ class BaskedTrajectory : ITrajectoryBuilder {
 
             actions.addAll(runToBasket(getEndOrientation(actions)))
             actions.addAll(basket())
-        }
-        else
+        } else
             actions.addAll(basket())
 
         actions.add(

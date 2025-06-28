@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.modules.mainControl.actions
 import com.acmerobotics.roadrunner.Trajectory
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
-import org.firstinspires.ftc.teamcode.collectors.events.IEvent
 import org.firstinspires.ftc.teamcode.modules.intake.Intake
 import org.firstinspires.ftc.teamcode.modules.intake.IntakeManager
 import org.firstinspires.ftc.teamcode.modules.mainControl.runner.RRTrajectorySegment
@@ -13,13 +12,13 @@ import org.firstinspires.ftc.teamcode.utils.units.Angle
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
 interface IAction {
-    fun update(){}
+    fun update() {}
 
-    fun end(){}
+    fun end() {}
 
     fun isEnd(): Boolean = true
 
-    fun start(){}
+    fun start() {}
 }
 
 interface ITransportAction : IAction {

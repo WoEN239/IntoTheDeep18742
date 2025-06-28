@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.contServo
 
-import com.qualcomm.robotcore.hardware.PwmControl.PwmRange
 import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
@@ -36,7 +34,7 @@ class ContServo(
     var currentPosition: Double = 0.0
         private set
 
-    fun resetAngleTo(ang: Double){
+    fun resetAngleTo(ang: Double) {
         currentPosition = ang
         _targetAngle = ang
     }
@@ -74,7 +72,7 @@ class ContServo(
         }
 
     var currentVelocity: Double = 0.0
-        private set(value){
+        private set(value) {
             _servo.position = value / maxRadSpeed + 0.5
 
             field = value
@@ -87,20 +85,20 @@ class ContServo(
                     currentVelocity = sign * E * _servoTime.seconds()
 
                     currentPosition = y0 + sign * (E * _servoTime.seconds().pow(2) / 2)
-                }
-                else if (_servoTime.seconds() <= t3) {
+                } else if (_servoTime.seconds() <= t3) {
                     currentVelocity = maxRadSpeed * sign
 
-                    currentPosition = y0 + sign * (t2Pow + maxRadSpeed * (_servoTime.seconds() - t2))
-                }
-                else {
+                    currentPosition =
+                        y0 + sign * (t2Pow + maxRadSpeed * (_servoTime.seconds() - t2))
+                } else {
                     currentVelocity = sign * (maxRadSpeed - (_servoTime.seconds() - t3) * E)
 
                     currentPosition =
-                        y0 + sign * (t2Pow + maxRadSpeed * (t3 - t2) + maxRadSpeed * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(2) / 2)
+                        y0 + sign * (t2Pow + maxRadSpeed * (t3 - t2) + maxRadSpeed * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(
+                            2
+                        ) / 2)
                 }
-            }
-            else
+            } else
                 currentVelocity = 0.0
 
             return
@@ -111,14 +109,15 @@ class ContServo(
                 currentVelocity = sign * E * _servoTime.seconds()
 
                 currentPosition = y0 + sign * (E * _servoTime.seconds().pow(2) / 2)
-            }
-            else {
+            } else {
                 currentVelocity = sign * (t4 * E - E * (_servoTime.seconds() - t4))
 
-                currentPosition = y0 + sign * (E * t4.pow(2) / 2 + sqrt(yAbs / E) * E * (_servoTime.seconds() - t4) - E * (_servoTime.seconds() - t4).pow(2) / 2)
+                currentPosition =
+                    y0 + sign * (E * t4.pow(2) / 2 + sqrt(yAbs / E) * E * (_servoTime.seconds() - t4) - E * (_servoTime.seconds() - t4).pow(
+                        2
+                    ) / 2)
             }
-        }
-        else
+        } else
             currentVelocity = 0.0
     }
 

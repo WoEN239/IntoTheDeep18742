@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes
+package org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectories
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.ProfileAccelConstraint
@@ -23,8 +23,13 @@ import org.firstinspires.ftc.teamcode.utils.units.Orientation
 import java.lang.Math.toRadians
 
 class HumanTrajectory : ITrajectoryBuilder {
-    override fun runTrajectory(eventBus: EventBus, startOrientation: Orientation, teammate: BaseCollector.TeammateSate) {
-        val layerAccelConstrain = ProfileAccelConstraint(-150.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
+    override fun runTrajectory(
+        eventBus: EventBus,
+        startOrientation: Orientation,
+        teammate: BaseCollector.TeammateSate
+    ) {
+        val layerAccelConstrain =
+            ProfileAccelConstraint(-150.0, Configs.DriveTrainConfig.MAX_TRANSLATION_ACCEL)
         val humanUnclampPos = ProfileAccelConstraint(-150.0, 150.0)
 
         val actions = arrayListOf<IAction>()
@@ -81,22 +86,26 @@ class HumanTrajectory : ITrajectoryBuilder {
 
         actions.add(TurnAction(eventBus, getEndOrientation(actions), Angle.ofDeg(180.0 - 35.0)))
 
-        actions.add(ParallelActions(arrayOf(
-            arrayListOf(
-                ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP)
-            ),
-            arrayListOf(
-                FollowRRTrajectory(
-                    eventBus, newRRTrajectory(getEndOrientation(actions))
-                        .strafeToLinearHeading(
-                            Vector2d(-105.2, 116.2),
-                            toRadians(-90.0 - 45.0),
-                            accelConstraintOverride = humanUnclampPos
+        actions.add(
+            ParallelActions(
+                arrayOf(
+                    arrayListOf(
+                        ClampAction(eventBus, Intake.ClampPosition.SERVO_UNCLAMP)
+                    ),
+                    arrayListOf(
+                        FollowRRTrajectory(
+                            eventBus, newRRTrajectory(getEndOrientation(actions))
+                                .strafeToLinearHeading(
+                                    Vector2d(-105.2, 116.2),
+                                    toRadians(-90.0 - 45.0),
+                                    accelConstraintOverride = humanUnclampPos
+                                )
+                                .build()
                         )
-                        .build()
-                )
+                    )
+                ), ParallelActions.ExitType.AND
             )
-        ), ParallelActions.ExitType.AND))
+        )
 
         actions.add(WaitAction(0.1))
 
@@ -114,8 +123,10 @@ class HumanTrajectory : ITrajectoryBuilder {
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(-90.0))
                                 .splineToLinearHeading(
-                                    Pose2d(Vector2d(-95.5, 130.0),
-                                    toRadians(90.0)),
+                                    Pose2d(
+                                        Vector2d(-95.5, 130.0),
+                                        toRadians(90.0)
+                                    ),
                                     toRadians(180.0 - 35.0)
                                 )
                                 .build()
@@ -138,7 +149,11 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(12.0, 80.5), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
+                                .splineToConstantHeading(
+                                    Vector2d(12.0, 80.5),
+                                    toRadians(-90.0),
+                                    accelConstraintOverride = layerAccelConstrain
+                                )
                                 .build()
                         )
                     ),
@@ -181,7 +196,11 @@ class HumanTrajectory : ITrajectoryBuilder {
                         FollowRRTrajectory(
                             eventBus, newRRTrajectory(getEndOrientation(actions))
                                 .setTangent(toRadians(0.0))
-                                .splineToConstantHeading(Vector2d(9.2, 90.7), toRadians(-90.0), accelConstraintOverride = layerAccelConstrain)
+                                .splineToConstantHeading(
+                                    Vector2d(9.2, 90.7),
+                                    toRadians(-90.0),
+                                    accelConstraintOverride = layerAccelConstrain
+                                )
                                 .build()
                         )
                     ),

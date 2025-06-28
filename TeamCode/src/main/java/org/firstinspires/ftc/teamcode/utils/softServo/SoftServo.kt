@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.utils.softServo
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.configs.Configs
-import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.servoAngle.ServoAngle
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
-import java.lang.Math.pow
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sign
@@ -38,13 +36,13 @@ class SoftServo(
 
     var targetAngle: Double
         set(value) {
-            if(servo !is ServoAngle)
+            if (servo !is ServoAngle)
                 throw Exception("Default servo not support angle, request ServoAngle")
 
             targetPosition = value / servo.maxAngle
         }
         get() {
-            if(servo !is ServoAngle)
+            if (servo !is ServoAngle)
                 throw Exception("Default servo not support angle, request ServoAngle")
 
             return targetPosition * servo.maxAngle
@@ -52,7 +50,7 @@ class SoftServo(
 
     var targetPosition: Double = -1.0
         set(value) {
-            if(value < 0)
+            if (value < 0)
                 return
 
             if (abs(value - field) < 0.002) {
@@ -87,8 +85,8 @@ class SoftServo(
         }
 
     val currentAngle: Double
-        get(){
-            if(servo !is ServoAngle)
+        get() {
+            if (servo !is ServoAngle)
                 throw Exception("Default servo not support angle, request ServoAngle")
 
             return servo.angle
@@ -112,7 +110,9 @@ class SoftServo(
                     currentPosition = y0 + sign * (t2Pow + WMax * (_servoTime.seconds() - t2))
                 else
                     currentPosition =
-                        y0 + sign * (t2Pow + WMax * (t3 - t2) + WMax * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(2) / 2)
+                        y0 + sign * (t2Pow + WMax * (t3 - t2) + WMax * (_servoTime.seconds() - t3) - E * (_servoTime.seconds() - t3).pow(
+                            2
+                        ) / 2)
             }
 
             return
@@ -122,9 +122,10 @@ class SoftServo(
             if (_servoTime.seconds() <= t4)
                 currentPosition = y0 + sign * (E * _servoTime.seconds().pow(2) / 2)
             else
-                currentPosition = y0 + sign * (E * t4.pow(2) / 2 + sqrt(yAbs / E) * E * (_servoTime.seconds() - t4) - E * (_servoTime.seconds() - t4).pow(
-                    2
-                ) / 2)
+                currentPosition =
+                    y0 + sign * (E * t4.pow(2) / 2 + sqrt(yAbs / E) * E * (_servoTime.seconds() - t4) - E * (_servoTime.seconds() - t4).pow(
+                        2
+                    ) / 2)
         }
     }
 

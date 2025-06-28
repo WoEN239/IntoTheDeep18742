@@ -100,7 +100,12 @@ object StaticTelemetry {
             )
         }
 
-        for(i in 0..inchPoints.size - 2)
-            canvas.strokeLine(inchPoints[i].x, inchPoints[i].y, inchPoints[i + 1].x, inchPoints[i + 1].y)
+        for (i in 0..inchPoints.size - 2)
+            canvas.strokeLine(
+                inchPoints[i].x,
+                inchPoints[i].y,
+                inchPoints[i + 1].x,
+                inchPoints[i + 1].y
+            )
     }
 }

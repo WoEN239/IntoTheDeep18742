@@ -27,21 +27,25 @@ class MergeGyro : IRobotModule {
         _oldMergeRotation = collector.parameters.oldStartPosition.angle
         _oldOdometerRotate = collector.parameters.oldStartPosition.angle
 
-        bus.subscribe(IMUGyro.UpdateImuGyroEvent::class){
-            if(Configs.OdometryConfig.DUAL_ODOMETER) {
+        bus.subscribe(IMUGyro.UpdateImuGyroEvent::class) {
+            if (Configs.OdometryConfig.DUAL_ODOMETER) {
                 _oldMergeRotation = _mergeRotate
                 _mergeRotate = it.rotate
                 _velocity = it.velocity
                 _odometerRotate = it.rotate
-            }
-            else
-                _mergeRotate = Angle(_mergeFilter.updateRaw(_mergeRotate.angle, (it.rotate - _mergeRotate).angle))
+            } else
+                _mergeRotate = Angle(
+                    _mergeFilter.updateRaw(
+                        _mergeRotate.angle,
+                        (it.rotate - _mergeRotate).angle
+                    )
+                )
 
             _yRot = Angle(it.yRot)
         }
 
-        bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class){
-            if(!Configs.OdometryConfig.DUAL_ODOMETER) {
+        bus.subscribe(OdometerGyro.UpdateOdometerGyroEvent::class) {
+            if (!Configs.OdometryConfig.DUAL_ODOMETER) {
                 _oldMergeRotation = _mergeRotate
                 _mergeRotate += it.rotate - _oldOdometerRotate
 
@@ -54,7 +58,7 @@ class MergeGyro : IRobotModule {
             }
         }
 
-        bus.subscribe(RequestMergeGyroEvent::class){
+        bus.subscribe(RequestMergeGyroEvent::class) {
             it.rotation = _mergeRotate
             it.velocity = _velocity
             it.oldRotation = _oldMergeRotation
@@ -69,7 +73,7 @@ class MergeGyro : IRobotModule {
         var velocity: Double? = null,
         var odometerRotate: Angle? = null,
         var yRot: Angle? = null
-    ): IEvent
+    ) : IEvent
 
     override fun update() {
         _mergeFilter.coef = Configs.GyroscopeConfig.MERGE_COEF

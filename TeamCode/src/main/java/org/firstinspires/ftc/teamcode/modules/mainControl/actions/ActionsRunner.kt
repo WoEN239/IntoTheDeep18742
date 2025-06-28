@@ -4,9 +4,7 @@ import org.firstinspires.ftc.teamcode.collectors.BaseCollector
 import org.firstinspires.ftc.teamcode.collectors.IRobotModule
 import org.firstinspires.ftc.teamcode.collectors.events.EventBus
 import org.firstinspires.ftc.teamcode.collectors.events.IEvent
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.BaskedTrajectory
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.HumanTrajectory
-import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectoryes.NewBasketTrajectory
+import org.firstinspires.ftc.teamcode.modules.mainControl.actions.trajectories.NewBasketTrajectory
 import org.firstinspires.ftc.teamcode.utils.units.Orientation
 
 class ActionsRunner : IRobotModule {

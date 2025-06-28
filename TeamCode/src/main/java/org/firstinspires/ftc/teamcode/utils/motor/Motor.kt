@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.utils.configs.Configs
 import org.firstinspires.ftc.teamcode.utils.devices.Battery
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDConfig
 import org.firstinspires.ftc.teamcode.utils.pidRegulator.PIDRegulator
-import org.firstinspires.ftc.teamcode.utils.telemetry.StaticTelemetry
 import org.firstinspires.ftc.teamcode.utils.updateListener.IHandler
 import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
 
@@ -20,7 +19,11 @@ import org.firstinspires.ftc.teamcode.utils.updateListener.UpdateHandler
  *
  * @author tikhonsmovzh
  */
-class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID, val maxVelocityTicks: Double = Configs.MotorConfig.DEFAULT_MAX_TICKS): IHandler {
+class Motor(
+    val motor: DcMotorEx,
+    velocityPIDConfig: PIDConfig = Configs.MotorConfig.VELOCITY_PID,
+    val maxVelocityTicks: Double = Configs.MotorConfig.DEFAULT_MAX_TICKS
+) : IHandler {
     init {
         UpdateHandler.addHandler(this)
     }
@@ -36,13 +39,18 @@ class Motor(val motor: DcMotorEx, velocityPIDConfig: PIDConfig = Configs.MotorCo
 
     var targetTicksVelocity = 0.0
 
-    var targetPower : Double
+    var targetPower: Double
         get() = targetTicksVelocity / maxVelocityTicks
         set(value) {
             targetTicksVelocity = value * maxVelocityTicks
         }
- 
+
     override fun update() {
-        motor.power = _battery.voltageToPower(_velocityPid.update(targetTicksVelocity - encoder.velocity, targetTicksVelocity.toDouble()))
+        motor.power = _battery.voltageToPower(
+            _velocityPid.update(
+                targetTicksVelocity - encoder.velocity,
+                targetTicksVelocity.toDouble()
+            )
+        )
     }
 }
